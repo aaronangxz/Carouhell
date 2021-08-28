@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.wrapper {
+  padding: 20px;
+}
+
+.loginbutton{
+  padding-left: 1600px;
+}
