@@ -1,7 +1,7 @@
 <h1> TIC 2601 </h1>
 
 <h2>Getting Started</h2>
-<h3>Front End</h3>
+<h3>JS Front End</h3>
 
 1. Clone this repository to your local machine<br>
 `git clone github.com/aaronangxz/TIC2601`
@@ -12,9 +12,16 @@
 
 4. To run project locally, run `npm start`.
 
-<h3>Back End</h3>
+<h3>Golang Back End</h3>
 
-WIP
+1. Clone this repository to your local machine<br>
+`git clone github.com/aaronangxz/TIC2601`
+
+2. The front end directory is `/GoServer/`
+
+3. run `go mod download` to install all dependencies.
+
+4. To run project locally, run `go run main.go`.
 
 <h2>Code Contributions</h2>
 
@@ -24,7 +31,7 @@ WIP
 `git branch XuanZe/Do_something`<br>
 `git checkout XuanZe/Do_something`
 
-3. Start writing your code
+3. Start writing your code. `git rebase master` to fetch changes from master branch into your branch.
 
 4. Once done, <br>
 `git add .`<br>
