@@ -38,7 +38,7 @@ const tabs = [{
               <a className="navbar-brand" href="/home">TIC2601</a>
               <Nav className="ml-auto">
                 <NavItem>
-                  <NavLink to="/home" className="nav-link">
+                  <NavLink to="/" className="nav-link">
                     Home
                   </NavLink>
                 </NavItem>
