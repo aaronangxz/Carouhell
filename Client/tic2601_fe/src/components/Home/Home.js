@@ -43,10 +43,10 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:8080/listings/1')
+    fetch('http://localhost:8080/listings')
     .then(res => res.json())
     .then((data) => {
-      this.setState({ listings: data })
+      this.setState({ listings: data.data })
     })
     .then((data) => console.log('This is your data', data))
     .catch(console.log)
@@ -56,7 +56,8 @@ class Home extends Component {
     return (
       <Listings listings={this.state.listings} />
 
-    );
+    )
+    
   }
 }
 

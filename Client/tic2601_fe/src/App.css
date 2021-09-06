@@ -3,6 +3,7 @@
 }
 .bottom-tab-nav {
   border-top: solid 1px #EBEBEB;
+  color: #EBEBEB;
 }
 .nav-link,
 .bottom-nav-link {
@@ -99,4 +100,19 @@
   flex-flow: row wrap;
   position: relative;
   width: 40vw;
+}
+
+.img{
+  width: 10%
+}
+
+.card-img-top{
+  width:10%;
+  height:auto;
+}
+
+.card {
+  margin: 0 auto; /* Added */
+  float: none; /* Added */
+  margin-bottom: 10px; /* Added */
 }
