@@ -22,7 +22,7 @@ func CreateListing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	listings := models.Listing{ItemName: input.ItemName, ItemPrice: input.ItemPrice}
+	listings := models.Listing{ItemName: input.ItemName, ItemPrice: input.ItemPrice, ItemImg: input.ItemImg}
 	models.DB.Create(&listings)
 
 	c.JSON(http.StatusOK, gin.H{"data": listings})
