@@ -6,11 +6,11 @@
 
 1. Install [Node.js](https://nodejs.org/en/) and npm for front end
 
-2. Install [Go](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for back end
+2. Install [Go](https://golang.org/doc/install) for back end
 
 3. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for version control
 
-4. Set up [SSH](https://docs.github.com/en/get-started/quickstart/set-up-git) or [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for authentication
+4. Set up [SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) or [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for authentication
 
 4. Clone this repository to your local machine<br>
 `git clone git@github.com:aaronangxz/TIC2601.git`
