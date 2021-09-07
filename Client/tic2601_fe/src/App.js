@@ -27,13 +27,14 @@ function App() {
   // if(!token) {
   //   return <Login setToken={setToken} />
   // }
+/*eslint-disable */
 
   return (
     <div>
       <BrowserRouter>
       <Navigation />
         <Switch>
-          <NavLink to path="/" exact component={Home} exact={true} activeClassName="active"/>
+          <NavLink to path="/" exact component={Home} exact={true} activeClassName="active"/> 
           <Route path="/" exact component={Home} exact={true}/>
           <Route path="/popular" exact component={Popular} exact={true} />
           <Route path="/sell" exact component={Sell} exact={true}/>
@@ -43,5 +44,7 @@ function App() {
       </BrowserRouter>
     </div>
   );
+  /*eslint-disable */
+
 } 
 export default App;

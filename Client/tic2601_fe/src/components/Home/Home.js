@@ -1,5 +1,5 @@
-import Listings from "../Listing/Listing"
-import React, { useState, useEffect, Component } from 'react';
+import Listings from "../Listing/HomeListing"
+import React, {Component } from 'react';
 // const Home = () => {
 // const [error, setError] = useState(null);
 //     const [isLoaded, setIsLoaded] = useState(false);
