@@ -38,7 +38,7 @@ const tabs = [{
               <a className="navbar-brand" href="/home">TIC2601</a>
               <Nav className="ml-auto">
                 <NavItem>
-                  <NavLink to="/home" className="nav-link">
+                  <NavLink to="/" className="nav-link">
                     Home
                   </NavLink>
                 </NavItem>
@@ -66,13 +66,13 @@ const tabs = [{
           </div>
         </nav>
         {/*Bottom Nav Bar*/}
-        <nav className="navbar fixed-bottom navbar-light d-block d-lg-none bottom-tab-nav" role="navigation">
+        <nav className="navbar fixed-bottom navbar-light bg-light d-block d-lg-none bottom-tab-nav" role="navigation">
         <Nav className="w-100">
           <div className="d-flex flex-row justify-content-around w-100">
             {
               tabs.map((tab, index) =>(
                 <NavItem key={`tab-${index}`}>
-                  <NavLink to={tab.route} className="nav-link bottom-nav-link" activeClassName="active" exact={true}>
+                  <NavLink to={tab.route} className="nav-link bottom-nav-link " activeClassName="active" exact={true}>
                     <div className="d-flex flex-column justify-content-between align-items-center">
                       <FontAwesomeIcon size= "lg" icon={tab.icon}/>
                       <div className="bottom-tab-label">{tab.label}</div>
