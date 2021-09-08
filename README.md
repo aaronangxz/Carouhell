@@ -22,7 +22,10 @@
 4. Set up [SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) or [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for authentication
 
 4. Clone this repository to your local machine<br>
-`git clone git@github.com:aaronangxz/TIC2601.git`
+
+- SSH: `git clone git@github.com:aaronangxz/TIC2601.git`
+
+- HTTPS: `git clone https://github.com/aaronangxz/TIC2601.git`
 
 <h3>JS Front End</h3>
 
