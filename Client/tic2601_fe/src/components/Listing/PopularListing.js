@@ -1,12 +1,12 @@
-import {React, Dimensions} from 'react'
+import {React} from 'react'
 import '../../App.css';
 
 const windowWidth = window.innerWidth
 
-const Listings = ({ listings }) => {
+const PopularListings = ({ listings }) => {
   return (
     <div>
-      <center><h1>Listings</h1></center>
+      <center><h1>Popular</h1></center>
       {listings.map((listing) => (
         <div class="card" style= {{width: windowWidth/2}}>
           <img class="card-img-top" src = {listing.item_img} alt=""></img>
@@ -21,4 +21,4 @@ const Listings = ({ listings }) => {
   )
   
 };
-export default Listings
+export default PopularListings
