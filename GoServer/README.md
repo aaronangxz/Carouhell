@@ -4,6 +4,11 @@
 
 1. SQLite - `test.db`
 
+- Tables: 
+
+    - listings
+    - notifications
+
 <h2>Available API endpoints</h2>
 
 <h3>GET - GetAllListings()</h3>
@@ -51,7 +56,7 @@ Response
 <h3>GET - GetListingByItemID()</h3>
 
 ```
-/listings/:item_id
+/listings/item_id
 
 Request
 {
@@ -93,7 +98,7 @@ Response
 <h3>DELETE - DeleteListing()</h3>
 
 ```
-/listings/:item_id
+/listings/item_id
 
 Request
 {
@@ -106,10 +111,55 @@ Response
 }
 ```
 
+<h3>GET - GetNotificationsByUserID()</h3>
+
+```
+/notifications/user_id
+
+Request
+{
+    ""
+}
+
+Response
+{
+    "data": [
+        {
+            "notification_id": 2,
+            "user_id": 696969,
+            "notification_text": "Buy buy buy buy!"
+        },
+        {
+            "notification_id": 1,
+            "user_id": 696969,
+            "notification_text": "Welcome to Carouhell!"
+        }
+    ],
+    "resp": "success"
+}
+```
+
+<h3>GET - CreateMockNotifications()</h3>
+
+```
+/create_mock_notifications
+
+Request
+{
+    "user_id": 696969,
+    "notification_text": "New notification text"
+}
+
+Response
+{
+    "resp": "success"
+}
+```
+
 <h2>To Test API</h2>
 
 1. Use Postman<br>
-2. Request URL: `localhost:port/item_id`
+2. Request URL: `localhost:8080/...`
 3. Insert the request body as per exmples above.
 4. Send
 

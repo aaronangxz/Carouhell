@@ -12,11 +12,6 @@ import (
 
 func main() {
 	r := gin.Default()
-
-	// same as
-	// config := cors.DefaultConfig()
-	// config.AllowAllOrigins = true
-	// router.Use(cors.New(config))
 	r.Use(cors.Default())
 
 	r.GET("/", func(c *gin.Context) {
@@ -26,6 +21,9 @@ func main() {
 	models.ConnectDataBase()
 
 	//Available endpoints
+	r.GET("/notifications/:user_id", controllers.GetNotificationsByUserID)
+	r.POST("/create_mock_notifications", controllers.CreateMockNotifications)
+
 	r.GET("/listings", controllers.GetAllListings)
 	r.POST("/listings", controllers.CreateListing)
 	r.GET("/listings/:item_id", controllers.GetListingByItemID)
