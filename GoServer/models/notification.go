@@ -15,3 +15,14 @@ type CreateNotificationRequest struct {
 	UserID           uint   `json:"user_id" binding:"required"`
 	NotificationText string `json:"notification_text" binding:"required"`
 }
+
+type ResponseMeta struct {
+	DebugMsg  string
+	ErrorCode int
+}
+
+const (
+	CONST_NOTIFICATION_SUCCESS             = 0
+	CONST_GET_NOTIFICATION_ERROR_NOT_FOUND = 1
+	CONST_GET_NOTIFICATION_ERROR_UNKNOWN   = 2
+)
