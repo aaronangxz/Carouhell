@@ -24,11 +24,11 @@ func main() {
 	r.GET("/notifications/:user_id", controllers.GetNotificationsByUserID)
 	r.POST("/create_mock_notifications", controllers.CreateMockNotifications)
 
-	r.GET("/listings", controllers.GetAllListings)
-	r.POST("/listings", controllers.CreateListing)
-	r.GET("/listings/:item_id", controllers.GetListingByItemID)
-	r.PATCH("/listings/:item_id", controllers.UpdateListing)
-	r.DELETE("/listings/:item_id")
+	r.GET("/get_all_listings", controllers.GetAllListings)
+	r.POST("/create_listing", controllers.CreateListing)
+	r.GET("/get_single_listing_by_itemid", controllers.GetListingByItemID)
+	r.PATCH("/update_single_listing", controllers.UpdateSingleListing)
+	r.DELETE("/delete_single_listing", controllers.DeleteListing)
 
 	r.Run()
 }
