@@ -15,7 +15,16 @@ type CreateListingRequest struct {
 	ItemImg   string `json:"item_img" binding:"required"`
 }
 
+type GetSingleListingRequest struct {
+	ItemID uint `json:"item_id"`
+}
+
+type DeleteSingleListingRequest struct {
+	ItemID uint `json:"item_id"`
+}
+
 type UpdateListingRequest struct {
+	ItemID    uint   `json:"item_id"`
 	ItemName  string `json:"item_name"`
 	ItemPrice int    `json:"item_price"`
 	ItemImg   string `json:"item_img"`
