@@ -20,9 +20,3 @@ type ResponseMeta struct {
 	DebugMsg  string
 	ErrorCode int
 }
-
-const (
-	CONST_NOTIFICATION_SUCCESS             = 0
-	CONST_GET_NOTIFICATION_ERROR_NOT_FOUND = 1
-	CONST_GET_NOTIFICATION_ERROR_UNKNOWN   = 2
-)

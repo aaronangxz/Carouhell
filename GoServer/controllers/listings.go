@@ -4,15 +4,18 @@ import (
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
+	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllListings(c *gin.Context) {
-	var AllListings []models.Listing
+	var (
+		allListings []models.Listing
+	)
 
-	models.DB.Find(&AllListings)
+	models.DB.Find(&allListings)
 
-	c.JSON(http.StatusOK, gin.H{"data": AllListings})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateBatchListingResult(allListings), "data": allListings})
 }
 
 func CreateListing(c *gin.Context) {
