@@ -44,7 +44,7 @@ func CreateMockNotifications(c *gin.Context) {
 	if err := models.DB.Exec("INSERT INTO notifications (user_id, notification_text) VALUES (?,?)", input.UserID, input.NotificationText).
 		Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
-
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse()})
