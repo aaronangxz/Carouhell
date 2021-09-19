@@ -7,31 +7,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewErrorResponse(err error) models.ResponseMeta {
-	return models.ResponseMeta{
-		DebugMsg:  err.Error(),
-		ErrorCode: models.CONST_GET_NOTIFICATION_ERROR_NOT_FOUND,
-	}
-}
-
-func NewSuccessResponse() models.ResponseMeta {
-	return models.ResponseMeta{
-		DebugMsg:  "",
-		ErrorCode: models.CONST_NOTIFICATION_SUCCESS,
-	}
-}
-
 func GetNotificationsByUserID(c *gin.Context) {
-	var UserNotifications []models.GetNotificationsByUserIDResposne
-	input := c.Param("user_id")
+	var (
+		UserNotifications []models.GetNotificationsByUserIDResposne
+		response          models.ResponseMeta
+		input             = c.Param("user_id")
+	)
 
 	if err := models.DB.Raw("SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC", input).
-		Scan(&UserNotifications).
-		Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": NewErrorResponse(err)})
+		Scan(&UserNotifications).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": NewSuccessResponse(), "data": UserNotifications})
+	//Build response
+	if len(UserNotifications) == 0 {
+		response = models.NewNotFoundResponse()
+	} else {
+		response = models.NewSuccessResponse()
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": response, "data": UserNotifications})
 }
 
 func CreateMockNotifications(c *gin.Context) {
@@ -41,15 +37,15 @@ func CreateMockNotifications(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
 		return
 	}
 
 	if err := models.DB.Exec("INSERT INTO notifications (user_id, notification_text) VALUES (?,?)", input.UserID, input.NotificationText).
 		Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": NewSuccessResponse()})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse()})
 }
