@@ -6,6 +6,11 @@ type Notification struct {
 	NotificationText string `json:"notification_text"`
 }
 
+type GetNotificationsByUserIDRequest struct {
+	UserID uint `json:"user_id"`
+	Limit  int
+}
+
 type GetNotificationsByUserIDResposne struct {
 	NotificationID   uint   `json:"notification_id"`
 	NotificationText string `json:"notification_text"`

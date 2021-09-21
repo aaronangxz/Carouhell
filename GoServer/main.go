@@ -21,7 +21,7 @@ func main() {
 	models.ConnectDataBase()
 
 	//Available endpoints
-	r.GET("/notifications/:user_id", controllers.GetNotificationsByUserID)
+	r.GET("/get_notifications_by_user_id", controllers.GetNotificationsByUserID)
 	r.POST("/create_mock_notifications", controllers.CreateMockNotifications)
 
 	r.GET("/get_all_listings", controllers.GetAllListings)
