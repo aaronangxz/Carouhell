@@ -4,30 +4,27 @@ import (
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
+	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetNotificationsByUserID(c *gin.Context) {
 	var (
-		UserNotifications []models.GetNotificationsByUserIDResposne
-		response          models.ResponseMeta
-		input             = c.Param("user_id")
+		userNotifications []models.GetNotificationsByUserIDResposne
+		input             models.GetNotificationsByUserIDRequest
 	)
 
-	if err := models.DB.Raw("SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC", input).
-		Scan(&UserNotifications).Error; err != nil {
+	if err := models.DB.Raw(
+		"SELECT notification_id, notification_text FROM"+
+			"notifications WHERE user_id = ?"+
+			"ORDER BY notification_id DESC LIMIT ?", input.UserID, input.Limit).
+		Scan(&userNotifications).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
 		return
 	}
 
 	//Build response
-	if len(UserNotifications) == 0 {
-		response = models.NewNotFoundResponse()
-	} else {
-		response = models.NewSuccessResponse()
-	}
-
-	c.JSON(http.StatusOK, gin.H{"Respmeta": response, "data": UserNotifications})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetNotificationsByUserIDResult(userNotifications), "Data": userNotifications})
 }
 
 func CreateMockNotifications(c *gin.Context) {

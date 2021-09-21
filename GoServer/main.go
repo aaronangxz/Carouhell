@@ -21,7 +21,7 @@ func main() {
 	models.ConnectDataBase()
 
 	//Available endpoints
-	r.GET("/notifications/:user_id", controllers.GetNotificationsByUserID)
+	r.GET("/get_notifications_by_user_id", controllers.GetNotificationsByUserID)
 	r.POST("/create_mock_notifications", controllers.CreateMockNotifications)
 
 	r.GET("/get_all_listings", controllers.GetAllListings)
@@ -29,6 +29,7 @@ func main() {
 	r.GET("/get_single_listing_by_itemid", controllers.GetListingByItemID)
 	r.PATCH("/update_single_listing", controllers.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", controllers.DeleteListing)
+	r.GET("/get_user_listings", controllers.GetUserListings)
 
 	r.Run()
 }

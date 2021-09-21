@@ -10,12 +10,15 @@ import (
 
 func GetAllListings(c *gin.Context) {
 	var (
-		allListings []models.Listing
+		allListings []models.GetAllListingsResponse
 	)
 
-	models.DB.Find(&allListings)
+	if err := models.DB.Find(&allListings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateBatchListingResult(allListings), "data": allListings})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(allListings), "Data": allListings})
 }
 
 func CreateListing(c *gin.Context) {
@@ -58,8 +61,8 @@ func GetListingByItemID(c *gin.Context) {
 
 func UpdateSingleListing(c *gin.Context) {
 	var (
-		updatedListing models.Listing
-		input          models.UpdateListingRequest
+		originalListing models.Listing
+		input           models.UpdateListingRequest
 	)
 
 	// Validate input
@@ -69,9 +72,20 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	//Check if record exists
-	if err := models.DB.Where("item_id = ?", input.ItemID).First(&updatedListing).Error; err != nil {
+	if err := models.DB.Where("item_id = ?", input.ItemID).First(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
+	}
+
+	//If request fields are empty, we dont want to override empty fields into DB
+	if input.ItemName == "" {
+		input.ItemName = originalListing.ItemName
+	}
+	if input.ItemPrice == 0 {
+		input.ItemPrice = originalListing.ItemPrice
+	}
+	if input.ItemImg == "" {
+		input.ItemImg = originalListing.ItemImg
 	}
 
 	//If all good, proceed to update
@@ -101,4 +115,24 @@ func DeleteListing(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse()})
+}
+
+func GetUserListings(c *gin.Context) {
+	var (
+		userListings models.Listing
+		input        models.GetUserListingsRequest
+	)
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := models.DB.Raw("SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC LIMIT ?", input.UserID, input.Limit).
+		Scan(&userListings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse(), "Data": userListings})
 }
