@@ -29,3 +29,8 @@ type UpdateListingRequest struct {
 	ItemPrice int    `json:"item_price"`
 	ItemImg   string `json:"item_img"`
 }
+
+type GetUserListingsRequest struct {
+	UserID uint `json:"user_id"`
+	Limit  int
+}

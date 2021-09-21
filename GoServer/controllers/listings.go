@@ -102,3 +102,23 @@ func DeleteListing(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse()})
 }
+
+func GetUserListings(c *gin.Context) {
+	var (
+		userListings models.Listing
+		input        models.GetUserListingsRequest
+	)
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := models.DB.Raw("SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC LIMIT ?", input.UserID, input.Limit).
+		Scan(&userListings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse(), "Data": userListings})
+}
