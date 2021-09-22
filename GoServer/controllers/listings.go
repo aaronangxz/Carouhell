@@ -14,7 +14,7 @@ func GetAllListings(c *gin.Context) {
 	)
 
 	if err := models.DB.Find(&allListings).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
@@ -26,14 +26,14 @@ func CreateListing(c *gin.Context) {
 	var input models.CreateListingRequest
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
 	listings := models.Listing{ItemName: input.ItemName, ItemPrice: input.ItemPrice, ItemImg: input.ItemImg}
 
 	if err := models.DB.Create(&listings).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
@@ -47,7 +47,7 @@ func GetListingByItemID(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
@@ -67,7 +67,7 @@ func UpdateSingleListing(c *gin.Context) {
 
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
@@ -90,7 +90,7 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//If all good, proceed to update
 	if err := models.DB.Exec("UPDATE listings SET item_name = ?, item_price = ?, item_img = ?", input.ItemName, input.ItemPrice, input.ItemImg).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
@@ -104,13 +104,18 @@ func DeleteListing(c *gin.Context) {
 		input         models.DeleteSingleListingRequest
 	)
 
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
 	if err := models.DB.Where("item_id = ?", input.ItemID).First(&deleteListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
 	}
 
 	if err := models.DB.Delete(&deleteListing).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
@@ -124,13 +129,18 @@ func GetUserListings(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.Limit > models.MaxListingsResponseSize {
+		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse()})
 		return
 	}
 
 	if err := models.DB.Raw("SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC LIMIT ?", input.UserID, input.Limit).
 		Scan(&userListings).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
