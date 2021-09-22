@@ -19,9 +19,9 @@ func NewSuccessResponse() ResponseMeta {
 	}
 }
 
-func NewParamErrorsResponse() ResponseMeta {
+func NewParamErrorsResponse(message string) ResponseMeta {
 	return ResponseMeta{
-		DebugMsg:  "Parameter not match",
+		DebugMsg:  "Parameter not match: " + message,
 		ErrorCode: CONSTANT_ERROR_PARAMS,
 	}
 }

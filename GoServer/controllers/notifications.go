@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -40,7 +41,7 @@ func CreateMockNotifications(c *gin.Context) {
 
 	//Check req params
 	if len(input.NotificationText) > models.MaxNotificationTextLength {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text must be < " + fmt.Sprint(models.MaxNotificationTextLength) + " chars.")})
 		return
 	}
 

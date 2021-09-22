@@ -134,7 +134,7 @@ func GetUserListings(c *gin.Context) {
 	}
 
 	if input.Limit > models.MaxListingsResponseSize {
-		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse()})
+		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size")})
 		return
 	}
 
