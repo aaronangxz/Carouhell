@@ -1,6 +1,8 @@
-// models/book.go
-
 package models
+
+const (
+	MaxListingsResponseSize = 50
+)
 
 type Listing struct {
 	ItemID    uint   `json:"item_id" gorm:"primary_key"`

@@ -19,7 +19,7 @@ func GetNotificationsByUserID(c *gin.Context) {
 			"notifications WHERE user_id = ?"+
 			"ORDER BY notification_id DESC LIMIT ?", input.UserID, input.Limit).
 		Scan(&userNotifications).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
@@ -34,19 +34,19 @@ func CreateMockNotifications(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
 	//Check req params
 	if len(input.NotificationText) > models.MaxNotificationTextLength {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorParamdResponse()})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse()})
 		return
 	}
 
 	if err := models.DB.Exec("INSERT INTO notifications (user_id, notification_text) VALUES (?,?)", input.UserID, input.NotificationText).
 		Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 

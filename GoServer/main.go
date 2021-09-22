@@ -14,8 +14,9 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "hello world"})
+	//Test endpoint
+	r.GET("/test", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"RespMeta": "Hello World!"})
 	})
 
 	models.ConnectDataBase()
