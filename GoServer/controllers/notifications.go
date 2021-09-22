@@ -38,6 +38,12 @@ func CreateMockNotifications(c *gin.Context) {
 		return
 	}
 
+	//Check req params
+	if len(input.NotificationText) > models.MaxNotificationTextLength {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorParamdResponse()})
+		return
+	}
+
 	if err := models.DB.Exec("INSERT INTO notifications (user_id, notification_text) VALUES (?,?)", input.UserID, input.NotificationText).
 		Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewErrorResponse(err)})

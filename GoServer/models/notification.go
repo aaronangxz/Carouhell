@@ -1,5 +1,9 @@
 package models
 
+const (
+	MaxNotificationTextLength = 256
+)
+
 type Notification struct {
 	NotificationID   uint   `json:"notification_id" gorm:"primary_key"`
 	UserID           uint   `json:"user_id"`

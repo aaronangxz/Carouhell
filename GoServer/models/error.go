@@ -11,6 +11,13 @@ const (
 	CONSTANT_ERROR_DATABASE  = 7 //database error
 )
 
+func NewErrorParamdResponse() ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "Parameter not match",
+		ErrorCode: CONSTANT_ERROR_PARAMS,
+	}
+}
+
 func NewNotFoundResponse() ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "No results",
