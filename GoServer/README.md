@@ -163,3 +163,8 @@ Response
 3. Insert the request body as per exmples above.
 4. Send
 
+<h2>Docker - Note to Self</h2>
+1. Write `Dockerfile`
+2. To build: `docker build --tag tic2601 .`
+3. `docker run tic2601` will run container isolated from network.
+3. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
