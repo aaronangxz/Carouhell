@@ -9,6 +9,12 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/aaronangxz/TIC2601">
 </p>
 
+<h2>Test Branch</h2>
+
+- This branch is not deployed yet, some features are WIP
+- All changes here are to be tested locally only
+- Merge changes to `master` when it is stable
+
 <h2>Getting Started</h2>
 
 <h3>Environment</h3>
