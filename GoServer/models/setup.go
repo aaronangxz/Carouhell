@@ -15,7 +15,7 @@ func ConnectDataBase() {
 	}
 
 	database.AutoMigrate(&Listing{})
-	//database.AutoMigrate(&Notification{})
+	database.AutoMigrate(&Notification{})
 
 	DB = database
 }
