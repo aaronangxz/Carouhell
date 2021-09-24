@@ -11,11 +11,11 @@ type Notification struct {
 }
 
 type GetNotificationsByUserIDRequest struct {
-	UserID uint `json:"user_id"`
-	Limit  int
+	UserID int `json:"user_id" binding:"required"`
+	Limit  int `json:"limit"`
 }
 
-type GetNotificationsByUserIDResposne struct {
+type GetNotificationsByUserIDResponse struct {
 	NotificationID   uint   `json:"notification_id"`
 	NotificationText string `json:"notification_text"`
 }
