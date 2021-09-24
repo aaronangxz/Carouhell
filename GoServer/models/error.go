@@ -21,7 +21,7 @@ func NewSuccessResponse() ResponseMeta {
 
 func NewParamErrorsResponse(message string) ResponseMeta {
 	return ResponseMeta{
-		DebugMsg:  "Parameter not match: " + message,
+		DebugMsg:  "Parameter Error: " + message,
 		ErrorCode: CONSTANT_ERROR_PARAMS,
 	}
 }
@@ -29,6 +29,13 @@ func NewParamErrorsResponse(message string) ResponseMeta {
 func NewJSONErrorResponse(err error) ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "JSON Error: " + err.Error(),
+		ErrorCode: CONSTANT_ERROR_JSON,
+	}
+}
+
+func NewJSONErrorMessageResponse(message string) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "JSON Error: " + message,
 		ErrorCode: CONSTANT_ERROR_JSON,
 	}
 }
