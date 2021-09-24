@@ -10,15 +10,15 @@ import (
 
 func GetAllListings(c *gin.Context) {
 	var (
-		allListings []models.GetAllListingsResponse
+		Listings []models.GetAllListingsResponse
 	)
 
-	if err := models.DB.Find(&allListings).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listings").Scan(&Listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(allListings), "Data": allListings})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(Listings), "Data": Listings})
 }
 
 func CreateListing(c *gin.Context) {

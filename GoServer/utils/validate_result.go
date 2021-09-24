@@ -9,7 +9,7 @@ func ValidateGetAllListingsResult(results []models.GetAllListingsResponse) model
 	return models.NewSuccessResponse()
 }
 
-func ValidateGetNotificationsByUserIDResult(results []models.GetNotificationsByUserIDResposne) models.ResponseMeta {
+func ValidateGetNotificationsByUserIDResult(results []models.GetNotificationsByUserIDResponse) models.ResponseMeta {
 	if len(results) == 0 {
 		return models.NewNotFoundResponse()
 	}

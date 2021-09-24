@@ -11,14 +11,16 @@ import (
 
 func GetNotificationsByUserID(c *gin.Context) {
 	var (
-		userNotifications []models.GetNotificationsByUserIDResposne
+		userNotifications []models.GetNotificationsByUserIDResponse
 		input             models.GetNotificationsByUserIDRequest
 	)
 
-	if err := models.DB.Raw(
-		"SELECT notification_id, notification_text FROM"+
-			"notifications WHERE user_id = ?"+
-			"ORDER BY notification_id DESC LIMIT ?", input.UserID, input.Limit).
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if err := models.DB.Raw("SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC LIMIT ?", input.UserID, input.Limit).
 		Scan(&userNotifications).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
