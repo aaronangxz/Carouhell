@@ -1,5 +1,5 @@
 <h1 align = "center"> TIC 2601 </h1>
-<p align="center">
+<!-- <p align="center">
 <img alt="GitHub go.mod Go version (subdirectory of monorepo)" src="https://img.shields.io/github/go-mod/go-version/aaronangxz/TIC2601?filename=GoServer%2Fgo.mod&style=plastic">
 <img alt="npm" src="https://img.shields.io/npm/v/npm">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/aaronangxz/TIC2601">
@@ -7,7 +7,7 @@
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaronangxz/TIC2601">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaronangxz/TIC2601">
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/aaronangxz/TIC2601">
-</p>
+</p> -->
 
 <h2>Test Branch</h2>
 
