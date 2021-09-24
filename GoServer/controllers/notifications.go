@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -12,6 +13,7 @@ func GetNotificationsByUserID(c *gin.Context) {
 	var (
 		userNotifications []models.GetNotificationsByUserIDResponse
 		input             *models.GetNotificationsByUserIDRequest
+		extraCondition    string
 	)
 
 	//Check required fields
@@ -42,17 +44,17 @@ func GetNotificationsByUserID(c *gin.Context) {
 	//default: when 1 < limit < MaxNotificationResponseSize
 	switch *input.GetLimit() {
 	case 0:
-		if err := models.DB.Raw("SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC", input.GetUserID()).
-			Scan(&userNotifications).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-			return
-		}
+		extraCondition = ""
 	default:
-		if err := models.DB.Raw("SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC LIMIT ?", input.GetUserID(), input.GetLimit()).
-			Scan(&userNotifications).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-			return
-		}
+		extraCondition = " LIMIT " + fmt.Sprint(*input.GetLimit())
+	}
+
+	query := "SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC" + extraCondition
+
+	if err := models.DB.Raw(query, input.GetUserID()).
+		Scan(&userNotifications).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		return
 	}
 
 	//Build response
