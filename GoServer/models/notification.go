@@ -11,10 +11,6 @@ var (
 	DefaultNotificationResponseLimit = &defaultNotificationResponseLimit
 )
 
-func ValidateLimitMax(a *uint, b *uint) bool {
-	return *a > *b
-}
-
 type Notification struct {
 	NotificationID   *uint   `json:"notification_id" gorm:"primary_key"`
 	UserID           *uint   `json:"user_id"`
@@ -44,12 +40,12 @@ type CreateNotificationRequest struct {
 	NotificationText *string `json:"notification_text" binding:"required"`
 }
 
-func (r CreateNotificationRequest) GetUserID() uint {
-	return *r.UserID
+func (r CreateNotificationRequest) GetUserID() *uint {
+	return r.UserID
 }
 
-func (r CreateNotificationRequest) GetNotificationText() string {
-	return *r.NotificationText
+func (r CreateNotificationRequest) GetNotificationText() *string {
+	return r.NotificationText
 }
 
 type ResponseMeta struct {
