@@ -9,6 +9,28 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/aaronangxz/TIC2601">
 </p> -->
 
+<h2>Test Branch</h2>
+
+- This branch is not deployed yet, some features are WIP
+- All changes here are to be tested locally only
+- Merge changes to `master` when it is stable
+
+<h2>Getting Started</h2>
+
+<h3>Environment</h3>
+
+1. Install [Node.js](https://nodejs.org/en/) and npm for front end
+
+2. Install [Go](https://golang.org/doc/install) for back end
+
+3. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for version control
+
+4. Set up [SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) or [PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for authentication
+
+4. Clone this repository to your local machine<br>
+
+- SSH: `git clone git@github.com:aaronangxz/TIC2601.git`
+
 <h2>Master Branch (Live)</h2>
 
 - This branch is deployed on https://tic2601-t11.herokuapp.com/test, all features are somewhat stable

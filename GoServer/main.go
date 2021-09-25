@@ -12,14 +12,32 @@ import (
 
 func main() {
 	r := gin.Default()
+	models.ConnectDataBase()
+
+	//Allow all CORS
 	r.Use(cors.Default())
+
+	//Load HTML files for / endpoint
+	r.LoadHTMLGlob("./elate/*.html")
+	r.Static("/css", "./elate/css")
+	r.Static("/fonts", "./elate/fonts")
+	r.Static("/images", "./elate/images")
+	r.Static("/js", "./elate/js")
+	r.Static("/sass", "./elate/sass")
+	r.Static("/syntax", "./elate/syntax")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Main website"})
+	})
+
+	//Version endpoint
+	r.GET("/version", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"Version": "1.1", "DockerImageID": "9396ef44918a", "LastUpdate": "25/09/2021 02:34"})
+	})
 
 	//Test endpoint
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"RespMeta": "Hello World!"})
 	})
-
-	models.ConnectDataBase()
 
 	//Available endpoints
 	r.GET("/get_notifications_by_user_id", controllers.GetNotificationsByUserID)
