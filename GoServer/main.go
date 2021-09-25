@@ -31,7 +31,7 @@ func main() {
 
 	//Version endpoint
 	r.GET("/version", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"Version": "1.1", "DockerImageID": "9396ef44918a", "LastUpdate": "25/09/2021 02:34"})
+		c.JSON(http.StatusOK, gin.H{"Version": "1.2", "DockerImageID": "614d41e318e1", "LastUpdate": "25/09/2021 02:43"})
 	})
 
 	//Test endpoint
