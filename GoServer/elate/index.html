@@ -5,6 +5,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 	<head>
+	<link href="syntax/prism.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -190,6 +191,8 @@
 
 	</head>
 	<body>
+	<script src="syntax/prism.js"></script>
+
 	<header role="banner" id="fh5co-header">
 			<div class="container">
 				<!-- <div class="row"> -->
@@ -281,19 +284,50 @@
 				<div class="col-md-12 col-sm-6 col-xxs-12">
 					<div class="fh5co-project-item to-animate">
 						<div class="fh5co-text">
-						<h2>GetNotificationsByUserID</h2>
-						<span>To retrieve all notifications belong to a single user.</span>
-						<br>
-						<pre class="prettyprint">
-							<code class="language-js">
-{
-	"user_id":,
-	"limit":
-}
-							</code>
-						</pre>
+							<h2>GetNotificationsByUserID</h2>
+							<span>To retrieve all notifications belong to a single user.</span>
+							<br><br>
+							<h4>Request</h4>
+							<table class = "table">
+								<tr>
+								  <th>Parameter</th>
+								  <th>Type</th>
+								  <th>Required</th>
+								</tr>
+								<tr>
+									<td>user_id</td>
+									<td>uint</td>
+									<td>Yes</td>
+								</tr>
+								<tr>
+									<td>limit</td>
+									<td>uint</td>
+									<td>No</td>
+								  </tr>
+							  </table>
+							  <h4>Response</h4>
 						</div>
+						<div class="col-md-8 col-sm-6 col-xxs-12">
+							<pre><code class="language-json">
+								{
+									"Data": [
+										{
+											"notification_id": 4,
+											"notification_text": "test notification text"
+										},
+										{
+											"notification_id": 3,
+											"notification_text": "test notification text"
+										}
+									],
+									"Respmeta": {
+										"DebugMsg": "",
+										"ErrorCode": 0
+									}
+								}
+							</code></pre>
 						</div>
+					</div>
 				</div>
 				<div class="col-md-4 col-sm-6 col-xxs-12">
 					<a href="images/work_2.jpg" class="fh5co-project-item image-popup to-animate">

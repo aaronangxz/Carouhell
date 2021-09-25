@@ -1408,4 +1408,19 @@ h1, h2, h3, h4, h5, h6 {
   animation-fill-mode: both;
 }
 
+.table{
+  color: #000;
+  border: "1";
+  font-size: 0.8em;
+  table-layout: auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+table td{
+  white-space: nowrap;  /** added **/
+}
+table td:last-child{
+  width:100%;
+  white-space: initial;
+}
 /*# sourceMappingURL=style.css.map */

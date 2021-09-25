@@ -30,6 +30,7 @@ func main() {
 	r.Static("/images", "./elate/images")
 	r.Static("/js", "./elate/js")
 	r.Static("/sass", "./elate/sass")
+	r.Static("/syntax", "./elate/syntax")
 
 	//Home endpoint
 	r.GET("/", func(c *gin.Context) {
