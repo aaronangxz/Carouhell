@@ -31,37 +31,24 @@
 
 - SSH: `git clone git@github.com:aaronangxz/TIC2601.git`
 
-- HTTPS: `git clone https://github.com/aaronangxz/TIC2601.git`
+<h2>Master Branch (Live)</h2>
 
-<h3>JS Front End</h3>
+- This branch is deployed on https://tic2601-t11.herokuapp.com/test, all features are somewhat stable
+- Do not merge WIP features here
 
-1. The front end directory is `/Client/tic2601_fe/`
+<h2>Docker Container Update History</h2>
 
-2. run `npm install` to install all dependencies.
+| Version     | ImageID        | Date |
+| ----------- | -------------- | ---- |
+| 1.0         | 14173bd8f6a2   | 24/09/2021     |
+| 1.1         | 9396ef44918a   | 25/09/2021     |
 
-3. To run project locally, run `npm start`.
+<h2>Architecture</h2>
 
-<h3>Golang Back End</h3>
+<p align="center">
+<img src="tic2601-architecture.png" width="1000">
+</p>
 
-1. The back end directory is `/GoServer/`
+<h2>Getting Started</h2>
 
-2. run `go mod download` and `go mod vendor` to install all dependencies.
-
-3. To run project locally, run `go run main.go`.
-
-<h2>Code Contributions</h2>
-
-1. Always `git pull` first to retrieve latest changes of master branch.
-
-2. Create a new git branch with your name and description: "XuanZe/Do_something"<br>
-`git branch XuanZe/Do_something`<br>
-`git checkout XuanZe/Do_something`
-
-3. Start writing your code. `git rebase master` to fetch changes from master branch into your branch.
-
-4. Once done, <br>
-`git add .`<br>
-`git commit -m "<commit message>"`<br>
-`git push -u origin XuanZe/Do_something`
-
-5. Create Pull Request, we can merge to master after reviewing.
+Refer to https://github.com/aaronangxz/TIC2601/tree/test
