@@ -31,12 +31,13 @@
 
 1. Write `Dockerfile`
 2. To build: `docker build --tag tic2601 .`
-3. `docker run tic2601` will run container isolated from network.
-3. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
-3. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
-4. Deploy to Heroku : https://devcenter.heroku.com/articles/container-registry-and-runtime
-5. Push image `docker tag <image> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
-6. Release image `heroku container:release web -a tic2601-t11`
+3. Tag docker image `docker tag <imageid> tic2601:<version>`
+4. `docker run tic2601` will run container isolated from network.
+5. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
+6. Deploy to Heroku : https://devcenter.heroku.com/articles/container-registry-and-runtime
+7. Login via `heroku container:login`
+9. Push image `docker tag <image> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
+10. Release image `heroku container:release web -a tic2601-t11`
 
 <h2>Getting Started</h2>
 
