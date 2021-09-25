@@ -13,6 +13,28 @@ import (
 func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
+	// r.LoadHTMLGlob("./home/*.html")
+	// r.Static("/assets", "./home/assets")
+	// r.Static("/images", "./home/images")
+	// r.LoadHTMLGlob("./solution/*.html")
+	// r.Static("/css", "./solution/css")
+	// r.Static("/fonts", "./solution/fonts")
+	// r.Static("/images", "./solution/images")
+	// r.Static("/js", "./solution/js")
+	// r.Static("/own-carousel", "./solution/own-carousel")
+	// r.Static("/assets", "./solution/own-carousel/assets")
+
+	r.LoadHTMLGlob("./elate/*.html")
+	r.Static("/css", "./elate/css")
+	r.Static("/fonts", "./elate/fonts")
+	r.Static("/images", "./elate/images")
+	r.Static("/js", "./elate/js")
+	r.Static("/sass", "./elate/sass")
+
+	//Home endpoint
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Main website"})
+	})
 
 	//Test endpoint
 	r.GET("/test", func(c *gin.Context) {
