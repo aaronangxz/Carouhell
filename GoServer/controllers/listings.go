@@ -10,15 +10,15 @@ import (
 
 func GetAllListings(c *gin.Context) {
 	var (
-		Listings []models.GetAllListingsResponse
+		listings []models.GetAllListingsResponse
 	)
 
-	if err := models.DB.Raw("SELECT * FROM listings").Scan(&Listings).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listings").Scan(&listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(Listings), "Data": Listings})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(listings), "Data": listings})
 }
 
 func CreateListing(c *gin.Context) {
@@ -52,11 +52,11 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	if err := models.DB.Where("item_id = ?", input.ItemID).First(&singleListing).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": singleListing})
+	c.JSON(http.StatusOK, gin.H{"Data": singleListing})
 }
 
 func UpdateSingleListing(c *gin.Context) {
@@ -78,13 +78,13 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	//If request fields are empty, we dont want to override empty fields into DB
-	if input.ItemName == "" {
+	if input.ItemName == nil {
 		input.ItemName = originalListing.ItemName
 	}
-	if input.ItemPrice == 0 {
+	if input.ItemPrice == nil {
 		input.ItemPrice = originalListing.ItemPrice
 	}
-	if input.ItemImg == "" {
+	if input.ItemImg == nil {
 		input.ItemImg = originalListing.ItemImg
 	}
 
@@ -133,7 +133,7 @@ func GetUserListings(c *gin.Context) {
 		return
 	}
 
-	if input.Limit > models.MaxListingsResponseSize {
+	if utils.ValidateLimitMax(input.Limit, models.MaxListingsResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size")})
 		return
 	}

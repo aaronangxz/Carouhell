@@ -34,7 +34,7 @@ func GetNotificationsByUserID(c *gin.Context) {
 	}
 
 	//Limit cannot > MaxNotificationResponseSize
-	if models.ValidateLimitMax(input.GetLimit(), models.MaxNotificationResponseSize) {
+	if utils.ValidateLimitMax(input.GetLimit(), models.MaxNotificationResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit cannot exceed 50")})
 		return
 	}
