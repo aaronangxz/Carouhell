@@ -31,23 +31,47 @@ func CreateListing(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty.")})
 			return
 		}
-
+		if !utils.ValidateString(input.ItemName) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name must be string type.")})
+			return
+		}
 		if input.ItemPrice == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price cannot be empty.")})
 			return
 		}
-
+		if !utils.ValidateUint(input.ItemPrice) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be uint type.")})
+			return
+		}
 		if input.ItemImg == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
 			return
 		}
-
+		if !utils.ValidateString(input.ItemImg) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img must be string type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetItemName() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty.")})
 		return
 	}
 
 	if len(input.GetItemName()) > int(models.MaxStringLength) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		return
+	}
+
+	if input.GetItemPrice() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be > 0.")})
+		return
+	}
+
+	if input.GetItemImg() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
 		return
 	}
 
@@ -76,7 +100,16 @@ func GetListingByItemID(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
 			return
 		}
+		if !utils.ValidateUint(input.ItemID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be uint type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetItemID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
 		return
 	}
 
@@ -100,8 +133,44 @@ func UpdateSingleListing(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
 			return
 		}
-
+		if !utils.ValidateUint(input.ItemID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be uint type.")})
+			return
+		}
+		//other 3 fields only check when it is not nil because we allow it to be empty
+		if input.ItemName != nil && !utils.ValidateString(input.ItemName) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name must be string type.")})
+			return
+		}
+		if input.ItemPrice != nil && !utils.ValidateUint(input.ItemPrice) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be uint type.")})
+			return
+		}
+		if input.ItemImg != nil && !utils.ValidateString(input.ItemImg) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img must be string type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetItemID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
+		return
+	}
+
+	if input.ItemName != nil && input.GetItemName() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty. Set to null if no changes needed.")})
+		return
+	}
+
+	if input.ItemPrice != nil && input.GetItemPrice() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be > 0. Set to null if no changes needed.")})
+		return
+	}
+
+	if input.ItemImg != nil && input.GetItemImg() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty. Set to null if no changes needed.")})
 		return
 	}
 
@@ -147,6 +216,11 @@ func DeleteListing(c *gin.Context) {
 		return
 	}
 
+	if input.GetItemID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
+		return
+	}
+
 	if err := models.DB.Where("item_id = ?", input.ItemID).First(&deleteListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
@@ -173,6 +247,11 @@ func GetUserListings(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetUserID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
 		return
 	}
 

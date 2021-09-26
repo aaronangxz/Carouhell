@@ -23,7 +23,16 @@ func GetNotificationsByUserID(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
 			return
 		}
+		if !utils.ValidateUint(input.UserID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetUserID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
 		return
 	}
 
@@ -35,7 +44,7 @@ func GetNotificationsByUserID(c *gin.Context) {
 
 	//Limit cannot > MaxNotificationResponseSize
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxNotificationResponseSize) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit cannot exceed 50")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit cannot exceed 50.")})
 		return
 	}
 
@@ -68,7 +77,33 @@ func CreateMockNotifications(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			return
+		}
+		if !utils.ValidateUint(input.UserID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			return
+		}
+		if input.NotificationText == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text cannot be empty.")})
+			return
+		}
+		if !utils.ValidateString(input.NotificationText) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text must be string type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if input.GetUserID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
+		return
+	}
+
+	if input.GetNotificationText() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text cannot be empty.")})
 		return
 	}
 
