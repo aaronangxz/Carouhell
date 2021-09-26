@@ -162,7 +162,7 @@ func DeleteListing(c *gin.Context) {
 
 func GetUserListings(c *gin.Context) {
 	var (
-		userListings   models.Listing
+		userListings   []models.Listing
 		input          models.GetUserListingsRequest
 		extraCondition string
 	)
@@ -198,6 +198,10 @@ func GetUserListings(c *gin.Context) {
 		Scan(&userListings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
+	}
+
+	if len(userListings) == 0 {
+		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewNotFoundResponse(), "Data": userListings})
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse(), "Data": userListings})
