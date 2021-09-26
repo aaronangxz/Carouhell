@@ -11,7 +11,7 @@
 
 <h2>Master Branch (Live)</h2>
 
-- This branch is deployed on https://tic2601-t11.herokuapp.com/test, all features are somewhat stable
+- This branch is deployed on https://tic2601-t11.herokuapp.com, all features are somewhat stable
 - Do not merge WIP features here
 
 <h2>Docker Container Update History</h2>
@@ -40,6 +40,6 @@
 9. Push image `docker tag <image> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
 10. Release image `heroku container:release web -a tic2601-t11`
 
-<h2>Getting Started</h2>
+<h2>Test Branch</h2>
 
 Refer to https://github.com/aaronangxz/TIC2601/tree/test
