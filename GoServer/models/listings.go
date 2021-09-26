@@ -1,9 +1,13 @@
 package models
 
 var (
-	maxListingsResponseSize = uint(50)
-	MaxListingsResponseSize = &maxListingsResponseSize
+	MaxStringLength         = uint(256)
+	MaxListingsResponseSize = uint(50)
 )
+
+func SetMaxListingsResponseSize() *uint {
+	return &MaxListingsResponseSize
+}
 
 type Listing struct {
 	ItemID    *uint   `json:"item_id" gorm:"primary_key"`
@@ -25,32 +29,32 @@ type CreateListingRequest struct {
 	ItemImg   *string `json:"item_img" binding:"required"`
 }
 
-func (r CreateListingRequest) GetItemName() *string {
-	return r.ItemName
+func (r CreateListingRequest) GetItemName() string {
+	return *r.ItemName
 }
 
-func (r CreateListingRequest) GetItemPrice() *uint {
-	return r.ItemPrice
+func (r CreateListingRequest) GetItemPrice() uint {
+	return *r.ItemPrice
 }
 
-func (r CreateListingRequest) GetItemImg() *string {
-	return r.ItemImg
+func (r CreateListingRequest) GetItemImg() string {
+	return *r.ItemImg
 }
 
 type GetSingleListingRequest struct {
 	ItemID *uint `json:"item_id" binding:"required"`
 }
 
-func (r GetSingleListingRequest) GetItemID() *uint {
-	return r.ItemID
+func (r GetSingleListingRequest) GetItemID() uint {
+	return *r.ItemID
 }
 
 type DeleteSingleListingRequest struct {
 	ItemID *uint `json:"item_id" binding:"required"`
 }
 
-func (r DeleteSingleListingRequest) GetItemID() *uint {
-	return r.ItemID
+func (r DeleteSingleListingRequest) GetItemID() uint {
+	return *r.ItemID
 }
 
 type UpdateListingRequest struct {
@@ -60,20 +64,20 @@ type UpdateListingRequest struct {
 	ItemImg   *string `json:"item_img" binding:"required"`
 }
 
-func (r UpdateListingRequest) GetItemID() *uint {
-	return r.ItemID
+func (r UpdateListingRequest) GetItemID() uint {
+	return *r.ItemID
 }
 
-func (r UpdateListingRequest) GetItemName() *string {
-	return r.ItemName
+func (r UpdateListingRequest) GetItemName() string {
+	return *r.ItemName
 }
 
-func (r UpdateListingRequest) GetItemPrice() *uint {
-	return r.ItemPrice
+func (r UpdateListingRequest) GetItemPrice() uint {
+	return *r.ItemPrice
 }
 
-func (r UpdateListingRequest) GetItemImg() *string {
-	return r.ItemImg
+func (r UpdateListingRequest) GetItemImg() string {
+	return *r.ItemImg
 }
 
 type GetUserListingsRequest struct {
@@ -81,12 +85,12 @@ type GetUserListingsRequest struct {
 	Limit  *uint `json:"limit"`
 }
 
-func (r GetUserListingsRequest) GetUserID() *uint {
-	return r.UserID
+func (r GetUserListingsRequest) GetUserID() uint {
+	return *r.UserID
 }
 
-func (r GetUserListingsRequest) GetLimit() *uint {
-	return r.Limit
+func (r GetUserListingsRequest) GetLimit() uint {
+	return *r.Limit
 }
 
 type GetPopularListingsRequest struct {

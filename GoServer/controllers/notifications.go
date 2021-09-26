@@ -19,34 +19,43 @@ func GetNotificationsByUserID(c *gin.Context) {
 	//Check required fields
 	if err := c.ShouldBindJSON(&input); err != nil {
 		//user_id cannot be nil
-		if input.GetUserID() == nil {
+		if input.UserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			return
+		}
+		if !utils.ValidateUint(input.UserID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
+	if input.GetUserID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
+		return
+	}
+
 	//Check optional fields
 	//Treat nil as 0, so we can execute switch case below
-	if input.GetLimit() == nil {
-		input.Limit = models.DefaultNotificationResponseLimit
+	if input.Limit == nil {
+		input.Limit = models.SetDefaultNotificationResponseLimit()
 	}
 
 	//Limit cannot > MaxNotificationResponseSize
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxNotificationResponseSize) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit cannot exceed 50")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit cannot exceed 50.")})
 		return
 	}
 
 	//Query based on request params
 	//0: when limit is nil or 0 (don't limit)
 	//default: when 1 < limit < MaxNotificationResponseSize
-	switch *input.GetLimit() {
+	switch input.GetLimit() {
 	case 0:
 		extraCondition = ""
 	default:
-		extraCondition = " LIMIT " + fmt.Sprint(*input.GetLimit())
+		extraCondition = " LIMIT " + fmt.Sprint(input.GetLimit())
 	}
 
 	query := "SELECT notification_id, notification_text FROM notifications WHERE user_id = ? ORDER BY notification_id DESC" + extraCondition
@@ -68,15 +77,41 @@ func CreateMockNotifications(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			return
+		}
+		if !utils.ValidateUint(input.UserID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			return
+		}
+		if input.NotificationText == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text cannot be empty.")})
+			return
+		}
+		if !utils.ValidateString(input.NotificationText) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text must be string type.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
+	if input.GetUserID() <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
+		return
+	}
+
+	if input.GetNotificationText() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text cannot be empty.")})
+		return
+	}
+
 	//Check req params
-	// if len(input.GetNotificationText()) > models.MaxNotificationTextLength {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text must be < " + fmt.Sprint(models.MaxNotificationTextLength) + " chars.")})
-	// 	return
-	// }
+	if len(input.GetNotificationText()) > int(models.MaxNotificationTextLength) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("notification_text must be < " + fmt.Sprint(models.MaxNotificationTextLength) + " chars.")})
+		return
+	}
 
 	if err := models.DB.Exec("INSERT INTO notifications (user_id, notification_text) VALUES (?,?)", input.UserID, input.NotificationText).
 		Error; err != nil {
