@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -26,11 +27,35 @@ func CreateListing(c *gin.Context) {
 	var input models.CreateListingRequest
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.ItemName == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty.")})
+			return
+		}
+
+		if input.ItemPrice == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price cannot be empty.")})
+			return
+		}
+
+		if input.ItemImg == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
+			return
+		}
+
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
-	listings := models.Listing{ItemName: input.ItemName, ItemPrice: input.ItemPrice, ItemImg: input.ItemImg}
+	if len(input.GetItemName()) > int(models.MaxStringLength) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		return
+	}
+
+	listings := models.Listing{
+		ItemName:  input.ItemName,
+		ItemPrice: input.ItemPrice,
+		ItemImg:   input.ItemImg,
+	}
 
 	if err := models.DB.Create(&listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
@@ -47,6 +72,10 @@ func GetListingByItemID(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.ItemID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
@@ -67,6 +96,11 @@ func UpdateSingleListing(c *gin.Context) {
 
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.ItemID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
+			return
+		}
+
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
@@ -105,6 +139,10 @@ func DeleteListing(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.ItemID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
@@ -124,21 +162,39 @@ func DeleteListing(c *gin.Context) {
 
 func GetUserListings(c *gin.Context) {
 	var (
-		userListings models.Listing
-		input        models.GetUserListingsRequest
+		userListings   models.Listing
+		input          models.GetUserListingsRequest
+		extraCondition string
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
 
-	if utils.ValidateLimitMax(input.Limit, models.MaxListingsResponseSize) {
+	if input.Limit == nil {
+		input.Limit = models.SetDefaultNotificationResponseLimit()
+	}
+
+	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size")})
 		return
 	}
 
-	if err := models.DB.Raw("SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC LIMIT ?", input.UserID, input.Limit).
+	switch input.GetLimit() {
+	case 0:
+		extraCondition = ""
+	default:
+		extraCondition = " LIMIT " + fmt.Sprint(input.GetLimit())
+	}
+
+	query := "SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC" + extraCondition
+
+	if err := models.DB.Raw(query, input.GetUserID()).
 		Scan(&userListings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
