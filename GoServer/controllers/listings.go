@@ -65,7 +65,7 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
-	if input.GetItemPrice() <= 0 {
+	if input.GetItemPrice() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be > 0.")})
 		return
 	}
@@ -108,7 +108,7 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	if input.GetItemID() <= 0 {
+	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
 		return
 	}
@@ -154,7 +154,7 @@ func UpdateSingleListing(c *gin.Context) {
 		return
 	}
 
-	if input.GetItemID() <= 0 {
+	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
 		return
 	}
@@ -164,7 +164,7 @@ func UpdateSingleListing(c *gin.Context) {
 		return
 	}
 
-	if input.ItemPrice != nil && input.GetItemPrice() <= 0 {
+	if input.ItemPrice != nil && input.GetItemPrice() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be > 0. Set to null if no changes needed.")})
 		return
 	}
@@ -250,7 +250,7 @@ func GetUserListings(c *gin.Context) {
 		return
 	}
 
-	if input.GetUserID() <= 0 {
+	if input.GetUserID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
 		return
 	}
@@ -260,7 +260,7 @@ func GetUserListings(c *gin.Context) {
 	}
 
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
-		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size")})
+		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size.")})
 		return
 	}
 

@@ -31,7 +31,7 @@ func GetNotificationsByUserID(c *gin.Context) {
 		return
 	}
 
-	if input.GetUserID() <= 0 {
+	if input.GetUserID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
 		return
 	}
@@ -97,7 +97,7 @@ func CreateMockNotifications(c *gin.Context) {
 		return
 	}
 
-	if input.GetUserID() <= 0 {
+	if input.GetUserID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})
 		return
 	}
