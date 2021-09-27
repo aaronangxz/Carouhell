@@ -21,6 +21,7 @@
 | 1.0         | 14173bd8f6a2   | 24/09/2021     |
 | 1.1         | 9396ef44918a   | 25/09/2021     |
 | 1.2         | 614d41e318e1   | 26/09/2021     |
+| 1.3         | 3c664a7938cf   | 27/09/2021     |
 
 <h2>Architecture</h2>
 
@@ -37,7 +38,7 @@
 5. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
 6. Deploy to Heroku : https://devcenter.heroku.com/articles/container-registry-and-runtime
 7. Login via `heroku container:login`
-9. Push image `docker tag <image> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
+9. Push image `docker tag <imageid> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
 10. Release image `heroku container:release web -a tic2601-t11`
 
 <h2>Test Branch</h2>
