@@ -1,16 +1,36 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/controllers"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/gin-contrib/cors"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	fmt.Println("Start")
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.WithAPIVersionNegotiation())
+	if err != nil {
+		panic(err)
+	}
+
+	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	for _, container := range containers {
+		fmt.Println(container.ID)
+	}
+
 	r := gin.Default()
 	models.ConnectDataBase()
 
