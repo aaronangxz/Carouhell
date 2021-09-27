@@ -6,11 +6,11 @@ import (
 )
 
 //Validate if a is > b
-func ValidateLimitMax(a uint, b uint) bool {
+func ValidateLimitMax(a uint32, b uint32) bool {
 	return a > b
 }
 
-func ValidateUint(a *uint) bool {
+func ValidateUint(a *uint32) bool {
 	return fmt.Sprint(reflect.TypeOf(a)) == "uint"
 }
 
