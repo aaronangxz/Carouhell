@@ -1,39 +1,39 @@
 package models
 
 var (
-	MaxNotificationTextLength        = uint(256)
-	MaxNotificationResponseSize      = uint(50)
-	DefaultNotificationResponseLimit = uint(0)
+	MaxNotificationTextLength        = uint32(256)
+	MaxNotificationResponseSize      = uint32(50)
+	DefaultNotificationResponseLimit = uint32(0)
 )
 
-func SetMaxNotificationTextLength() *uint {
+func SetMaxNotificationTextLength() *uint32 {
 	return &MaxNotificationTextLength
 }
 
-func SetDefaultNotificationResponseLimit() *uint {
+func SetDefaultNotificationResponseLimit() *uint32 {
 	return &DefaultNotificationResponseLimit
 }
 
-func SetMaxNotificationResponseSize() *uint {
+func SetMaxNotificationResponseSize() *uint32 {
 	return &MaxNotificationResponseSize
 }
 
 type Notification struct {
-	NotificationID   *uint   `json:"notification_id" gorm:"primary_key"`
-	UserID           *uint   `json:"user_id"`
+	NotificationID   *uint32 `json:"notification_id" gorm:"primary_key"`
+	UserID           *uint32 `json:"user_id"`
 	NotificationText *string `json:"notification_text"`
 }
 
 type GetNotificationsByUserIDRequest struct {
-	UserID *uint `json:"user_id" binding:"required"`
-	Limit  *uint `json:"limit"`
+	UserID *uint32 `json:"user_id" binding:"required"`
+	Limit  *uint32 `json:"limit"`
 }
 
-func (r GetNotificationsByUserIDRequest) GetUserID() uint {
+func (r GetNotificationsByUserIDRequest) GetUserID() uint32 {
 	return *r.UserID
 }
 
-func (r GetNotificationsByUserIDRequest) GetLimit() uint {
+func (r GetNotificationsByUserIDRequest) GetLimit() uint32 {
 	return *r.Limit
 }
 
@@ -43,11 +43,11 @@ type GetNotificationsByUserIDResponse struct {
 }
 
 type CreateNotificationRequest struct {
-	UserID           *uint   `json:"user_id" binding:"required"`
+	UserID           *uint32 `json:"user_id" binding:"required"`
 	NotificationText *string `json:"notification_text" binding:"required"`
 }
 
-func (r CreateNotificationRequest) GetUserID() uint {
+func (r CreateNotificationRequest) GetUserID() uint32 {
 	return *r.UserID
 }
 
@@ -57,5 +57,5 @@ func (r CreateNotificationRequest) GetNotificationText() string {
 
 type ResponseMeta struct {
 	DebugMsg  string
-	ErrorCode int
+	ErrorCode int32
 }
