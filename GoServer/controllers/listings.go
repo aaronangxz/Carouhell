@@ -285,3 +285,34 @@ func GetUserListings(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse(), "Data": userListings})
 }
+
+func GetLatestListings(c *gin.Context) {
+	var (
+		input    models.GetLatestListingsRequest
+		listings []models.GetAllListingsResponse
+	)
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.ItemCategory != nil && !utils.ValidateString(input.ItemCategory) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be string type.")})
+			return
+		}
+		if input.ItemStatus != nil && !utils.ValidateUint(input.ItemStatus) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_status must be uint type.")})
+			return
+		}
+		if input.Limit != nil && !utils.ValidateUint(input.Limit) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit must be uint type.")})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	if err := models.DB.Raw("SELECT * FROM listings").Scan(&listings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetAllListingsResult(listings), "Data": listings})
+}

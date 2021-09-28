@@ -95,13 +95,20 @@ func (r GetUserListingsRequest) GetLimit() uint {
 
 type GetPopularListingsRequest struct {
 	ItemCategory *string
-	ItemStatus   *uint
-	Limit        *uint
+	ItemStatus   *uint32
+	Limit        *uint32
 }
 
 type GetLatestListingsRequest struct {
-	ListingTime  *uint
 	ItemCategory *string
-	ItemStatus   *uint
-	Limit        *uint
+	ItemStatus   *uint32
+	Limit        *uint32
+}
+
+func (r GetLatestListingsRequest) GetItemCategory() string {
+	return *r.ItemCategory
+}
+
+func (r GetLatestListingsRequest) GetItemStatus() uint32 {
+	return *r.ItemStatus
 }
