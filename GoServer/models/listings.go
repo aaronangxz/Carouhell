@@ -112,3 +112,7 @@ func (r GetLatestListingsRequest) GetItemCategory() string {
 func (r GetLatestListingsRequest) GetItemStatus() uint32 {
 	return *r.ItemStatus
 }
+
+func (r GetLatestListingsRequest) GetLimit() uint32 {
+	return *r.Limit
+}

@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -238,7 +240,7 @@ func GetUserListings(c *gin.Context) {
 	var (
 		userListings   []models.Listing
 		input          models.GetUserListingsRequest
-		extraCondition string
+		extraCondition = ""
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -288,8 +290,11 @@ func GetUserListings(c *gin.Context) {
 
 func GetLatestListings(c *gin.Context) {
 	var (
-		input    models.GetLatestListingsRequest
-		listings []models.GetAllListingsResponse
+		input             models.GetLatestListingsRequest
+		listings          []models.GetAllListingsResponse
+		categoryCondition = ""
+		statusCondition   = ""
+		limitCondition    = ""
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -309,7 +314,63 @@ func GetLatestListings(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Raw("SELECT * FROM listings").Scan(&listings).Error; err != nil {
+	//process item_category params
+	// if nil or empty, we ignore
+	if input.ItemCategory != nil && input.GetItemCategory() == "" {
+		if len(input.GetItemCategory()) > int(models.MaxStringLength) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+			return
+		}
+		//else concat into query
+		categoryCondition += " WHERE item_category = " + input.GetItemCategory()
+	}
+
+	//process item_status
+	if input.ItemStatus != nil {
+		switch input.GetItemStatus() {
+		case constant.LISTING_STATUS_ALL:
+			break
+		case constant.LISTING_STATUS_NORMAL:
+			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_NORMAL)
+		case constant.LISTING_STATUS_SOLDOUT:
+			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_SOLDOUT)
+		case constant.LISTING_STATUS_DELETED:
+			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_DELETED)
+		default:
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown listing status.")})
+			return
+		}
+	}
+
+	if categoryCondition != "" && statusCondition != "" {
+		categoryCondition += " AND"
+	}
+
+	//process limit
+	//if nil, set to default value
+	if input.Limit == nil {
+		input.Limit = models.SetDefaultNotificationResponseLimit()
+	}
+
+	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
+		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size.")})
+		return
+	}
+
+	switch input.GetLimit() {
+	case 0:
+		limitCondition += ""
+	default:
+		limitCondition += " LIMIT " + fmt.Sprint(input.GetLimit())
+	}
+
+	if statusCondition != "" && limitCondition != "" {
+		statusCondition += " AND"
+	}
+
+	query := "SELECT * FROM listings" + categoryCondition + statusCondition + limitCondition
+
+	if err := models.DB.Raw(query).Scan(&listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
