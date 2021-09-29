@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -344,6 +345,8 @@ func GetLatestListings(c *gin.Context) {
 
 	if categoryCondition != "" && statusCondition != "" {
 		categoryCondition += " AND"
+	} else if categoryCondition == "" {
+		categoryCondition += " WHERE"
 	}
 
 	//process limit
@@ -364,12 +367,18 @@ func GetLatestListings(c *gin.Context) {
 		limitCondition += " LIMIT " + fmt.Sprint(input.GetLimit())
 	}
 
-	if statusCondition != "" && limitCondition != "" {
-		statusCondition += " AND"
+	if input.ItemCategory == nil && input.ItemStatus == nil {
+		categoryCondition = ""
+		statusCondition = ""
 	}
 
-	query := "SELECT * FROM listings" + categoryCondition + statusCondition + limitCondition + " ORDER BY item_creation_time DESC"
+	orderCondition := " ORDER BY item_creation_time DESC"
 
+	query := "SELECT * FROM listings" + categoryCondition + statusCondition + orderCondition + limitCondition
+
+	log.Println(query)
+
+	fmt.Print(query)
 	if err := models.DB.Raw(query).Scan(&listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
