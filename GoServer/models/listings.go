@@ -1,39 +1,44 @@
 package models
 
 var (
-	MaxStringLength         = uint(256)
-	MaxListingsResponseSize = uint(50)
+	MaxStringLength         = uint32(256)
+	MaxListingsResponseSize = uint32(50)
 )
 
-func SetMaxListingsResponseSize() *uint {
+func SetMaxListingsResponseSize() *uint32 {
 	return &MaxListingsResponseSize
 }
 
 type Listing struct {
-	ItemID    *uint   `json:"item_id" gorm:"primary_key"`
-	ItemName  *string `json:"item_name"`
-	ItemPrice *uint   `json:"item_price"`
-	ItemImg   *string `json:"item_img"`
+	ItemID           *uint32 `json:"item_id" gorm:"primary_key"`
+	ItemName         *string `json:"item_name"`
+	ItemPrice        *uint32 `json:"item_price"`
+	ItemImg          *string `json:"item_img"`
+	ItemCategory     *uint32 `json:"item_category"`
+	ItemStatus       *uint32 `json:"item_status"`
+	ItemCreationTime int64   `json:"item_creation_time"`
 }
 
 type GetAllListingsResponse struct {
-	ItemID    uint   `json:"item_id"`
+	ItemID    uint32 `json:"item_id"`
 	ItemName  string `json:"item_name"`
-	ItemPrice uint   `json:"item_price"`
+	ItemPrice uint32 `json:"item_price"`
 	ItemImg   string `json:"item_img"`
 }
 
 type CreateListingRequest struct {
-	ItemName  *string `json:"item_name" binding:"required"`
-	ItemPrice *uint   `json:"item_price" binding:"required"`
-	ItemImg   *string `json:"item_img" binding:"required"`
+	ItemName     *string `json:"item_name" binding:"required"`
+	ItemPrice    *uint32 `json:"item_price" binding:"required"`
+	ItemImg      *string `json:"item_img" binding:"required"`
+	ItemCategory *uint32 `json:"item_category" binding:"required"`
+	ItemStatus   *uint32 `json:"item_status" binding:"required"`
 }
 
 func (r CreateListingRequest) GetItemName() string {
 	return *r.ItemName
 }
 
-func (r CreateListingRequest) GetItemPrice() uint {
+func (r CreateListingRequest) GetItemPrice() uint32 {
 	return *r.ItemPrice
 }
 
@@ -42,29 +47,29 @@ func (r CreateListingRequest) GetItemImg() string {
 }
 
 type GetSingleListingRequest struct {
-	ItemID *uint `json:"item_id" binding:"required"`
+	ItemID *uint32 `json:"item_id" binding:"required"`
 }
 
-func (r GetSingleListingRequest) GetItemID() uint {
+func (r GetSingleListingRequest) GetItemID() uint32 {
 	return *r.ItemID
 }
 
 type DeleteSingleListingRequest struct {
-	ItemID *uint `json:"item_id" binding:"required"`
+	ItemID *uint32 `json:"item_id" binding:"required"`
 }
 
-func (r DeleteSingleListingRequest) GetItemID() uint {
+func (r DeleteSingleListingRequest) GetItemID() uint32 {
 	return *r.ItemID
 }
 
 type UpdateListingRequest struct {
-	ItemID    *uint   `json:"item_id" binding:"required"`
+	ItemID    *uint32 `json:"item_id" binding:"required"`
 	ItemName  *string `json:"item_name" binding:"required"`
-	ItemPrice *uint   `json:"item_price" binding:"required"`
+	ItemPrice *uint32 `json:"item_price" binding:"required"`
 	ItemImg   *string `json:"item_img" binding:"required"`
 }
 
-func (r UpdateListingRequest) GetItemID() uint {
+func (r UpdateListingRequest) GetItemID() uint32 {
 	return *r.ItemID
 }
 
@@ -72,7 +77,7 @@ func (r UpdateListingRequest) GetItemName() string {
 	return *r.ItemName
 }
 
-func (r UpdateListingRequest) GetItemPrice() uint {
+func (r UpdateListingRequest) GetItemPrice() uint32 {
 	return *r.ItemPrice
 }
 
@@ -81,27 +86,47 @@ func (r UpdateListingRequest) GetItemImg() string {
 }
 
 type GetUserListingsRequest struct {
-	UserID *uint `json:"user_id" binding:"required"`
-	Limit  *uint `json:"limit"`
+	UserID *uint32 `json:"user_id" binding:"required"`
+	Limit  *uint32 `json:"limit"`
 }
 
-func (r GetUserListingsRequest) GetUserID() uint {
+func (r GetUserListingsRequest) GetUserID() uint32 {
 	return *r.UserID
 }
 
-func (r GetUserListingsRequest) GetLimit() uint {
+func (r GetUserListingsRequest) GetLimit() uint32 {
 	return *r.Limit
 }
 
 type GetPopularListingsRequest struct {
 	ItemCategory *string
-	ItemStatus   *uint
-	Limit        *uint
+	ItemStatus   *uint32
+	Limit        *uint32
 }
 
 type GetLatestListingsRequest struct {
-	ListingTime  *uint
-	ItemCategory *string
-	ItemStatus   *uint
-	Limit        *uint
+	ItemCategory *uint32 `json:"item_category"`
+	ItemStatus   *uint32 `json:"item_status"`
+	Limit        *uint32 `json:"limit"`
+}
+
+type GetLatestListingsResponse struct {
+	ItemID       *uint32
+	ItemName     *string
+	ItemPrice    *uint32
+	ItemImg      *string
+	ItemCategory *uint32
+	ItemStatus   *uint32
+}
+
+func (r GetLatestListingsRequest) GetItemCategory() uint32 {
+	return *r.ItemCategory
+}
+
+func (r GetLatestListingsRequest) GetItemStatus() uint32 {
+	return *r.ItemStatus
+}
+
+func (r GetLatestListingsRequest) GetLimit() uint32 {
+	return *r.Limit
 }

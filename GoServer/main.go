@@ -49,6 +49,7 @@ func main() {
 	r.PATCH("/update_single_listing", controllers.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", controllers.DeleteListing)
 	r.GET("/get_user_listings", controllers.GetUserListings)
+	r.GET("/get_latest_listings", controllers.GetLatestListings)
 
 	r.Run()
 }
