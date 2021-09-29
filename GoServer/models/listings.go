@@ -10,10 +10,13 @@ func SetMaxListingsResponseSize() *uint32 {
 }
 
 type Listing struct {
-	ItemID    *uint32 `json:"item_id" gorm:"primary_key"`
-	ItemName  *string `json:"item_name"`
-	ItemPrice *uint32 `json:"item_price"`
-	ItemImg   *string `json:"item_img"`
+	ItemID           *uint32 `json:"item_id" gorm:"primary_key"`
+	ItemName         *string `json:"item_name"`
+	ItemPrice        *uint32 `json:"item_price"`
+	ItemImg          *string `json:"item_img"`
+	ItemCategory     *uint32 `json:"item_category"`
+	ItemStatus       *uint32 `json:"item_status"`
+	ItemCreationTime int64   `json:"item_creation_time"`
 }
 
 type GetAllListingsResponse struct {
@@ -24,9 +27,11 @@ type GetAllListingsResponse struct {
 }
 
 type CreateListingRequest struct {
-	ItemName  *string `json:"item_name" binding:"required"`
-	ItemPrice *uint32 `json:"item_price" binding:"required"`
-	ItemImg   *string `json:"item_img" binding:"required"`
+	ItemName     *string `json:"item_name" binding:"required"`
+	ItemPrice    *uint32 `json:"item_price" binding:"required"`
+	ItemImg      *string `json:"item_img" binding:"required"`
+	ItemCategory *uint32 `json:"item_category" binding:"required"`
+	ItemStatus   *uint32 `json:"item_status" binding:"required"`
 }
 
 func (r CreateListingRequest) GetItemName() string {
@@ -100,9 +105,19 @@ type GetPopularListingsRequest struct {
 }
 
 type GetLatestListingsRequest struct {
-	ItemCategory *string
-	ItemStatus   *uint32
-	Limit        *uint32
+	ItemCategory *string `json:"item_category"`
+	ItemStatus   *uint32 `json:"item_status"`
+	Limit        *uint32 `json:"limit"`
+}
+
+type GetLatestListingsResponse struct {
+	ItemID           *uint32
+	ItemName         *string
+	ItemPrice        *uint32
+	ItemImg          *string
+	ItemCategory     *uint32
+	ItemStatus       *uint32
+	ItemCreationTime int64
 }
 
 func (r GetLatestListingsRequest) GetItemCategory() string {
