@@ -302,8 +302,8 @@ func GetLatestListings(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		if input.ItemCategory != nil && !utils.ValidateString(input.ItemCategory) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be string type.")})
+		if input.ItemCategory != nil && !utils.ValidateUint(input.ItemCategory) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
 			return
 		}
 		if input.ItemStatus != nil && !utils.ValidateUint(input.ItemStatus) {
@@ -319,14 +319,10 @@ func GetLatestListings(c *gin.Context) {
 	}
 
 	//process item_category params
-	// if nil or empty, we ignore
-	if input.ItemCategory != nil && input.GetItemCategory() == "" {
-		if len(input.GetItemCategory()) > int(models.MaxStringLength) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-			return
-		}
+	// if nil, we ignore
+	if input.ItemCategory != nil {
 		//else concat into query
-		categoryCondition += " WHERE item_category = " + input.GetItemCategory()
+		categoryCondition += " WHERE item_category = " + fmt.Sprint(input.GetItemCategory())
 	}
 
 	//process item_status
@@ -335,13 +331,13 @@ func GetLatestListings(c *gin.Context) {
 		case constant.LISTING_STATUS_ALL:
 			break
 		case constant.LISTING_STATUS_NORMAL:
-			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_NORMAL)
+			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_NORMAL)
 		case constant.LISTING_STATUS_SOLDOUT:
-			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_SOLDOUT)
+			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_SOLDOUT)
 		case constant.LISTING_STATUS_DELETED:
-			statusCondition += " listing_status = " + fmt.Sprint(constant.LISTING_STATUS_DELETED)
+			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_DELETED)
 		default:
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown listing status.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown item_status.")})
 			return
 		}
 	}

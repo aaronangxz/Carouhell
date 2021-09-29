@@ -105,22 +105,21 @@ type GetPopularListingsRequest struct {
 }
 
 type GetLatestListingsRequest struct {
-	ItemCategory *string `json:"item_category"`
+	ItemCategory *uint32 `json:"item_category"`
 	ItemStatus   *uint32 `json:"item_status"`
 	Limit        *uint32 `json:"limit"`
 }
 
 type GetLatestListingsResponse struct {
-	ItemID           *uint32
-	ItemName         *string
-	ItemPrice        *uint32
-	ItemImg          *string
-	ItemCategory     *uint32
-	ItemStatus       *uint32
-	ItemCreationTime int64
+	ItemID       *uint32
+	ItemName     *string
+	ItemPrice    *uint32
+	ItemImg      *string
+	ItemCategory *uint32
+	ItemStatus   *uint32
 }
 
-func (r GetLatestListingsRequest) GetItemCategory() string {
+func (r GetLatestListingsRequest) GetItemCategory() uint32 {
 	return *r.ItemCategory
 }
 
