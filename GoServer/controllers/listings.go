@@ -80,12 +80,18 @@ func CreateListing(c *gin.Context) {
 	}
 
 	listings := models.Listing{
-		ItemName:         input.ItemName,
-		ItemPrice:        input.ItemPrice,
-		ItemImg:          input.ItemImage,
-		ItemCategory:     input.ItemCategory,
-		ItemStatus:       input.ItemStatus,
-		ItemCreationTime: time.Now().Unix(),
+		ItemName:              input.GetItemName(),
+		ItemPrice:             input.GetItemPrice(),
+		ItemImage:             input.GetItemImage(),
+		ItemCreationTime:      time.Now().Unix(),
+		ItemQuantity:          input.GetItemQuantity(),
+		ItemPurchasedQuantity: 0,
+		ItemDescription:       input.GetItemDescription(),
+		ItemShippingInfo:      input.GetShippingInfo(),
+		ItemPaymentInfo:       input.GetPaymentInfo(),
+		ItemLocation:          input.GetItemLocation(),
+		ItemCategory:          input.GetItemCategory(),
+		ItemStatus:            constant.ITEM_STATUS_NORMAL,
 	}
 
 	if err := models.DB.Create(&listings).Error; err != nil {
@@ -189,13 +195,13 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//If request fields are empty, we dont want to override empty fields into DB
 	if input.ItemName == nil {
-		input.ItemName = originalListing.ItemName
+		input.ItemName = &originalListing.ItemName
 	}
 	if input.ItemPrice == nil {
-		input.ItemPrice = originalListing.ItemPrice
+		input.ItemPrice = &originalListing.ItemPrice
 	}
 	if input.ItemImg == nil {
-		input.ItemImg = originalListing.ItemImg
+		input.ItemImg = &originalListing.ItemImage
 	}
 
 	//If all good, proceed to update
@@ -329,14 +335,14 @@ func GetLatestListings(c *gin.Context) {
 	//process item_status
 	if input.ItemStatus != nil {
 		switch input.GetItemStatus() {
-		case constant.LISTING_STATUS_ALL:
+		case constant.ITEM_STATUS_ALL:
 			break
-		case constant.LISTING_STATUS_NORMAL:
-			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_NORMAL)
-		case constant.LISTING_STATUS_SOLDOUT:
-			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_SOLDOUT)
-		case constant.LISTING_STATUS_DELETED:
-			statusCondition += " item_status = " + fmt.Sprint(constant.LISTING_STATUS_DELETED)
+		case constant.ITEM_STATUS_NORMAL:
+			statusCondition += " item_status = " + fmt.Sprint(constant.ITEM_STATUS_NORMAL)
+		case constant.ITEM_STATUS_SOLDOUT:
+			statusCondition += " item_status = " + fmt.Sprint(constant.ITEM_STATUS_SOLDOUT)
+		case constant.ITEM_STATUS_DELETED:
+			statusCondition += " item_status = " + fmt.Sprint(constant.ITEM_STATUS_DELETED)
 		default:
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown item_status.")})
 			return

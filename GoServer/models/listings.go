@@ -10,13 +10,21 @@ func SetMaxListingsResponseSize() *uint32 {
 }
 
 type Listing struct {
-	ItemID           *uint32 `json:"item_id" gorm:"primary_key"`
-	ItemName         *string `json:"item_name"`
-	ItemPrice        *uint32 `json:"item_price"`
-	ItemImg          *string `json:"item_img"`
-	ItemCategory     *uint32 `json:"item_category"`
-	ItemStatus       *uint32 `json:"item_status"`
-	ItemCreationTime int64   `json:"item_creation_time"`
+	ItemID                uint32 `json:"item_id" gorm:"primary_key"`
+	ItemName              string `json:"item_name"`
+	ItemPrice             uint32 `json:"item_price"`
+	ItemImage             string `json:"item_image"`
+	ItemCreationTime      int64  `json:"item_creation_time"`
+	ItemQuantity          uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchased_quantity"`
+	ItemDescription       string `json:"item_description"`
+	ItemShippingInfo      uint32 `json:"item_shipping_info"`
+	ItemPaymentInfo       uint32 `json:"item_payment_info"`
+	ItemLocation          string `json:"item_location"`
+	ItemCategory          uint32 `json:"item_category"`
+	ItemStatus            uint32 `json:"item_status"`
+	SellerID              uint32 `json:"seller_id"`
+	ListingDate           uint32 `json:"listing_date"`
 }
 
 type GetAllListingsResponse struct {
@@ -27,11 +35,16 @@ type GetAllListingsResponse struct {
 }
 
 type CreateListingRequest struct {
-	ItemName     *string `json:"item_name" binding:"required"`
-	ItemPrice    *uint32 `json:"item_price" binding:"required"`
-	ItemImage    *string `json:"item_image" binding:"required"`
-	ItemCategory *uint32 `json:"item_category" binding:"required"`
-	ItemStatus   *uint32 `json:"item_status" binding:"required"`
+	ItemName         *string `json:"item_name" binding:"required"`
+	ItemPrice        *uint32 `json:"item_price" binding:"required"`
+	ItemImage        *string `json:"item_image" binding:"required"`
+	ItemQuantity     *uint32 `json:"item_quantity" binding:"required"`
+	ItemDescription  *string `json:"item_description" binding:"required"`
+	ItemShippingInfo *uint32 `json:"item_shipping_info" binding:"required"`
+	ItemPamentInfo   *uint32 `json:"item_payment_info" binding:"required"`
+	ItemLocation     *string `json:"item_location" binding:"required"`
+	ItemCategory     *uint32 `json:"item_category" binding:"required"`
+	SellerID         *uint32 `json:"seller_id" binding:"required"`
 }
 
 func (r CreateListingRequest) GetItemName() string {
@@ -44,6 +57,34 @@ func (r CreateListingRequest) GetItemPrice() uint32 {
 
 func (r CreateListingRequest) GetItemImage() string {
 	return *r.ItemImage
+}
+
+func (r CreateListingRequest) GetItemQuantity() uint32 {
+	return *r.ItemQuantity
+}
+
+func (r CreateListingRequest) GetItemDescription() string {
+	return *r.ItemDescription
+}
+
+func (r CreateListingRequest) GetShippingInfo() uint32 {
+	return *r.ItemShippingInfo
+}
+
+func (r CreateListingRequest) GetPaymentInfo() uint32 {
+	return *r.ItemPamentInfo
+}
+
+func (r CreateListingRequest) GetItemLocation() string {
+	return *r.ItemLocation
+}
+
+func (r CreateListingRequest) GetItemCategory() uint32 {
+	return *r.ItemCategory
+}
+
+func (r CreateListingRequest) GetSellerID() uint32 {
+	return *r.SellerID
 }
 
 type GetSingleListingRequest struct {
