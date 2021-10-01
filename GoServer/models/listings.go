@@ -29,7 +29,7 @@ type GetAllListingsResponse struct {
 type CreateListingRequest struct {
 	ItemName     *string `json:"item_name" binding:"required"`
 	ItemPrice    *uint32 `json:"item_price" binding:"required"`
-	ItemImg      *string `json:"item_img" binding:"required"`
+	ItemImage    *string `json:"item_image" binding:"required"`
 	ItemCategory *uint32 `json:"item_category" binding:"required"`
 	ItemStatus   *uint32 `json:"item_status" binding:"required"`
 }
@@ -42,8 +42,8 @@ func (r CreateListingRequest) GetItemPrice() uint32 {
 	return *r.ItemPrice
 }
 
-func (r CreateListingRequest) GetItemImg() string {
-	return *r.ItemImg
+func (r CreateListingRequest) GetItemImage() string {
+	return *r.ItemImage
 }
 
 type GetSingleListingRequest struct {
@@ -111,12 +111,20 @@ type GetLatestListingsRequest struct {
 }
 
 type GetLatestListingsResponse struct {
-	ItemID       *uint32
-	ItemName     *string
-	ItemPrice    *uint32
-	ItemImg      *string
-	ItemCategory *uint32
-	ItemStatus   *uint32
+	ItemID                uint32
+	ItemName              string
+	ItemPrice             uint32
+	ItemQuantity          uint32
+	ItemPurchasedQuantity uint32
+	ItemDescription       string
+	ItemShippingInfo      uint32
+	ItemPamentInfo        uint32
+	ItemLocation          string
+	ItemStatus            uint32
+	ItemCategory          uint32
+	ItemImage             string
+	SellerID              uint32
+	ListingDate           uint32
 }
 
 func (r GetLatestListingsRequest) GetItemCategory() uint32 {

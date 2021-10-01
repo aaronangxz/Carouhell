@@ -30,7 +30,7 @@ services:
           - MYSQL_DATABASE=${TEST_DB_NAME}
           - MYSQL_ROOT_PASSWORD=${TEST_DB_PASSWORD}
     ports:
-      - 33066:3306
+      - 3305:3306
     volumes:
       - tic2601-data:/var/lib/mysql
 

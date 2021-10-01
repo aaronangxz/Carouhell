@@ -23,6 +23,7 @@ github.com/go-playground/universal-translator
 github.com/go-playground/validator/v10
 # github.com/go-sql-driver/mysql v1.6.0
 ## explicit
+github.com/go-sql-driver/mysql
 # github.com/gofrs/uuid v4.0.0+incompatible
 ## explicit
 # github.com/golang/protobuf v1.3.3
@@ -36,6 +37,9 @@ github.com/jinzhu/gorm/dialects/sqlite
 github.com/jinzhu/inflection
 # github.com/jinzhu/now v1.1.2
 ## explicit
+# github.com/joho/godotenv v1.4.0
+## explicit
+github.com/joho/godotenv
 # github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
 # github.com/leodido/go-urn v1.2.0

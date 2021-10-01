@@ -12,7 +12,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	models.ConnectDataBase()
+	models.LoadEnv() //loading env
+	models.NewMySQL()
 
 	//Allow all CORS
 	r.Use(cors.Default())

@@ -18,7 +18,7 @@ func GetAllListings(c *gin.Context) {
 		listings []models.GetAllListingsResponse
 	)
 
-	if err := models.DB.Raw("SELECT * FROM listings").Scan(&listings).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listing_tab").Scan(&listings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
@@ -47,12 +47,12 @@ func CreateListing(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be uint type.")})
 			return
 		}
-		if input.ItemImg == nil {
+		if input.ItemImage == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
 			return
 		}
-		if !utils.ValidateString(input.ItemImg) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img must be string type.")})
+		if !utils.ValidateString(input.ItemImage) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image must be string type.")})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
@@ -74,7 +74,7 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
-	if input.GetItemImg() == "" {
+	if input.GetItemImage() == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
 		return
 	}
@@ -82,7 +82,7 @@ func CreateListing(c *gin.Context) {
 	listings := models.Listing{
 		ItemName:         input.ItemName,
 		ItemPrice:        input.ItemPrice,
-		ItemImg:          input.ItemImg,
+		ItemImg:          input.ItemImage,
 		ItemCategory:     input.ItemCategory,
 		ItemStatus:       input.ItemStatus,
 		ItemCreationTime: time.Now().Unix(),
@@ -278,7 +278,7 @@ func GetUserListings(c *gin.Context) {
 		extraCondition = " LIMIT " + fmt.Sprint(input.GetLimit())
 	}
 
-	query := "SELECT * FROM listings WHERE user_id = ? ORDER BY listing_time DESC" + extraCondition
+	query := "SELECT * FROM listing_tab WHERE user_id = ? ORDER BY listing_time DESC" + extraCondition
 
 	if err := models.DB.Raw(query, input.GetUserID()).
 		Scan(&userListings).Error; err != nil {
@@ -372,9 +372,9 @@ func GetLatestListings(c *gin.Context) {
 		statusCondition = ""
 	}
 
-	orderCondition := " ORDER BY item_creation_time DESC"
+	orderCondition := " ORDER BY listing_date DESC"
 
-	query := "SELECT * FROM listings" + categoryCondition + statusCondition + orderCondition + limitCondition
+	query := "SELECT * FROM tic2601_db.listing_tab" + categoryCondition + statusCondition + orderCondition + limitCondition
 
 	log.Println(query)
 
