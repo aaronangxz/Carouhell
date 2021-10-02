@@ -24,11 +24,11 @@ services:
       dockerfile: ./docker/db.dockerfile
     container_name: tic2601-db
     environment: 
-          - MYSQL_ROOT_HOST=${TEST_DB_HOST} 
-          - MYSQL_USER=${TEST_DB_USER}
-          - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
-          - MYSQL_DATABASE=${TEST_DB_NAME}
-          - MYSQL_ROOT_PASSWORD=${TEST_DB_PASSWORD}
+      - MYSQL_ROOT_HOST=${TEST_DB_HOST} 
+      - MYSQL_USER=${TEST_DB_USER}
+      - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
+      - MYSQL_DATABASE=${TEST_DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${TEST_DB_PASSWORD}
     ports:
       - 3305:3306
     volumes:
@@ -43,6 +43,8 @@ services:
     environment:
       - 'PMA_HOST=database'
       - 'PMA_PORT=3306'
+      - MYSQL_USER=${TEST_DB_USER}
+      - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
     container_name: tic2601-server-pma
 
 # persisted storage
