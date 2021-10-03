@@ -143,7 +143,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//check if seller exists
-	if err := models.DB.Raw("SELECT * FROM tic2601_test_db.acc_tab WHERE user_id = ?", input.SellerID).Scan(&hold).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.SellerID).Scan(&hold).Error; err != nil {
 		if hold.UserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("seller_id does not exist.")})
 			return

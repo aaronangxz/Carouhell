@@ -108,9 +108,9 @@ func (r DeleteSingleListingRequest) GetItemID() uint32 {
 
 type UpdateListingRequest struct {
 	ItemID    *uint32 `json:"item_id" binding:"required"`
-	ItemName  *string `json:"item_name" binding:"required"`
-	ItemPrice *uint32 `json:"item_price" binding:"required"`
-	ItemImg   *string `json:"item_img" binding:"required"`
+	ItemName  *string `json:"item_name"`
+	ItemPrice *uint32 `json:"item_price"`
+	ItemImg   *string `json:"item_img"`
 }
 
 func (r UpdateListingRequest) GetItemID() uint32 {
@@ -168,7 +168,7 @@ type GetLatestListingsResponse struct {
 	ItemCategory          uint32
 	ItemImage             string
 	SellerID              uint32
-	ListingDate           uint32
+	ListingCtime          uint32
 }
 
 func (r GetLatestListingsRequest) GetItemCategory() uint32 {

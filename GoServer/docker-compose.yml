@@ -6,7 +6,7 @@ services:
     container_name: tic2601-server
     build:
       context: .
-      dockerfile: ./docker/server.dockerfile
+      dockerfile: ./Dockerfile.server
     ports:
       - 8080:8080
     restart: on-failure
@@ -21,7 +21,7 @@ services:
   database:
     build:
       context: .
-      dockerfile: ./docker/db.dockerfile
+      dockerfile: ./Dockerfile.db
     container_name: tic2601-db
     environment: 
       - MYSQL_ROOT_HOST=${TEST_DB_HOST} 
