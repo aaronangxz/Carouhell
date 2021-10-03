@@ -42,6 +42,16 @@
 9. Push image `docker tag <imageid> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
 10. Release image `heroku container:release web -a tic2601-t11`
 
+<h2>MySQL</h2>
+
+1. Access within docker container:
+    - `docker exec -it tic2601-db bash`
+    - `mysql -u root -p`
+2. Check user permission:
+    - `show grants for <username>`
+3. Give permission:
+    - `GRANT ALL PRIVILEGES ON <Table Name> .* TO 'username'@'%'`
+
 <h2>Test Branch</h2>
 
 Refer to https://github.com/aaronangxz/TIC2601/tree/test
