@@ -51,6 +51,8 @@
     - `show grants for <username>`
 3. Give permission:
     - `GRANT ALL PRIVILEGES ON <Table Name> .* TO 'username'@'%'`
+4. Check create query:
+    - `SHOW CREATE TABLE <db name>.<table name>`
 
 <h2>Test Branch</h2>
 
