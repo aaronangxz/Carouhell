@@ -12,7 +12,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-var DB *gorm.DB
+//Change CurrentENV : live / test
+var (
+	DB         *gorm.DB
+	CurrentENV = "test"
+)
 
 func LoadEnv() {
 	err := godotenv.Load(".env")
@@ -44,6 +48,17 @@ func NewMySQL() {
 	//db.AutoMigrate(&Listing{})
 	//db.AutoMigrate(&Notification{})
 	DB = db
+}
+
+func DBName() string {
+	switch CurrentENV {
+	case "test":
+		return "tic2601_test_db"
+	case "live":
+		return "tic2601_db"
+	default:
+		return "tic2601_test_db"
+	}
 }
 
 // func ConnectDataBase() {

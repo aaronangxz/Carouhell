@@ -13,18 +13,17 @@ type Listing struct {
 	ItemID                uint32 `json:"item_id" gorm:"primary_key"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
-	ItemImage             string `json:"item_image"`
-	ItemCreationTime      int64  `json:"item_creation_time"`
 	ItemQuantity          uint32 `json:"item_quantity"`
-	ItemPurchasedQuantity uint32 `json:"item_purchased_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shipping_info"`
-	ItemPaymentInfo       uint32 `json:"item_payment_info"`
+	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
+	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
 	ItemLocation          string `json:"item_location"`
-	ItemCategory          uint32 `json:"item_category"`
 	ItemStatus            uint32 `json:"item_status"`
+	ItemCategory          uint32 `json:"item_category"`
+	ItemImage             string `json:"item_image"`
 	SellerID              uint32 `json:"seller_id"`
-	ListingDate           uint32 `json:"listing_date"`
+	ListingCtime          int64  `json:"listing_ctime"`
 }
 
 type GetAllListingsResponse struct {
@@ -41,7 +40,7 @@ type CreateListingRequest struct {
 	ItemQuantity     *uint32 `json:"item_quantity" binding:"required"`
 	ItemDescription  *string `json:"item_description" binding:"required"`
 	ItemShippingInfo *uint32 `json:"item_shipping_info" binding:"required"`
-	ItemPamentInfo   *uint32 `json:"item_payment_info" binding:"required"`
+	ItemPaymentInfo  *uint32 `json:"item_payment_info" binding:"required"`
 	ItemLocation     *string `json:"item_location" binding:"required"`
 	ItemCategory     *uint32 `json:"item_category" binding:"required"`
 	SellerID         *uint32 `json:"seller_id" binding:"required"`
@@ -67,12 +66,16 @@ func (r CreateListingRequest) GetItemDescription() string {
 	return *r.ItemDescription
 }
 
+func (r CreateListingRequest) SetItemDescription(s string) {
+	*r.ItemDescription = s
+}
+
 func (r CreateListingRequest) GetShippingInfo() uint32 {
 	return *r.ItemShippingInfo
 }
 
 func (r CreateListingRequest) GetPaymentInfo() uint32 {
-	return *r.ItemPamentInfo
+	return *r.ItemPaymentInfo
 }
 
 func (r CreateListingRequest) GetItemLocation() string {
