@@ -3,11 +3,17 @@ package utils
 import (
 	"fmt"
 	"reflect"
+
+	"github.com/aaronangxz/TIC2601/models"
 )
 
 //Validate if a is > b
 func ValidateLimitMax(a uint32, b uint32) bool {
 	return a > b
+}
+
+func ValidateMaxStringLength(s string) bool {
+	return len(s) < int(models.MaxStringLength)
 }
 
 func ValidateUint(a *uint32) bool {

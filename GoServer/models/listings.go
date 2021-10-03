@@ -10,13 +10,20 @@ func SetMaxListingsResponseSize() *uint32 {
 }
 
 type Listing struct {
-	ItemID           *uint32 `json:"item_id" gorm:"primary_key"`
-	ItemName         *string `json:"item_name"`
-	ItemPrice        *uint32 `json:"item_price"`
-	ItemImg          *string `json:"item_img"`
-	ItemCategory     *uint32 `json:"item_category"`
-	ItemStatus       *uint32 `json:"item_status"`
-	ItemCreationTime int64   `json:"item_creation_time"`
+	ItemID                uint32 `json:"item_id" gorm:"primary_key"`
+	ItemName              string `json:"item_name"`
+	ItemPrice             uint32 `json:"item_price"`
+	ItemQuantity          uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
+	ItemDescription       string `json:"item_description"`
+	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
+	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
+	ItemLocation          string `json:"item_location"`
+	ItemStatus            uint32 `json:"item_status"`
+	ItemCategory          uint32 `json:"item_category"`
+	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
+	ListingCtime          int64  `json:"listing_ctime"`
 }
 
 type GetAllListingsResponse struct {
@@ -27,11 +34,16 @@ type GetAllListingsResponse struct {
 }
 
 type CreateListingRequest struct {
-	ItemName     *string `json:"item_name" binding:"required"`
-	ItemPrice    *uint32 `json:"item_price" binding:"required"`
-	ItemImg      *string `json:"item_img" binding:"required"`
-	ItemCategory *uint32 `json:"item_category" binding:"required"`
-	ItemStatus   *uint32 `json:"item_status" binding:"required"`
+	ItemName         *string `json:"item_name" binding:"required"`
+	ItemPrice        *uint32 `json:"item_price" binding:"required"`
+	ItemImage        *string `json:"item_image" binding:"required"`
+	ItemQuantity     *uint32 `json:"item_quantity" binding:"required"`
+	ItemDescription  *string `json:"item_description" binding:"required"`
+	ItemShippingInfo *uint32 `json:"item_shipping_info" binding:"required"`
+	ItemPaymentInfo  *uint32 `json:"item_payment_info" binding:"required"`
+	ItemLocation     *string `json:"item_location" binding:"required"`
+	ItemCategory     *uint32 `json:"item_category" binding:"required"`
+	SellerID         *uint32 `json:"seller_id" binding:"required"`
 }
 
 func (r CreateListingRequest) GetItemName() string {
@@ -42,8 +54,40 @@ func (r CreateListingRequest) GetItemPrice() uint32 {
 	return *r.ItemPrice
 }
 
-func (r CreateListingRequest) GetItemImg() string {
-	return *r.ItemImg
+func (r CreateListingRequest) GetItemImage() string {
+	return *r.ItemImage
+}
+
+func (r CreateListingRequest) GetItemQuantity() uint32 {
+	return *r.ItemQuantity
+}
+
+func (r CreateListingRequest) GetItemDescription() string {
+	return *r.ItemDescription
+}
+
+func (r CreateListingRequest) SetItemDescription(s string) {
+	*r.ItemDescription = s
+}
+
+func (r CreateListingRequest) GetShippingInfo() uint32 {
+	return *r.ItemShippingInfo
+}
+
+func (r CreateListingRequest) GetPaymentInfo() uint32 {
+	return *r.ItemPaymentInfo
+}
+
+func (r CreateListingRequest) GetItemLocation() string {
+	return *r.ItemLocation
+}
+
+func (r CreateListingRequest) GetItemCategory() uint32 {
+	return *r.ItemCategory
+}
+
+func (r CreateListingRequest) GetSellerID() uint32 {
+	return *r.SellerID
 }
 
 type GetSingleListingRequest struct {
@@ -111,12 +155,20 @@ type GetLatestListingsRequest struct {
 }
 
 type GetLatestListingsResponse struct {
-	ItemID       *uint32
-	ItemName     *string
-	ItemPrice    *uint32
-	ItemImg      *string
-	ItemCategory *uint32
-	ItemStatus   *uint32
+	ItemID                uint32
+	ItemName              string
+	ItemPrice             uint32
+	ItemQuantity          uint32
+	ItemPurchasedQuantity uint32
+	ItemDescription       string
+	ItemShippingInfo      uint32
+	ItemPamentInfo        uint32
+	ItemLocation          string
+	ItemStatus            uint32
+	ItemCategory          uint32
+	ItemImage             string
+	SellerID              uint32
+	ListingDate           uint32
 }
 
 func (r GetLatestListingsRequest) GetItemCategory() uint32 {
