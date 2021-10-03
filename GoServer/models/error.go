@@ -47,6 +47,13 @@ func NewNotFoundResponse() ResponseMeta {
 	}
 }
 
+func NewNotFoundMessageResponse(message string) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "Not Found: " + message,
+		ErrorCode: CONSTANT_ERROR_NOT_FOUND,
+	}
+}
+
 func NewDuplicateErrorResponse() ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "Record already exists.",
@@ -78,6 +85,13 @@ func NewUnknownErrorResponse() ResponseMeta {
 func NewDBErrorResponse(err error) ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "Database Error: " + err.Error(),
+		ErrorCode: CONSTANT_ERROR_DATABASE,
+	}
+}
+
+func NewDBErrorMessageResponse(message string) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "Database Error: " + message,
 		ErrorCode: CONSTANT_ERROR_DATABASE,
 	}
 }

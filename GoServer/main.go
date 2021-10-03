@@ -3,7 +3,9 @@ package main
 import (
 	"net/http"
 
-	"github.com/aaronangxz/TIC2601/controllers"
+	"github.com/aaronangxz/TIC2601/controllers/listings"
+	"github.com/aaronangxz/TIC2601/controllers/notifications"
+
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/gin-contrib/cors"
 
@@ -12,7 +14,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	models.ConnectDataBase()
+	models.LoadEnv() //loading env
+	models.NewMySQL()
 
 	//Allow all CORS
 	r.Use(cors.Default())
@@ -40,16 +43,16 @@ func main() {
 	})
 
 	//Available endpoints
-	r.GET("/get_notifications_by_user_id", controllers.GetNotificationsByUserID)
-	r.POST("/create_mock_notifications", controllers.CreateMockNotifications)
+	r.GET("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
+	r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
 
-	r.GET("/get_all_listings", controllers.GetAllListings)
-	r.POST("/create_listing", controllers.CreateListing)
-	r.GET("/get_single_listing_by_itemid", controllers.GetListingByItemID)
-	r.PATCH("/update_single_listing", controllers.UpdateSingleListing)
-	r.DELETE("/delete_single_listing", controllers.DeleteListing)
-	r.GET("/get_user_listings", controllers.GetUserListings)
-	r.GET("/get_latest_listings", controllers.GetLatestListings)
+	r.GET("/get_all_listings", listings.GetAllListings)
+	r.POST("/create_listing", listings.CreateListing)
+	r.GET("/get_single_listing_by_itemid", listings.GetListingByItemID)
+	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
+	r.DELETE("/delete_single_listing", listings.DeleteListing)
+	r.GET("/get_user_listings", listings.GetUserListings)
+	r.GET("/get_latest_listings", listings.GetLatestListings)
 
 	r.Run()
 }
