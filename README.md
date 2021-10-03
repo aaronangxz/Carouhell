@@ -58,6 +58,7 @@
 5. Access remotely:
     - CLEARDB_DATABASE_URL: `mysql://b0bc6fadb8432d:f25c7f6b@us-cdbr-east-04.cleardb.com/heroku_bdc39d4687a85d4?reconnect=true`
     - Set up in MySQL Workbench
+    
     <img src="tic2601-db.png">
 
     - Credentials:
