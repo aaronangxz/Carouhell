@@ -16,13 +16,15 @@
 
 <h2>Docker Container Update History</h2>
 
-| Version     | ImageID        | Date |
-| ----------- | -------------- | ---- |
-| 1.0         | 14173bd8f6a2   | 24/09/2021     |
-| 1.1         | 9396ef44918a   | 25/09/2021     |
-| 1.2         | 614d41e318e1   | 26/09/2021     |
-| 1.3         | 3c664a7938cf   | 27/09/2021     |
-| 1.4         | 8f52518e400f   | 30/09/2021     |
+| Version     | ImageID        | Date | Status | PR |
+| ----------- | -------------- | ---- | ---| ---|
+| 1.0         | 14173bd8f6a2   | 24/09/2021     | Good | |
+| 1.1         | 9396ef44918a   | 25/09/2021     | Good | |
+| 1.2         | 614d41e318e1   | 26/09/2021     | Good | |
+| 1.3         | 3c664a7938cf   | 27/09/2021     | Good | [#33](https://github.com/aaronangxz/TIC2601/pull/33) |
+| 1.4         | 8f52518e400f   | 30/09/2021     | Good | |
+| 1.5         | 700032e186ac   | 03/10/2021     | FAIL | [#44](https://github.com/aaronangxz/TIC2601/pull/44) |
+| 1.6         | d85840c3a753   | 03/10/2021     | Good | [#50](https://github.com/aaronangxz/TIC2601/pull/50) |
 
 <h2>Architecture</h2>
 
