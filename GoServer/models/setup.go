@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -27,14 +26,15 @@ func LoadEnv() {
 
 //NewDatabase : intializes and returns mysql db
 func NewMySQL() {
-	USER := os.Getenv("TEST_DB_USER")
-	PASS := os.Getenv("TEST_DB_PASSWORD")
+	//USER := os.Getenv("TEST_DB_USER")
+	//PASS := os.Getenv("TEST_DB_PASSWORD")
 	//HOST := os.Getenv("TEST_DB_HOST")
 	//PORT := os.Getenv("TEST_DB_PORT")
-	DBNAME := os.Getenv("TEST_DB_NAME")
+	//DBNAME := os.Getenv("TEST_DB_NAME")
 
 	//URL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", USER, PASS, HOST, PORT, DBNAME)
-	URL := fmt.Sprintf("%s:%s@tcp(tic2601-db)/%s", USER, PASS, DBNAME)
+	//URL := fmt.Sprintf("%s:%s@tcp(tic2601-db)/%s", USER, PASS, DBNAME)
+	URL := "b0bc6fadb8432d:f25c7f6b@tcp(us-cdbr-east-04.cleardb.com:3306)/heroku_bdc39d4687a85d4"
 	fmt.Println(URL)
 	db, err := gorm.Open("mysql", URL)
 

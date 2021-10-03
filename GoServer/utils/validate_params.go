@@ -17,9 +17,9 @@ func ValidateMaxStringLength(s string) bool {
 }
 
 func ValidateUint(a *uint32) bool {
-	return fmt.Sprint(reflect.TypeOf(a)) == "uint"
+	return *a >= uint32(0)
 }
 
 func ValidateString(a *string) bool {
-	return fmt.Sprint(reflect.TypeOf(a)) == "string"
+	return fmt.Sprint(reflect.TypeOf(a)) == "*string"
 }

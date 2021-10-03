@@ -47,7 +47,7 @@ func GetUserListings(c *gin.Context) {
 		extraCondition = " LIMIT " + fmt.Sprint(input.GetLimit())
 	}
 
-	query := "SELECT * FROM listing_tab WHERE user_id = ? ORDER BY listing_time DESC" + extraCondition
+	query := "SELECT * FROM listing_tab WHERE seller_id = ? ORDER BY listing_ctime DESC" + extraCondition
 
 	if err := models.DB.Raw(query, input.GetUserID()).
 		Scan(&userListings).Error; err != nil {

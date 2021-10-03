@@ -63,7 +63,7 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	//Check if record exists
-	if err := models.DB.Where("item_id = ?", input.ItemID).First(&originalListing).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
 	}
@@ -80,7 +80,7 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	//If all good, proceed to update
-	if err := models.DB.Exec("UPDATE listings SET item_name = ?, item_price = ?, item_img = ?", input.ItemName, input.ItemPrice, input.ItemImg).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_name = ?, item_price = ?, item_image = ? WHERE item_id = ?", input.ItemName, input.ItemPrice, input.ItemImg, input.ItemID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}

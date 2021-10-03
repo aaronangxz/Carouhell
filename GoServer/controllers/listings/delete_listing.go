@@ -29,12 +29,12 @@ func DeleteListing(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Where("item_id = ?", input.ItemID).First(&deleteListing).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&deleteListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
 	}
 
-	if err := models.DB.Delete(&deleteListing).Error; err != nil {
+	if err := models.DB.Exec("DELETE FROM listing_tab WHERE item_id = ?", input.ItemID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}

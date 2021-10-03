@@ -91,9 +91,9 @@ func GetLatestListings(c *gin.Context) {
 		statusCondition = ""
 	}
 
-	orderCondition := " ORDER BY listing_date DESC"
+	orderCondition := " ORDER BY listing_ctime DESC"
 
-	query := "SELECT * FROM tic2601_db.listing_tab" + categoryCondition + statusCondition + orderCondition + limitCondition
+	query := "SELECT * FROM listing_tab" + categoryCondition + statusCondition + orderCondition + limitCondition
 
 	log.Println(query)
 
