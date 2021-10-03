@@ -33,7 +33,7 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Where("item_id = ?", input.ItemID).First(&singleListing).Error; err != nil {
+	if err := models.DB.Exec("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&singleListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
