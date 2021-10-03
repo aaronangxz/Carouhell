@@ -57,6 +57,7 @@ func GetUserListings(c *gin.Context) {
 
 	if len(userListings) == 0 {
 		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewNotFoundResponse(), "Data": userListings})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse(), "Data": userListings})
