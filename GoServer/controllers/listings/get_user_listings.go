@@ -10,13 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUserListings(c *gin.Context) {
-	var (
-		userListings   []models.Listing
-		input          models.GetUserListingsRequest
-		extraCondition = ""
-	)
-
+func ValidateGetUserListingsRequest(c *gin.Context, input *models.GetUserListingsRequest) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
@@ -25,6 +19,16 @@ func GetUserListings(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
+}
+
+func GetUserListings(c *gin.Context) {
+	var (
+		userListings   []models.Listing
+		input          models.GetUserListingsRequest
+		extraCondition = ""
+	)
+
+	ValidateGetUserListingsRequest(c, &input)
 
 	if input.GetUserID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be > 0.")})

@@ -12,15 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetLatestListings(c *gin.Context) {
-	var (
-		input             models.GetLatestListingsRequest
-		listings          []models.GetLatestListingsResponse
-		categoryCondition = ""
-		statusCondition   = ""
-		limitCondition    = ""
-	)
-
+func ValidateGetLatestListingsRequest(c *gin.Context, input *models.GetLatestListingsRequest) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemCategory != nil && !utils.ValidateUint(input.ItemCategory) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
@@ -37,6 +29,18 @@ func GetLatestListings(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
+}
+
+func GetLatestListings(c *gin.Context) {
+	var (
+		input             models.GetLatestListingsRequest
+		listings          []models.GetLatestListingsResponse
+		categoryCondition = ""
+		statusCondition   = ""
+		limitCondition    = ""
+	)
+
+	ValidateGetLatestListingsRequest(c, &input)
 
 	//process item_category params
 	// if nil, we ignore

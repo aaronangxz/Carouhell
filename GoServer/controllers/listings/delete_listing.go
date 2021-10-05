@@ -8,13 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteListing(c *gin.Context) {
-	// Get model if exist
-	var (
-		deleteListing models.Listing
-		input         models.DeleteSingleListingRequest
-	)
-
+func ValidateDeleteListingRequest(c *gin.Context, input *models.DeleteSingleListingRequest) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
@@ -23,6 +17,16 @@ func DeleteListing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
+}
+
+func DeleteListing(c *gin.Context) {
+	// Get model if exist
+	var (
+		deleteListing models.Listing
+		input         models.DeleteSingleListingRequest
+	)
+
+	ValidateDeleteListingRequest(c, &input)
 
 	if input.GetItemID() <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})

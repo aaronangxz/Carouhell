@@ -9,12 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateSingleListing(c *gin.Context) {
-	var (
-		originalListing models.Listing
-		input           models.UpdateListingRequest
-	)
-
+func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateListingRequest) {
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemID == nil {
@@ -41,6 +36,14 @@ func UpdateSingleListing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
+}
+func UpdateSingleListing(c *gin.Context) {
+	var (
+		originalListing models.Listing
+		input           models.UpdateListingRequest
+	)
+
+	ValidateUpdateSingleListingRequest(c, &input)
 
 	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})

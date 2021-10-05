@@ -9,12 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetListingByItemID(c *gin.Context) {
-	var (
-		singleListing models.Listing
-		input         models.GetSingleListingRequest
-	)
-
+func ValidateGetListingByItemIDRequest(c *gin.Context, input *models.GetSingleListingRequest) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
@@ -27,6 +22,15 @@ func GetListingByItemID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		return
 	}
+}
+
+func GetListingByItemID(c *gin.Context) {
+	var (
+		singleListing models.Listing
+		input         models.GetSingleListingRequest
+	)
+
+	ValidateGetListingByItemIDRequest(c, &input)
 
 	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
