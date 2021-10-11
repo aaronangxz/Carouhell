@@ -27,10 +27,20 @@ type Listing struct {
 }
 
 type GetAllListingsResponse struct {
-	ItemID    uint32 `json:"item_id"`
-	ItemName  string `json:"item_name"`
-	ItemPrice uint32 `json:"item_price"`
-	ItemImg   string `json:"item_img"`
+	ItemID                uint32 `json:"item_id"`
+	ItemName              string `json:"item_name"`
+	ItemPrice             uint32 `json:"item_price"`
+	ItemQuantity          uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
+	ItemDescription       string `json:"item_description"`
+	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
+	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
+	ItemLocation          string `json:"item_location"`
+	ItemStatus            uint32 `json:"item_status"`
+	ItemCategory          uint32 `json:"item_category"`
+	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
+	ListingCtime          int64  `json:"listing_ctime"`
 }
 
 type CreateListingRequest struct {
