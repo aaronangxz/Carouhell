@@ -117,10 +117,17 @@ func (r DeleteSingleListingRequest) GetItemID() uint32 {
 }
 
 type UpdateListingRequest struct {
-	ItemID    *uint32 `json:"item_id" binding:"required"`
-	ItemName  *string `json:"item_name"`
-	ItemPrice *uint32 `json:"item_price"`
-	ItemImg   *string `json:"item_img"`
+	ItemID           *uint32 `json:"item_id"`
+	ItemName         *string `json:"item_name"`
+	ItemPrice        *uint32 `json:"item_price"`
+	ItemQuantity     *uint32 `json:"item_quantity"`
+	ItemDescription  *string `json:"item_description"`
+	ItemShippingInfo *uint32 `json:"item_shippinginfo"`
+	ItemPaymentInfo  *uint32 `json:"item_paymentinfo"`
+	ItemLocation     *string `json:"item_location"`
+	ItemCategory     *uint32 `json:"item_category"`
+	ItemImage        *string `json:"item_image"`
+	SellerID         *uint32 `json:"seller_id"`
 }
 
 func (r UpdateListingRequest) GetItemID() uint32 {
@@ -135,8 +142,36 @@ func (r UpdateListingRequest) GetItemPrice() uint32 {
 	return *r.ItemPrice
 }
 
-func (r UpdateListingRequest) GetItemImg() string {
-	return *r.ItemImg
+func (r UpdateListingRequest) GetItemQuantity() uint32 {
+	return *r.ItemQuantity
+}
+
+func (r UpdateListingRequest) GetItemDescription() string {
+	return *r.ItemDescription
+}
+
+func (r UpdateListingRequest) GetShippingInfo() uint32 {
+	return *r.ItemShippingInfo
+}
+
+func (r UpdateListingRequest) GetPaymentInfo() uint32 {
+	return *r.ItemPaymentInfo
+}
+
+func (r UpdateListingRequest) GetItemLocation() string {
+	return *r.ItemLocation
+}
+
+func (r UpdateListingRequest) GetItemCategory() uint32 {
+	return *r.ItemCategory
+}
+
+func (r UpdateListingRequest) GetItemImage() string {
+	return *r.ItemImage
+}
+
+func (r UpdateListingRequest) GetSellerID() uint32 {
+	return *r.SellerID
 }
 
 type GetUserListingsRequest struct {
