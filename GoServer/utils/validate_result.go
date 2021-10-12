@@ -22,3 +22,10 @@ func ValidateGetLatestListingsResult(results []models.GetLatestListingsResponse)
 	}
 	return models.NewSuccessResponse()
 }
+
+func ValidateGetListingsUsingFiltersResult(results []models.Listing) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessResponse()
+}

@@ -227,3 +227,38 @@ func (r GetLatestListingsRequest) GetItemStatus() uint32 {
 func (r GetLatestListingsRequest) GetLimit() uint32 {
 	return *r.Limit
 }
+
+type CategoryFilter struct {
+	ItemCategory *uint32 `json:"item_category"`
+}
+
+type LocationFilter struct {
+	Location *string `json:"location"`
+}
+
+type PriceFilter struct {
+	MinPrice *uint32 `json:"min_price"`
+	MaxPrice *uint32 `json:"max_price"`
+}
+
+type GetListingsUsingFiltersRequest struct {
+	CategoryFilter `json:"category_filter"`
+	LocationFilter `json:"location_filter"`
+	PriceFilter    `json:"price_filter"`
+}
+
+func (r CategoryFilter) GetItemCategory() uint32 {
+	return *r.ItemCategory
+}
+
+func (r LocationFilter) GetLocation() string {
+	return *r.Location
+}
+
+func (r PriceFilter) GetMinPrice() uint32 {
+	return *r.MinPrice
+}
+
+func (r PriceFilter) GetMaxPrice() uint32 {
+	return *r.MaxPrice
+}
