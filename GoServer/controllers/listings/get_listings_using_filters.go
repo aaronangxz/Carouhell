@@ -64,9 +64,44 @@ func GetListingsUsingFilters(c *gin.Context) {
 		priceCondition    = ""
 	)
 
-	ValidateGetListingsUsingFiltersRequest(c, &input)
+	if err := c.ShouldBindJSON(&input); err != nil {
 
-	ValidateGetListingsUsingFiltersInput(c, &input)
+		if input.CategoryFilter.ItemCategory != nil && !utils.ValidateUint(input.CategoryFilter.ItemCategory) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
+			return
+		}
+
+		if input.LocationFilter.Location != nil && !utils.ValidateString(input.LocationFilter.Location) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be string type.")})
+			return
+		}
+
+		if input.PriceFilter.MinPrice != nil && !utils.ValidateUint(input.PriceFilter.MinPrice) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price must be uint type.")})
+			return
+		}
+
+		if input.PriceFilter.MaxPrice != nil && !utils.ValidateUint(input.PriceFilter.MaxPrice) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("max_price must be uint type.")})
+			return
+		}
+
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		return
+	}
+
+	//check if exists
+	if input.CategoryFilter.ItemCategory != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_category.")})
+		return
+	}
+
+	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
+		if input.PriceFilter.GetMaxPrice() < input.PriceFilter.GetMinPrice() {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price cannot > max_price.")})
+			return
+		}
+	}
 
 	//build SQL queries
 
@@ -77,13 +112,13 @@ func GetListingsUsingFilters(c *gin.Context) {
 	}
 
 	if input.LocationFilter.Location != nil {
-		locationCondition += " item_location = " + fmt.Sprint(input.LocationFilter.GetLocation())
+		locationCondition += " item_location = '" + fmt.Sprint(input.LocationFilter.GetLocation()) + "'"
 	}
 
 	if categoryCondition != "" && locationCondition != "" {
 		categoryCondition += " AND"
 	} else if categoryCondition == "" {
-		categoryCondition += " WHERE"
+		categoryCondition = " WHERE"
 	}
 
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice == nil {
@@ -92,6 +127,10 @@ func GetListingsUsingFilters(c *gin.Context) {
 		priceCondition += " item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
 	} else if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
 		priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice()) + " AND item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
+	}
+
+	if categoryCondition == " WHERE" && locationCondition == "" && priceCondition == "" {
+		categoryCondition = ""
 	}
 
 	if priceCondition != "" && locationCondition != "" {
