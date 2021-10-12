@@ -68,6 +68,9 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 }
 
 func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListingRequest) {
+	//Allow:
+	//quantity to be 0
+	//description to be blank
 	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
 		return
@@ -110,10 +113,6 @@ func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListin
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image cannot be empty. Set to null if no changes needed.")})
 		return
 	}
-
-	//Allow:
-	//quantity to be 0
-	//description to be blank
 }
 
 func UpdateSingleListing(c *gin.Context) {
@@ -132,7 +131,7 @@ func UpdateSingleListing(c *gin.Context) {
 	ValidateUpdateSingleListingInput(c, &input)
 
 	//Check if record exists
-	//If yes, store original records
+	//If yes, retrieve and store original records
 	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
@@ -145,21 +144,12 @@ func UpdateSingleListing(c *gin.Context) {
 	inputElement := inputValue.Elem()
 	originalElement := originalValue.Elem()
 
+	//Fill up nil fields with original values
 	for i := 0; i < inputElement.NumField(); i++ {
 		if inputElement.Field(i).IsNil() {
 			inputElement = originalElement.Field(i)
 		}
 	}
-
-	// if input.ItemName == nil {
-	// 	input.ItemName = &originalListing.ItemName
-	// }
-	// if input.ItemPrice == nil {
-	// 	input.ItemPrice = &originalListing.ItemPrice
-	// }
-	// if input.ItemImage == nil {
-	// 	input.ItemImage = &originalListing.ItemImage
-	// }
 
 	//If all good, proceed to update
 	if err := models.DB.Exec("UPDATE listing_tab SET "+
