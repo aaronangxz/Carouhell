@@ -1,6 +1,7 @@
 package listings
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -18,25 +19,25 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 
 		if input.CategoryFilter.ItemCategory != nil && !utils.ValidateUint(input.CategoryFilter.ItemCategory) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
-			errormsg := fmt.Sprintf("item_category must be uint. input: %v", input.CategoryFilter.ItemCategory)
+			errormsg := fmt.Sprintf("item_category must be uint. input: %v", input.CategoryFilter.GetItemCategory())
 			return errors.New(errormsg)
 		}
 
 		if input.LocationFilter.Location != nil && !utils.ValidateString(input.LocationFilter.Location) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be string type.")})
-			errormsg := fmt.Sprintf("location must be string. input: %v", input.LocationFilter.Location)
+			errormsg := fmt.Sprintf("location must be string. input: %v", input.LocationFilter.GetLocation())
 			return errors.New(errormsg)
 		}
 
 		if input.PriceFilter.MinPrice != nil && !utils.ValidateUint(input.PriceFilter.MinPrice) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price must be uint type.")})
-			errormsg := fmt.Sprintf("min_price must be uint. input: %v", input.PriceFilter.MinPrice)
+			errormsg := fmt.Sprintf("min_price must be uint. input: %v", input.PriceFilter.GetMinPrice())
 			return errors.New(errormsg)
 		}
 
 		if input.PriceFilter.MaxPrice != nil && !utils.ValidateUint(input.PriceFilter.MaxPrice) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("max_price must be uint type.")})
-			errormsg := fmt.Sprintf("max_price must be uint. input: %v", input.PriceFilter.MaxPrice)
+			errormsg := fmt.Sprintf("max_price must be uint. input: %v", input.PriceFilter.GetMaxPrice())
 			return errors.New(errormsg)
 		}
 
@@ -51,14 +52,14 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 	//check if exists
 	if input.CategoryFilter.ItemCategory != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_category.")})
-		errormsg := fmt.Sprintf("unknown item_category. input: %v", input.CategoryFilter.ItemCategory)
+		errormsg := fmt.Sprintf("unknown item_category. input: %v", input.CategoryFilter.GetItemCategory())
 		return errors.New(errormsg)
 	}
 
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
 		if input.PriceFilter.GetMaxPrice() < input.PriceFilter.GetMinPrice() {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price cannot > max_price.")})
-			errormsg := fmt.Sprintf("min_price cannot > max_price. input: min_price: %v, max_price: %v", input.PriceFilter.MinPrice, input.PriceFilter.MaxPrice)
+			errormsg := fmt.Sprintf("min_price cannot > max_price. input: min_price: %v, max_price: %v", input.PriceFilter.GetMinPrice(), input.PriceFilter.GetMaxPrice())
 			return errors.New(errormsg)
 		}
 	}
@@ -76,10 +77,12 @@ func GetListingsUsingFilters(c *gin.Context) {
 
 	if err := ValidateGetListingsUsingFiltersRequest(c, &input); err != nil {
 		log.Printf("Error during ValidateGetListingsUsingFiltersRequest: %v", err.Error())
+		return
 	}
 
 	if err := ValidateGetListingsUsingFiltersInput(c, &input); err != nil {
 		log.Printf("Error during ValidateGetListingsUsingFiltersInput: %v", err.Error())
+		return
 	}
 
 	//build SQL queries
@@ -126,5 +129,9 @@ func GetListingsUsingFilters(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingsUsingFiltersResult(listings), "Data": listings})
-	log.Printf("Successful: GetListingsUsingFilters. Returned: %v", listings)
+	data, err := json.Marshal(listings)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v", err.Error())
+	}
+	log.Printf("Successful: GetListingsUsingFilters. Returned: %s", data)
 }
