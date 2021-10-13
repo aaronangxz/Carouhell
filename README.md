@@ -36,7 +36,7 @@
 <h2>Docker Deployment</h2>
 
 1. Write `Dockerfile`
-2. To build: `docker build --tag tic2601 .`
+2. To build: `docker build --tag tic2601 .` (single dockerfile) / `docker build -f Dockerfile.server .` (multi dockerfiles)
 3. Tag docker image `docker tag <imageid> tic2601:<version>`
 4. `docker run tic2601` will run container isolated from network.
 5. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
