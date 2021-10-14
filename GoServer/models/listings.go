@@ -242,9 +242,23 @@ type PriceFilter struct {
 }
 
 type GetListingsUsingFiltersRequest struct {
+	SearchKeyword  *string `json:"search_keyword"`
 	CategoryFilter `json:"category_filter"`
 	LocationFilter `json:"location_filter"`
 	PriceFilter    `json:"price_filter"`
+	SortFlag       *uint32 `json:"sort_flag"`
+}
+
+func (r GetListingsUsingFiltersRequest) GetSearchKeyword() string {
+	return *r.SearchKeyword
+}
+
+func (r GetListingsUsingFiltersRequest) GetSortFlag() uint32 {
+	return *r.SortFlag
+}
+
+func (r GetListingsUsingFiltersRequest) SetSortFlag(flag uint32) {
+	*r.SortFlag = flag
 }
 
 func (r CategoryFilter) GetItemCategory() uint32 {

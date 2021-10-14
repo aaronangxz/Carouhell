@@ -17,6 +17,7 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 	//allow nil and empty
 	if err := c.ShouldBindJSON(&input); err != nil {
 
+		//not checking search term since we accept any string
 		if input.CategoryFilter.ItemCategory != nil && !utils.ValidateUint(input.CategoryFilter.ItemCategory) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
 			errormsg := fmt.Sprintf("item_category must be uint. input: %v", input.CategoryFilter.GetItemCategory())
@@ -41,6 +42,12 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 			return errors.New(errormsg)
 		}
 
+		if input.SortFlag != nil && !utils.ValidateUint(input.SortFlag) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("sort_flag must be uint type.")})
+			errormsg := fmt.Sprintf("sort_flag must be uint. input: %v", input.PriceFilter.GetMinPrice())
+			return errors.New(errormsg)
+		}
+
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		errormsg := fmt.Sprint("JSON error: &v", err.Error())
 		return errors.New(errormsg)
@@ -53,6 +60,12 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 	if input.CategoryFilter.ItemCategory != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_category.")})
 		errormsg := fmt.Sprintf("unknown item_category. input: %v", input.CategoryFilter.GetItemCategory())
+		return errors.New(errormsg)
+	}
+
+	if input.SortFlag != nil && !constant.CheckSearchAndFiltersConstant(constant.SEARCH_AND_FILTERS_CONSTANT_SORTFLAG, input.GetSortFlag()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown sort_flag.")})
+		errormsg := fmt.Sprintf("unknown sort_flag. input: %v", input.GetSortFlag())
 		return errors.New(errormsg)
 	}
 
@@ -73,6 +86,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 		categoryCondition = ""
 		locationCondition = ""
 		priceCondition    = ""
+		orderCondition    = " ORDER BY "
 	)
 
 	if err := ValidateGetListingsUsingFiltersRequest(c, &input); err != nil {
@@ -118,7 +132,20 @@ func GetListingsUsingFilters(c *gin.Context) {
 		locationCondition += " AND"
 	}
 
-	orderCondition := " ORDER BY listing_ctime DESC"
+	if input.SortFlag == nil {
+		input.SetSortFlag(constant.SEARCH_RESULT_SORTFLAG_DEFAULT)
+	}
+
+	switch input.GetSortFlag() {
+	case constant.SEARCH_RESULT_SORTFLAG_DEFAULT, constant.SEARCH_RESULT_SORTFLAG_RECENT:
+		orderCondition += " listing_ctime DESC"
+	case 2:
+		orderCondition += " item_price DESC"
+	case 3:
+		orderCondition += " item_price ASC"
+	}
+	//pending case 4: sort by ratings
+
 	query := "SELECT * FROM listing_tab" + categoryCondition + locationCondition + priceCondition + orderCondition
 	log.Printf("Executing DB query: %v", query)
 
