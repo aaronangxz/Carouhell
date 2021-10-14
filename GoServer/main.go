@@ -53,6 +53,7 @@ func main() {
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
 	r.GET("/get_user_listings", listings.GetUserListings)
 	r.GET("/get_latest_listings", listings.GetLatestListings)
+	r.GET("/get_listings_using_filters", listings.GetListingsUsingFilters)
 
 	r.Run()
 }

@@ -25,6 +25,7 @@
 | 1.4         | 8f52518e400f   | 30/09/2021     | Good | |
 | 1.5         | 700032e186ac   | 03/10/2021     | FAIL | [#44](https://github.com/aaronangxz/TIC2601/pull/44) |
 | 1.6         | d85840c3a753   | 03/10/2021     | Good | [#50](https://github.com/aaronangxz/TIC2601/pull/50) |
+| 1.7         | 725c67b4ab0f   | 13/10/2021     | Good | [#52](https://github.com/aaronangxz/TIC2601/pull/52) |
 
 <h2>Architecture</h2>
 
@@ -35,7 +36,7 @@
 <h2>Docker Deployment</h2>
 
 1. Write `Dockerfile`
-2. To build: `docker build --tag tic2601 .`
+2. To build: `docker build --tag tic2601 .` (single dockerfile) / `docker build -f Dockerfile.server .` (multi dockerfiles)
 3. Tag docker image `docker tag <imageid> tic2601:<version>`
 4. `docker run tic2601` will run container isolated from network.
 5. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
@@ -67,6 +68,10 @@
         - Username:`b0bc6fadb8432d`
         - Password:`f25c7f6b`
         - Default Schema:`heroku_bdc39d4687a85d4`
+
+<h2>Test API endpoints</h2>
+
+Postman Workspace: https://www.postman.com/science-specialist-94927587/workspace/tic2601
 
 <h2>Test Branch</h2>
 
