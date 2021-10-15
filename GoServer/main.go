@@ -43,17 +43,17 @@ func main() {
 	})
 
 	//Available endpoints
-	r.GET("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
+	r.POST("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
 	r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
 
 	r.GET("/get_all_listings", listings.GetAllListings)
 	r.POST("/create_listing", listings.CreateListing)
-	r.GET("/get_single_listing_by_itemid", listings.GetListingByItemID)
+	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
 	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
-	r.GET("/get_user_listings", listings.GetUserListings)
+	r.POST("/get_user_listings", listings.GetUserListings)
 	r.GET("/get_latest_listings", listings.GetLatestListings)
-	r.GET("/get_listings_using_filters", listings.GetListingsUsingFilters)
+	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
 
 	r.Run()
 }
