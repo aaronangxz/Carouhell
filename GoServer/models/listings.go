@@ -10,20 +10,27 @@ func SetMaxListingsResponseSize() *uint32 {
 }
 
 type Listing struct {
-	ItemID                uint32 `json:"item_id" gorm:"primary_key"`
-	ItemName              string `json:"item_name"`
-	ItemPrice             uint32 `json:"item_price"`
-	ItemQuantity          uint32 `json:"item_quantity"`
-	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
-	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
-	ItemStatus            uint32 `json:"item_status"`
-	ItemCategory          uint32 `json:"item_category"`
-	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
-	ListingCtime          int64  `json:"listing_ctime"`
+	ItemID                *uint32 `json:"item_id" gorm:"primary_key"`
+	ItemName              *string `json:"item_name"`
+	ItemPrice             *uint32 `json:"item_price"`
+	ItemQuantity          *uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity *uint32 `json:"item_purchasedquantity"`
+	ItemDescription       *string `json:"item_description"`
+	ItemShippingInfo      *uint32 `json:"item_shippinginfo"`
+	ItemPaymentInfo       *uint32 `json:"item_paymentinfo"`
+	ItemLocation          *string `json:"item_location"`
+	ItemStatus            *uint32 `json:"item_status"`
+	ItemCategory          *uint32 `json:"item_category"`
+	ItemImage             *string `json:"item_image"`
+	SellerID              *uint32 `json:"seller_id"`
+	ListingCtime          *int64  `json:"listing_ctime"`
+}
+
+func (r *Listing) GetSellerID() uint32 {
+	if r != nil && r.SellerID != nil {
+		return *r.SellerID
+	}
+	return 0
 }
 
 type GetAllListingsResponse struct {
@@ -130,48 +137,81 @@ type UpdateListingRequest struct {
 	SellerID         *uint32 `json:"seller_id"`
 }
 
-func (r UpdateListingRequest) GetItemID() uint32 {
-	return *r.ItemID
+func (r *UpdateListingRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetItemName() string {
-	return *r.ItemName
+func (r *UpdateListingRequest) GetItemName() string {
+	if r != nil && r.ItemName != nil {
+		return *r.ItemName
+	}
+	return ""
 }
 
-func (r UpdateListingRequest) GetItemPrice() uint32 {
-	return *r.ItemPrice
+func (r *UpdateListingRequest) GetItemPrice() uint32 {
+	if r != nil && r.ItemPrice != nil {
+		return *r.ItemPrice
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetItemQuantity() uint32 {
-	return *r.ItemQuantity
+func (r *UpdateListingRequest) GetItemQuantity() uint32 {
+	if r != nil && r.ItemQuantity != nil {
+		return *r.ItemQuantity
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetItemDescription() string {
-	return *r.ItemDescription
+func (r *UpdateListingRequest) GetItemDescription() string {
+	if r != nil && r.ItemDescription != nil {
+		return *r.ItemDescription
+	}
+	return ""
 }
 
-func (r UpdateListingRequest) GetShippingInfo() uint32 {
-	return *r.ItemShippingInfo
+func (r *UpdateListingRequest) GetShippingInfo() uint32 {
+	if r != nil && r.ItemShippingInfo != nil {
+		return *r.ItemShippingInfo
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetPaymentInfo() uint32 {
-	return *r.ItemPaymentInfo
+func (r *UpdateListingRequest) GetPaymentInfo() uint32 {
+	if r != nil && r.ItemPaymentInfo != nil {
+		return *r.ItemPaymentInfo
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetItemLocation() string {
-	return *r.ItemLocation
+func (r *UpdateListingRequest) GetItemLocation() string {
+	if r != nil && r.ItemName != nil {
+		return *r.ItemLocation
+	}
+	return ""
 }
 
-func (r UpdateListingRequest) GetItemCategory() uint32 {
-	return *r.ItemCategory
+func (r *UpdateListingRequest) GetItemCategory() uint32 {
+	if r != nil && r.ItemCategory != nil {
+		return *r.ItemCategory
+	}
+	return 0
 }
 
-func (r UpdateListingRequest) GetItemImage() string {
-	return *r.ItemImage
+func (r *UpdateListingRequest) GetItemImage() string {
+	if r != nil && r.ItemImage != nil {
+		return *r.ItemImage
+	}
+	return ""
 }
 
-func (r UpdateListingRequest) GetSellerID() uint32 {
-	return *r.SellerID
+func (r *UpdateListingRequest) GetSellerID() uint32 {
+	if r != nil && r.SellerID != nil {
+		return *r.SellerID
+	}
+	return 0
 }
 
 type GetUserListingsRequest struct {
