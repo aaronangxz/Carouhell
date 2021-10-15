@@ -153,19 +153,19 @@ func CreateListing(c *gin.Context) {
 	}
 
 	listings := models.Listing{
-		ItemName:              input.GetItemName(),
-		ItemPrice:             input.GetItemPrice(),
-		ItemQuantity:          input.GetItemQuantity(),
-		ItemPurchasedQuantity: 0,
-		ItemDescription:       input.GetItemDescription(),
-		ItemShippingInfo:      input.GetShippingInfo(),
-		ItemPaymentInfo:       input.GetPaymentInfo(),
-		ItemLocation:          input.GetItemLocation(),
-		ItemStatus:            constant.ITEM_STATUS_NORMAL,
-		ItemCategory:          input.GetItemCategory(),
-		ItemImage:             input.GetItemImage(),
-		SellerID:              input.GetSellerID(),
-		ListingCtime:          time.Now().Unix(),
+		ItemName:              input.ItemName,
+		ItemPrice:             input.ItemPrice,
+		ItemQuantity:          input.ItemQuantity,
+		ItemPurchasedQuantity: utils.Uint32(0),
+		ItemDescription:       input.ItemDescription,
+		ItemShippingInfo:      input.ItemShippingInfo,
+		ItemPaymentInfo:       input.ItemPaymentInfo,
+		ItemLocation:          input.ItemLocation,
+		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
+		ItemCategory:          input.ItemCategory,
+		ItemImage:             input.ItemImage,
+		SellerID:              input.SellerID,
+		ListingCtime:          utils.Int64(time.Now().Unix()),
 	}
 
 	if err := models.DB.Table("listing_tab").Create(&listings).
