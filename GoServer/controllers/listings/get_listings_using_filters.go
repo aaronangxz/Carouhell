@@ -17,6 +17,7 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 	//allow nil and empty
 	if err := c.ShouldBindJSON(&input); err != nil {
 
+		//not checking search term since we accept any string
 		if input.CategoryFilter.ItemCategory != nil && !utils.ValidateUint(input.CategoryFilter.ItemCategory) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
 			errormsg := fmt.Sprintf("item_category must be uint. input: %v", input.CategoryFilter.GetItemCategory())
@@ -41,6 +42,12 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 			return errors.New(errormsg)
 		}
 
+		if input.SortFlag != nil && !utils.ValidateUint(input.SortFlag) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("sort_flag must be uint type.")})
+			errormsg := fmt.Sprintf("sort_flag must be uint. input: %v", input.PriceFilter.GetMinPrice())
+			return errors.New(errormsg)
+		}
+
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		errormsg := fmt.Sprint("JSON error: &v", err.Error())
 		return errors.New(errormsg)
@@ -49,10 +56,23 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 }
 
 func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListingsUsingFiltersRequest) error {
+
+	if !utils.ValidateMaxStringLength(input.GetSearchKeyword()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("search_keyword cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		errormsg := fmt.Sprintf("search_keyword exceeded max length. input: %v chars", len(input.GetSearchKeyword()))
+		return errors.New(errormsg)
+	}
+
 	//check if exists
 	if input.CategoryFilter.ItemCategory != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_category.")})
 		errormsg := fmt.Sprintf("unknown item_category. input: %v", input.CategoryFilter.GetItemCategory())
+		return errors.New(errormsg)
+	}
+
+	if input.SortFlag != nil && !constant.CheckSearchAndFiltersConstant(constant.SEARCH_AND_FILTERS_CONSTANT_SORTFLAG, input.GetSortFlag()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown sort_flag.")})
+		errormsg := fmt.Sprintf("unknown sort_flag. input: %v", input.GetSortFlag())
 		return errors.New(errormsg)
 	}
 
@@ -70,9 +90,11 @@ func GetListingsUsingFilters(c *gin.Context) {
 	var (
 		listings          []models.Listing
 		input             models.GetListingsUsingFiltersRequest
+		nameCondition     = ""
 		categoryCondition = ""
 		locationCondition = ""
 		priceCondition    = ""
+		orderCondition    = " ORDER BY"
 	)
 
 	if err := ValidateGetListingsUsingFiltersRequest(c, &input); err != nil {
@@ -86,40 +108,69 @@ func GetListingsUsingFilters(c *gin.Context) {
 	}
 
 	//build SQL queries
+	if input.SearchKeyword != nil {
+		key := "'%" + input.GetSearchKeyword() + "%'"
+		nameCondition += fmt.Sprintf(" WHERE item_name LIKE %v", key)
+	}
+
 	//category filter
 	if input.CategoryFilter.ItemCategory != nil {
 		//else concat into query
-		categoryCondition += " WHERE item_category = " + fmt.Sprint(input.CategoryFilter.GetItemCategory())
+		// categoryCondition += " item_category = " + fmt.Sprint(input.CategoryFilter.GetItemCategory())
+		categoryCondition += fmt.Sprintf(" item_category = %v", input.CategoryFilter.GetItemCategory())
+
+	}
+
+	if nameCondition != "" && categoryCondition != "" {
+		nameCondition += " AND"
+	} else if nameCondition == "" {
+		nameCondition = " WHERE"
 	}
 
 	if input.LocationFilter.Location != nil {
-		locationCondition += " item_location = '" + fmt.Sprint(input.LocationFilter.GetLocation()) + "'"
+		// locationCondition += " item_location = '" + fmt.Sprint(input.LocationFilter.GetLocation()) + "'"
+		locationCondition += fmt.Sprintf(" item_location = '%v'", input.LocationFilter.GetLocation())
 	}
 
 	if categoryCondition != "" && locationCondition != "" {
 		categoryCondition += " AND"
-	} else if categoryCondition == "" {
-		categoryCondition = " WHERE"
 	}
 
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice == nil {
-		priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice())
+		// priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice())
+		priceCondition += fmt.Sprintf(" item_price >= %v", input.PriceFilter.GetMinPrice())
 	} else if input.PriceFilter.MinPrice == nil && input.PriceFilter.MaxPrice != nil {
-		priceCondition += " item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
+		// priceCondition += " item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
+		priceCondition += fmt.Sprintf(" item_price <= %v", input.PriceFilter.GetMaxPrice())
 	} else if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
-		priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice()) + " AND item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
+		// priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice()) + " AND item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
+		priceCondition += fmt.Sprintf(" item_price >= %v AND item_price <= %v", input.PriceFilter.GetMinPrice(), input.PriceFilter.GetMaxPrice())
 	}
 
-	if categoryCondition == " WHERE" && locationCondition == "" && priceCondition == "" {
-		categoryCondition = ""
+	if nameCondition == " WHERE" && categoryCondition == "" && locationCondition == "" && priceCondition == "" {
+		nameCondition = ""
 	}
 
 	if priceCondition != "" && locationCondition != "" {
 		locationCondition += " AND"
 	}
 
-	orderCondition := " ORDER BY listing_ctime DESC"
-	query := "SELECT * FROM listing_tab" + categoryCondition + locationCondition + priceCondition + orderCondition
+	if input.SortFlag == nil {
+		input.SetSortFlag(constant.SEARCH_RESULT_SORTFLAG_DEFAULT)
+	}
+
+	switch input.GetSortFlag() {
+	case constant.SEARCH_RESULT_SORTFLAG_DEFAULT, constant.SEARCH_RESULT_SORTFLAG_RECENT:
+		orderCondition += " listing_ctime DESC"
+	case constant.SEARCH_RESULT_SORTFLAG_PRICE_HIGH:
+		orderCondition += " item_price DESC"
+	case constant.SEARCH_RESULT_SORTFLAG_PRICE_LOW:
+		orderCondition += " item_price ASC"
+	case constant.SEARCH_RESULT_SORTFLAG_RATINGS: //pending case 4: sort by ratings
+		orderCondition += " listing_ctime DESC"
+	}
+
+	query := "SELECT * FROM listing_tab" + nameCondition + categoryCondition + locationCondition + priceCondition + orderCondition
 	log.Printf("Executing DB query: %v", query)
 
 	if err := models.DB.Raw(query).Scan(&listings).Error; err != nil {
