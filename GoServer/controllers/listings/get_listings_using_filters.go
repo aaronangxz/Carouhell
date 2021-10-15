@@ -57,7 +57,7 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 
 func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListingsUsingFiltersRequest) error {
 
-	if !utils.ValidateMaxStringLength(input.GetSearchKeyword()) {
+	if input.SearchKeyword != nil && !utils.ValidateMaxStringLength(input.GetSearchKeyword()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("search_keyword cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("search_keyword exceeded max length. input: %v chars", len(input.GetSearchKeyword()))
 		return errors.New(errormsg)
@@ -156,7 +156,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 	}
 
 	if input.SortFlag == nil {
-		input.SetSortFlag(constant.SEARCH_RESULT_SORTFLAG_DEFAULT)
+		input.SortFlag = utils.Uint32(constant.SEARCH_RESULT_SORTFLAG_DEFAULT)
 	}
 
 	switch input.GetSortFlag() {
