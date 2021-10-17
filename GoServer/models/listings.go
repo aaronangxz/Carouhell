@@ -247,7 +247,7 @@ type GetLatestListingsResponse struct {
 	ItemPurchasedQuantity uint32
 	ItemDescription       string
 	ItemShippingInfo      uint32
-	ItemPamentInfo        uint32
+	ItemPaymentInfo       uint32
 	ItemLocation          string
 	ItemStatus            uint32
 	ItemCategory          uint32
