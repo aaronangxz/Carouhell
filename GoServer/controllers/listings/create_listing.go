@@ -18,7 +18,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemName == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty.")})
-			errormsg := fmt.Sprintf("item_name cannot be empty. input: %v", input.GetItemName())
+			errormsg := "item_name cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.ItemName) {
@@ -28,7 +28,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemPrice == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price cannot be empty.")})
-			errormsg := fmt.Sprintf("item_price cannot be empty. input: %v", input.GetItemPrice())
+			errormsg := "item_price cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemPrice) {
@@ -38,7 +38,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemImage == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
-			errormsg := fmt.Sprintf("item_image cannot be empty. input: %v", input.GetItemImage())
+			errormsg := "item_image cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.ItemImage) {
@@ -48,7 +48,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemQuantity == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_quantity cannot be empty.")})
-			errormsg := fmt.Sprintf("item_quantity cannot be empty. input: %v", input.GetItemQuantity())
+			errormsg := "item_quantity cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemQuantity) {
@@ -58,7 +58,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemDescription == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_description cannot be empty.")})
-			errormsg := fmt.Sprintf("item_description cannot be empty. input: %v", input.GetItemDescription())
+			errormsg := "item_description cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.ItemDescription) {
@@ -68,7 +68,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemShippingInfo == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shipping_info cannot be empty.")})
-			errormsg := fmt.Sprintf("item_shipping_info cannot be empty. input: %v", input.GetShippingInfo())
+			errormsg := "item_shipping_info cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemShippingInfo) {
@@ -78,7 +78,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemPaymentInfo == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_payment_info cannot be empty.")})
-			errormsg := fmt.Sprintf("item_payment_info cannot be empty. input: %v", input.GetPaymentInfo())
+			errormsg := "item_payment_info cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemPaymentInfo) {
@@ -88,7 +88,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemLocation == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
-			errormsg := fmt.Sprintf("item_location cannot be empty. input: %v", input.GetItemLocation())
+			errormsg := "item_location cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.ItemLocation) {
@@ -98,7 +98,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.ItemCategory == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category cannot be empty.")})
-			errormsg := fmt.Sprintf("item_category cannot be empty. input: %v", input.GetItemCategory())
+			errormsg := "item_category cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemCategory) {
@@ -108,7 +108,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 		}
 		if input.SellerID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id cannot be empty.")})
-			errormsg := fmt.Sprintf("seller_id cannot be empty. input: %v", input.GetSellerID())
+			errormsg := "seller_id cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.SellerID) {
