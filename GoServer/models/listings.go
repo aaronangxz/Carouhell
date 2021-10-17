@@ -316,3 +316,10 @@ func (r PriceFilter) GetMinPrice() uint32 {
 func (r PriceFilter) GetMaxPrice() uint32 {
 	return *r.MaxPrice
 }
+
+type PurchaseSingleListingRequest struct {
+	ItemID          *uint32 `json:"item_id" binding:"required"`
+	UserID          *uint32 `json:"user_id" binding:"required"`
+	ItemQuantity    *uint32 `json:"item_quantity" binding:"required"`
+	ItemPaymentInfo *uint32 `json:"item_paymentinfo" binding:"required"`
+}
