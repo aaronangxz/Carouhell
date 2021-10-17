@@ -19,6 +19,13 @@ func NewSuccessResponse() ResponseMeta {
 	}
 }
 
+func NewSuccessMessageResponse(message string) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  message,
+		ErrorCode: CONSTANT_SUCCESS,
+	}
+}
+
 func NewParamErrorsResponse(message string) ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "Parameter Error: " + message,

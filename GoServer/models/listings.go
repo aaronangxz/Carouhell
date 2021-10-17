@@ -26,6 +26,13 @@ type Listing struct {
 	ListingCtime          *int64  `json:"listing_ctime"`
 }
 
+func (r *Listing) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
 func (r *Listing) GetSellerID() uint32 {
 	if r != nil && r.SellerID != nil {
 		return *r.SellerID
