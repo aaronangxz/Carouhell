@@ -52,7 +52,7 @@ func main() {
 	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
 	r.POST("/get_user_listings", listings.GetUserListings)
-	r.GET("/get_latest_listings", listings.GetLatestListings)
+	r.POST("/get_latest_listings", listings.GetLatestListings)
 	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
 	r.POST("/purchase_single_listing", listings.PurchaseSingleListing)
 
