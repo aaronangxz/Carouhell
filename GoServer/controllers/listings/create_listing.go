@@ -1,6 +1,7 @@
 package listings
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -37,7 +38,7 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 			return errors.New(errormsg)
 		}
 		if input.ItemImage == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_img cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image cannot be empty.")})
 			errormsg := "item_image cannot be empty"
 			return errors.New(errormsg)
 		}
@@ -137,26 +138,31 @@ func CreateListing(c *gin.Context) {
 
 	if input.GetItemName() == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot be empty.")})
+		log.Print("item_name cannot be empty.")
 		return
 	}
 
 	if !utils.ValidateMaxStringLength(input.GetItemName()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		log.Printf("item_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetItemName()))
 		return
 	}
 
 	if input.GetItemPrice() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be > 0.")})
+		log.Print("item_price must be > 0.")
 		return
 	}
 
 	if input.GetItemImage() == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image cannot be empty.")})
+		log.Print("item_image cannot be empty.")
 		return
 	}
 
 	if input.GetItemQuantity() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_quantity must be > 0.")})
+		log.Print("item_quantity must be > 0.")
 		return
 	}
 
@@ -167,6 +173,7 @@ func CreateListing(c *gin.Context) {
 
 	if input.GetItemLocation() == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
+		log.Print("item_location cannot be empty.")
 		return
 	}
 
@@ -206,5 +213,10 @@ func CreateListing(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetItemID()))})
-	log.Printf("Successful: CreateListing.")
+
+	data, err := json.Marshal(listings)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v", err.Error())
+	}
+	log.Printf("Successful: CreateListing. Data: %s", data)
 }
