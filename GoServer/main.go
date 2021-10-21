@@ -46,14 +46,39 @@ func main() {
 	r.POST("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
 	r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
 
-	r.GET("/get_all_listings", listings.GetAllListings)
+	//***************** Home Page *****************
 	r.POST("/create_listing", listings.CreateListing)
+
+	//returns all, sorted by listing_ctime ASC
+	r.GET("/get_all_listings", listings.GetAllListings)
+	//returns all, sorted by listing_ctime DESC
+	r.POST("/get_latest_listings", listings.GetLatestListings)
+	//returns based on filters, sorted by listing_ctime DESC
+	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
+
+	//***************** Listing Page *****************
+	//returns based on item_id
 	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
+
 	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
+
+	//get_listing_reactions
+	//add_listing_likes
+	//purchase_single_item
+
+	//***************** Profile Page *****************
+	//returns based on user_id, sorted by listing_ctime DESC
 	r.POST("/get_user_listings", listings.GetUserListings)
-	r.POST("/get_latest_listings", listings.GetLatestListings)
-	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
+
+	//get_user_reviews
+	//get_user_info
+
+	//***************** Like Page *****************
+	// get_user_saved_listings
+
+	//***************** Wallet Page *****************
+	//get_user_wallet
 
 	r.Run()
 }
