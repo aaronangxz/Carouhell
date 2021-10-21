@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notifications"
@@ -34,7 +35,7 @@ func main() {
 
 	//Version endpoint
 	r.GET("/version", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"Version": "1.9", "DockerImageID": "538070d6030f", "LastUpdate": "22/10/2021 23:51"})
+		c.JSON(http.StatusOK, gin.H{"Version": os.Getenv("CURRENT_VER"), "DockerImageID": os.Getenv("CURRENT_IMG_ID"), "LastUpdate": os.Getenv("LAST_UPDATE")})
 	})
 
 	//Test endpoint
