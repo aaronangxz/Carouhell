@@ -163,11 +163,11 @@ func GetListingsUsingFilters(c *gin.Context) {
 	case constant.SEARCH_RESULT_SORTFLAG_DEFAULT, constant.SEARCH_RESULT_SORTFLAG_RECENT:
 		orderCondition += " listing_ctime DESC"
 	case constant.SEARCH_RESULT_SORTFLAG_PRICE_HIGH:
-		orderCondition += " item_price DESC"
+		orderCondition += " item_price DESC,listing_ctime DESC "
 	case constant.SEARCH_RESULT_SORTFLAG_PRICE_LOW:
-		orderCondition += " item_price ASC"
-	case constant.SEARCH_RESULT_SORTFLAG_RATINGS: //pending case 4: sort by ratings
-		orderCondition += " listing_ctime DESC"
+		orderCondition += " item_price ASC, listing_ctime DESC"
+	case constant.SEARCH_RESULT_SORTFLAG_POPULAR:
+		orderCondition += " listing_likes DESC, listing_ctime DESC"
 	}
 
 	query := "SELECT * FROM listing_tab" + nameCondition + categoryCondition + locationCondition + priceCondition + orderCondition
