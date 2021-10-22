@@ -1,6 +1,8 @@
 package listings
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -33,10 +35,23 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&singleListing).Error; err != nil {
+	query := "SELECT * FROM listing_tab WHERE item_id = ?"
+
+	result := models.DB.Raw(query).Scan(&singleListing)
+	err := result.Error
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetListingByItemID DB query: %v\n", err.Error())
 		return
 	}
 
+	data, err := json.Marshal(singleListing)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Data": singleListing})
+	log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
+	log.Printf("Result: %v\n", data)
 }
