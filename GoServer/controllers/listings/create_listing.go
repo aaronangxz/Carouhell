@@ -203,6 +203,8 @@ func CreateListing(c *gin.Context) {
 		ItemImage:             input.ItemImage,
 		SellerID:              input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
+		ListingMtime:          utils.Int64(time.Now().Unix()),
+		ListingLikes:          utils.Uint32(0),
 	}
 
 	if err := models.DB.Table("listing_tab").Create(&listings).

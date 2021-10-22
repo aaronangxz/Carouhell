@@ -24,6 +24,8 @@ type Listing struct {
 	ItemImage             *string `json:"item_image"`
 	SellerID              *uint32 `json:"seller_id"`
 	ListingCtime          *int64  `json:"listing_ctime"`
+	ListingMtime          *int64  `json:"listing_mtime"`
+	ListingLikes          *uint32 `json:"listing_likes"`
 }
 
 func (r *Listing) GetItemID() uint32 {
@@ -55,6 +57,8 @@ type GetAllListingsResponse struct {
 	ItemImage             string `json:"item_image"`
 	SellerID              uint32 `json:"seller_id"`
 	ListingCtime          int64  `json:"listing_ctime"`
+	ListingMtime          int64  `json:"listing_mtime"`
+	ListingLikes          uint32 `json:"listing_likes"`
 }
 
 type CreateListingRequest struct {
@@ -261,6 +265,8 @@ type GetLatestListingsResponse struct {
 	ItemImage             string
 	SellerID              uint32
 	ListingCtime          uint32
+	ListingMtime          int64
+	ListingLikes          uint32
 }
 
 func (r GetLatestListingsRequest) GetItemCategory() uint32 {
