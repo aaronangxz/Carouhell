@@ -58,7 +58,7 @@ func GetListingByItemID(c *gin.Context) {
 		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Data": singleListing})
-	log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("GetListingByItemID success."), "Data": singleListing})
+	log.Printf("Successful: GetListingByItemID. rows: %v\n", result.RowsAffected)
 	log.Printf("Result: %s\n", data)
 }
