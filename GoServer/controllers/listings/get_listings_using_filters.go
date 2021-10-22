@@ -48,7 +48,7 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 		}
 
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
-		errormsg := fmt.Sprint("JSON error: &v", err.Error())
+		errormsg := fmt.Sprintf("JSON error: %v", err.Error())
 		return errors.New(errormsg)
 	}
 	return nil

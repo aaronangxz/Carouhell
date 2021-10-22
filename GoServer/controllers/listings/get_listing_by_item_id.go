@@ -13,8 +13,9 @@ import (
 
 func GetListingByItemID(c *gin.Context) {
 	var (
-		singleListing models.Listing
-		input         models.GetSingleListingRequest
+		singleListing  models.GetSingleListingResponse
+		input          models.GetSingleListingRequest
+		groupCondition = " GROUP BY l.item_id"
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -35,9 +36,15 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT * FROM listing_tab WHERE item_id = ?"
+	query := "SELECT l.item_id, l.item_name, l.item_price, l.item_quantity," +
+		" l.item_purchased_quantity, l.item_description, l.item_shipping_info," +
+		" l.item_payment_info,l.item_location, l.item_status, l.item_category," +
+		" l.item_image, a.user_name AS seller_name, l.listing_ctime, l.listing_mtime, l.listing_likes" +
+		" FROM listing_tab l, acc_tab a WHERE l.seller_id = a.user_id AND l.item_id = ?" + groupCondition
 
-	result := models.DB.Raw(query).Scan(&singleListing)
+	log.Println(query)
+
+	result := models.DB.Raw(query, input.GetItemID()).Scan(&singleListing)
 	err := result.Error
 
 	if err != nil {

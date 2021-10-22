@@ -24,17 +24,21 @@ func GetLatestListings(c *gin.Context) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemCategory != nil && !utils.ValidateUint(input.ItemCategory) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category must be uint type.")})
+			log.Printf("item_category must be uint. input: %v\n", input.GetItemCategory())
 			return
 		}
 		if input.ItemStatus != nil && !utils.ValidateUint(input.ItemStatus) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_status must be uint type.")})
+			log.Printf("item_status must be uint. input: %v\n", input.GetItemStatus())
 			return
 		}
 		if input.Limit != nil && !utils.ValidateUint(input.Limit) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("limit must be uint type.")})
+			log.Printf("limit must be uint. input: %v\n", input.GetLimit())
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		log.Printf("JSON error: %v\n", err.Error())
 		return
 	}
 
@@ -58,6 +62,7 @@ func GetLatestListings(c *gin.Context) {
 			statusCondition += " item_status = " + fmt.Sprint(constant.ITEM_STATUS_DELETED)
 		default:
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown item_status.")})
+			log.Printf("Unknown item_status. input: %v\n", input.GetItemStatus())
 			return
 		}
 	}
@@ -76,6 +81,7 @@ func GetLatestListings(c *gin.Context) {
 
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size.")})
+		log.Printf("limit exceeds max listing response size. input: %v\n", input.GetLimit())
 		return
 	}
 
