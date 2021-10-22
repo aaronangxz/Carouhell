@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
@@ -18,7 +19,7 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
-			errormsg := fmt.Sprintf("item_id is empty")
+			errormsg := "item_id is empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.ItemID) {
@@ -224,9 +225,9 @@ func UpdateSingleListing(c *gin.Context) {
 	if err := models.DB.Exec("UPDATE listing_tab SET "+
 		"item_name = ?, item_price = ?, item_quantity = ?,"+
 		"item_description = ?, item_shipping_info = ?, item_payment_info = ?,"+
-		"item_location = ?, item_category = ?, item_image = ? WHERE item_id = ?",
+		"item_location = ?, item_category = ?, item_image = ?, listing_mtime = ? WHERE item_id = ?",
 		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(), input.GetShippingInfo(), input.GetPaymentInfo(),
-		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), input.GetItemID()).Error; err != nil {
+		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during DB query: %v", err.Error())
 		return

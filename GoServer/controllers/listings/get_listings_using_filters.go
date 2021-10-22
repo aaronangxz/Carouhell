@@ -1,7 +1,6 @@
 package listings
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -88,12 +87,13 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 
 func GetListingsUsingFilters(c *gin.Context) {
 	var (
-		listings          []models.Listing
+		listings          []models.GetListingsUsingFiltersResponse
 		input             models.GetListingsUsingFiltersRequest
 		nameCondition     = ""
 		categoryCondition = ""
 		locationCondition = ""
 		priceCondition    = ""
+		groupCondition    = " GROUP BY l.item_id"
 		orderCondition    = " ORDER BY"
 	)
 
@@ -110,49 +110,31 @@ func GetListingsUsingFilters(c *gin.Context) {
 	//build SQL queries
 	if input.SearchKeyword != nil {
 		key := "'%" + input.GetSearchKeyword() + "%'"
-		nameCondition += fmt.Sprintf(" WHERE item_name LIKE %v", key)
+		nameCondition += fmt.Sprintf(" AND item_name LIKE %v", key)
 	}
 
 	//category filter
 	if input.CategoryFilter.ItemCategory != nil {
 		//else concat into query
 		// categoryCondition += " item_category = " + fmt.Sprint(input.CategoryFilter.GetItemCategory())
-		categoryCondition += fmt.Sprintf(" item_category = %v", input.CategoryFilter.GetItemCategory())
+		categoryCondition += fmt.Sprintf(" AND item_category = %v", input.CategoryFilter.GetItemCategory())
 
-	}
-
-	if nameCondition != "" && categoryCondition != "" {
-		nameCondition += " AND"
-	} else if nameCondition == "" {
-		nameCondition = " WHERE"
 	}
 
 	if input.LocationFilter.Location != nil {
 		// locationCondition += " item_location = '" + fmt.Sprint(input.LocationFilter.GetLocation()) + "'"
-		locationCondition += fmt.Sprintf(" item_location = '%v'", input.LocationFilter.GetLocation())
-	}
-
-	if categoryCondition != "" && locationCondition != "" {
-		categoryCondition += " AND"
+		locationCondition += fmt.Sprintf(" AND item_location = '%v'", input.LocationFilter.GetLocation())
 	}
 
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice == nil {
 		// priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice())
-		priceCondition += fmt.Sprintf(" item_price >= %v", input.PriceFilter.GetMinPrice())
+		priceCondition += fmt.Sprintf(" AND item_price >= %v", input.PriceFilter.GetMinPrice())
 	} else if input.PriceFilter.MinPrice == nil && input.PriceFilter.MaxPrice != nil {
 		// priceCondition += " item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
-		priceCondition += fmt.Sprintf(" item_price <= %v", input.PriceFilter.GetMaxPrice())
+		priceCondition += fmt.Sprintf("  AND item_price <= %v", input.PriceFilter.GetMaxPrice())
 	} else if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
 		// priceCondition += " item_price >= " + fmt.Sprint(input.PriceFilter.GetMinPrice()) + " AND item_price <= " + fmt.Sprint(input.PriceFilter.GetMaxPrice())
-		priceCondition += fmt.Sprintf(" item_price >= %v AND item_price <= %v", input.PriceFilter.GetMinPrice(), input.PriceFilter.GetMaxPrice())
-	}
-
-	if nameCondition == " WHERE" && categoryCondition == "" && locationCondition == "" && priceCondition == "" {
-		nameCondition = ""
-	}
-
-	if priceCondition != "" && locationCondition != "" {
-		locationCondition += " AND"
+		priceCondition += fmt.Sprintf(" AND item_price >= %v AND item_price <= %v", input.PriceFilter.GetMinPrice(), input.PriceFilter.GetMaxPrice())
 	}
 
 	if input.SortFlag == nil {
@@ -163,26 +145,31 @@ func GetListingsUsingFilters(c *gin.Context) {
 	case constant.SEARCH_RESULT_SORTFLAG_DEFAULT, constant.SEARCH_RESULT_SORTFLAG_RECENT:
 		orderCondition += " listing_ctime DESC"
 	case constant.SEARCH_RESULT_SORTFLAG_PRICE_HIGH:
-		orderCondition += " item_price DESC"
+		orderCondition += " item_price DESC,listing_ctime DESC "
 	case constant.SEARCH_RESULT_SORTFLAG_PRICE_LOW:
-		orderCondition += " item_price ASC"
-	case constant.SEARCH_RESULT_SORTFLAG_RATINGS: //pending case 4: sort by ratings
-		orderCondition += " listing_ctime DESC"
+		orderCondition += " item_price ASC, listing_ctime DESC"
+	case constant.SEARCH_RESULT_SORTFLAG_POPULAR:
+		orderCondition += " listing_likes DESC, listing_ctime DESC"
 	}
 
-	query := "SELECT * FROM listing_tab" + nameCondition + categoryCondition + locationCondition + priceCondition + orderCondition
-	log.Printf("Executing DB query: %v", query)
+	query := "SELECT l.item_id, l.item_name, l.item_price, l.item_quantity," +
+		" l.item_purchased_quantity, l.item_description, l.item_shipping_info," +
+		" l.item_payment_info,l.item_location, l.item_status, l.item_category," +
+		" l.item_image, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, l.listing_likes" +
+		" FROM listing_tab l, acc_tab a WHERE l.seller_id = a.user_id" +
+		nameCondition + categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
 
-	if err := models.DB.Raw(query).Scan(&listings).Error; err != nil {
+	log.Printf("Executing DB query: %v\n", query)
+
+	result := models.DB.Raw(query).Scan(&listings)
+	err := result.Error
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during DB query: %v", err.Error())
+		log.Printf("Error during GetListingsUsingFilters DB query: %v\n", err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingsUsingFiltersResult(listings), "Data": listings})
-	data, err := json.Marshal(listings)
-	if err != nil {
-		log.Printf("Failed to marshal JSON results: %v", err.Error())
-	}
-	log.Printf("Successful: GetListingsUsingFilters. Returned: %s", data)
+	log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
 }
