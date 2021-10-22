@@ -33,3 +33,10 @@ func ValidateGetListingsUsingFiltersResult(results []models.GetListingsUsingFilt
 	}
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetListingsUsingFilters success. results: %v", len(results)))
 }
+
+func ValidateGetUserListingsResult(results []models.GetUserListingsResponse) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetUserListings success. results: %v", len(results)))
+}

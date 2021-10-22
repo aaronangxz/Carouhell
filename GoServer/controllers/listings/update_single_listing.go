@@ -233,6 +233,6 @@ func UpdateSingleListing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessResponse()})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully updated listing details.")})
 	log.Printf("Successful: UpdateSingleListing.")
 }
