@@ -60,5 +60,5 @@ func GetListingByItemID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Data": singleListing})
 	log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
-	log.Printf("Result: %v\n", data)
+	log.Printf("Result: %s\n", data)
 }
