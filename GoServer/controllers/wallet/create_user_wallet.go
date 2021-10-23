@@ -15,7 +15,20 @@ import (
 func CreateUserWallet(c *gin.Context) {
 	var (
 		input models.CreateUserWalletRequest
+		hold  models.Account
 	)
+
+	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.UserID).Scan(&hold).Error; err != nil {
+		//check if user exists
+		if hold.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("user_id does not exist.")})
+			log.Printf("user not found:  %v", input.GetUserID())
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during DB query: %v", err.Error())
+		return
+	}
 
 	wallet := models.Wallet{
 		WalletID:      input.UserID,
@@ -29,7 +42,7 @@ func CreateUserWallet(c *gin.Context) {
 	if err := models.DB.Table("wallet_tab").Create(&wallet).
 		Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during DB query: %v", err.Error())
+		log.Printf("Error during CreateUserWallet DB query: %v", err.Error())
 		return
 	}
 

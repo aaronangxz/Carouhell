@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -22,7 +23,15 @@ func GetUserWalletDetails(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during DB query: %v", err.Error())
+		log.Printf("Error during GetUserWalletDetails DB query: %v", err.Error())
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details.")})
+
+	data, err := json.Marshal(walletDetails)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v", err.Error())
+	}
+	log.Printf("Successful: GetUserWalletDetails. Data: %s", data)
 }
