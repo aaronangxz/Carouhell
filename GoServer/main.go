@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notifications"
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
@@ -50,7 +51,7 @@ func main() {
 
 	//***************** Home Page *****************
 	r.POST("/create_listing", listings.CreateListing)
-	r.POST("/create_account", listings.CreateListing)
+	r.POST("/create_account", account.CreateAccount)
 
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
