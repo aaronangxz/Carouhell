@@ -186,6 +186,21 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	//create wallet
+	wallet := models.Wallet{
+		WalletID:      account.UserID,
+		WalletBalance: utils.Uint32(0),
+		WalletStatus:  utils.Uint32(constant.WALLET_STATUS_ACTIVE),
+		LastTopUp:     nil,
+		LastUsed:      utils.Int64(time.Now().Unix()),
+	}
+
+	if err := models.DB.Table("wallet_tab").Create(&wallet).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during CreateAccount - wallet_tab DB query: %v", err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create listing.")})
 
 	data, err := json.Marshal(account)

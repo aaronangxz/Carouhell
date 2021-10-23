@@ -2,7 +2,6 @@ package models
 
 type Wallet struct {
 	WalletID      *uint32 `json:"wallet_id" gorm:"primary_key"`
-	UserID        *uint32 `json:"user_id" gorm:"primary_key"`
 	WalletBalance *uint32 `json:"wallet_balance"`
 	WalletStatus  *uint32 `json:"wallet_status"`
 	LastTopUp     *int64  `json:"last_top_up"`
@@ -44,7 +43,6 @@ func (r *GetUserWalletDetailsRequest) GetUserID() uint32 {
 
 type GetUserWalletDetailsResponse struct {
 	WalletID      *uint32 `json:"wallet_id"`
-	UserID        *uint32 `json:"user_id"`
 	WalletBalance *uint32 `json:"wallet_balance"`
 	WalletStatus  *uint32 `json:"wallet_status"`
 	LastTopUp     *int64  `json:"last_top_up"`

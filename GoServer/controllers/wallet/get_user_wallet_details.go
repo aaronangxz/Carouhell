@@ -45,7 +45,7 @@ func GetUserWalletDetails(c *gin.Context) {
 
 	if err := models.DB.Raw("SELECT * FROM wallet_tab WHERE user_id = ?", input.UserID).Scan(&walletDetails).Error; err != nil {
 		//check if user exists
-		if walletDetails.UserID == nil {
+		if walletDetails.WalletID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("user_id does not exist.")})
 			log.Printf("user not found:  %v", input.GetUserID())
 			return
