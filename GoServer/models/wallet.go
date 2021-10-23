@@ -49,5 +49,4 @@ type GetUserWalletDetailsResponse struct {
 	WalletStatus  *uint32 `json:"wallet_status"`
 	LastTopUp     *int64  `json:"last_topup"`
 	LastUsed      *int64  `json:"last_used"`
-	//transactions array
 }
