@@ -66,3 +66,14 @@ func (r *CreateAccountRequest) GetUserSecurityAnswer() string {
 	}
 	return ""
 }
+
+type GetUserDetailsRequest struct {
+	UserID *uint32 `json:"user_id" binding:"required"`
+}
+
+func (r *GetUserDetailsRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}

@@ -76,7 +76,7 @@ func main() {
 	r.POST("/get_user_listings", listings.GetUserListings)
 
 	//get_user_reviews
-	//get_user_info
+	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
 	// get_user_saved_listings
