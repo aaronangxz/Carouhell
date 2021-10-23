@@ -12,6 +12,7 @@ import (
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountRequest) error {
@@ -133,9 +134,11 @@ func CreateAccount(c *gin.Context) {
 	result := models.DB.Raw("SELECT * FROM acc_tab WHERE user_name = ? OR user_email = ?", input.UserName, input.UserEmail).Scan(&hold)
 
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
-		log.Printf("Error during DB query: %v", result.Error.Error())
-		return
+		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
+			log.Printf("Error during DB query: %v", result.Error.Error())
+			return
+		}
 	}
 
 	if result.RowsAffected > 0 {
@@ -149,20 +152,41 @@ func CreateAccount(c *gin.Context) {
 		UserEmail:     input.UserEmail,
 		UserCtime:     utils.Int64(time.Now().Unix()),
 		UserStatus:    utils.Uint32(constant.ACC_STATUS_ACTIVE),
-		UserType:      nil,
 		UserImage:     nil,
 		UserLastLogin: utils.Int64(time.Now().Unix()),
 		UserRating:    utils.Uint32(0),
 	}
 
-	if err := models.DB.Table("acc_tab").Create(&account).
-		Error; err != nil {
+	//write to acc_tab
+	if err := models.DB.Table("acc_tab").Create(&account).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during CreateAccount DB query: %v", err.Error())
+		log.Printf("Error during CreateAccount - acc_tab DB query: %v", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing."))})
+	credentials := models.AccountCredentials{
+		UserID:               account.UserID,
+		UserPassword:         input.UserPassword,
+		UserSecurityQuestion: input.UserSecurityQuestion,
+		UserSecurityAnswer:   input.UserSecurityAnswer,
+	}
+
+	//write to acc_credentials_tab
+	if err := models.DB.Table("acc_credentials_tab").Create(&credentials).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during CreateAccount - acc_credentials_tab DB query: %v", err.Error())
+
+		//rollback acc_tab if fail
+		if errRollback := models.DB.Table("acc_tab").Delete(&account).Error; errRollback != nil {
+			log.Printf("Error during CreateAccount - acc_tab roll back: %v", err.Error())
+		} else {
+			log.Print("rollback acc_tab successful")
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create listing.")})
 
 	data, err := json.Marshal(account)
 	if err != nil {

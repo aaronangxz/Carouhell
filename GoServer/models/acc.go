@@ -6,10 +6,23 @@ type Account struct {
 	UserEmail     *string `json:"user_email"`
 	UserCtime     *int64  `json:"user_ctime"`
 	UserStatus    *uint32 `json:"user_status"`
-	UserType      *uint32 `json:"user_type"`
 	UserImage     *string `json:"user_image"`
 	UserLastLogin *int64  `json:"user_last_login"`
 	UserRating    *uint32 `json:"user_rating"`
+}
+
+func (r *Account) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+type AccountCredentials struct {
+	UserID               *uint32 `json:"user_id" gorm:"primary_key"`
+	UserPassword         *string `json:"user_password"`
+	UserSecurityQuestion *uint32 `json:"user_security_question"`
+	UserSecurityAnswer   *string `json:"user_security_answer"`
 }
 type CreateAccountRequest struct {
 	UserName             *string `json:"user_name" binding:"required"`
