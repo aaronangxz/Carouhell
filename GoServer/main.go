@@ -6,6 +6,7 @@ import (
 
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notifications"
+	"github.com/aaronangxz/TIC2601/controllers/wallet"
 
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/gin-contrib/cors"
@@ -79,7 +80,8 @@ func main() {
 	// get_user_saved_listings
 
 	//***************** Wallet Page *****************
-	//get_user_wallet
+	r.POST("/create_user_wallet", wallet.CreateUserWallet)
+	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
 
 	r.Run()
 }
