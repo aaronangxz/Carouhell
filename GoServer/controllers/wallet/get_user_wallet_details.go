@@ -55,7 +55,7 @@ func GetUserWalletDetails(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details.")})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details."), "Data": walletDetails})
 
 	data, err := json.Marshal(walletDetails)
 	if err != nil {
