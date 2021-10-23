@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notifications"
+	"github.com/aaronangxz/TIC2601/controllers/wallet"
 
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/gin-contrib/cors"
@@ -49,6 +51,7 @@ func main() {
 
 	//***************** Home Page *****************
 	r.POST("/create_listing", listings.CreateListing)
+	r.POST("/create_account", account.CreateAccount)
 
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
@@ -73,13 +76,14 @@ func main() {
 	r.POST("/get_user_listings", listings.GetUserListings)
 
 	//get_user_reviews
-	//get_user_info
+	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
 	// get_user_saved_listings
 
 	//***************** Wallet Page *****************
-	//get_user_wallet
+	r.POST("/create_user_wallet", wallet.CreateUserWallet)
+	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
 
 	r.Run()
 }
