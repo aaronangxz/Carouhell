@@ -20,6 +20,17 @@ type WalletTransaction struct {
 	TransactionMtime  *int64  `json:"transaction_mtime"`
 }
 
+type CreateUserWalletRequest struct {
+	UserID *uint32 `json:"user_id" gorm:"primary_key"`
+}
+
+func (r *CreateUserWalletRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
 type GetUserWalletRequest struct {
 	UserID *uint32 `json:"user_id"`
 }
