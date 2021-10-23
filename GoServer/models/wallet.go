@@ -5,7 +5,7 @@ type Wallet struct {
 	UserID        *uint32 `json:"user_id" gorm:"primary_key"`
 	WalletBalance *uint32 `json:"wallet_balance"`
 	WalletStatus  *uint32 `json:"wallet_status"`
-	LastTopUp     *int64  `json:"last_topup"`
+	LastTopUp     *int64  `json:"last_top_up"`
 	LastUsed      *int64  `json:"last_used"`
 }
 
@@ -21,7 +21,7 @@ type WalletTransaction struct {
 }
 
 type CreateUserWalletRequest struct {
-	UserID *uint32 `json:"user_id" gorm:"primary_key"`
+	UserID *uint32 `json:"user_id" binding:"required"`
 }
 
 func (r *CreateUserWalletRequest) GetUserID() uint32 {
@@ -32,7 +32,7 @@ func (r *CreateUserWalletRequest) GetUserID() uint32 {
 }
 
 type GetUserWalletDetailsRequest struct {
-	UserID *uint32 `json:"user_id"`
+	UserID *uint32 `json:"user_id" binding:"required"`
 }
 
 func (r *GetUserWalletDetailsRequest) GetUserID() uint32 {
@@ -47,6 +47,6 @@ type GetUserWalletDetailsResponse struct {
 	UserID        *uint32 `json:"user_id"`
 	WalletBalance *uint32 `json:"wallet_balance"`
 	WalletStatus  *uint32 `json:"wallet_status"`
-	LastTopUp     *int64  `json:"last_topup"`
+	LastTopUp     *int64  `json:"last_top_up"`
 	LastUsed      *int64  `json:"last_used"`
 }

@@ -2,6 +2,8 @@ package wallet
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -12,13 +14,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ValidateCreateUserWalletRequest(c *gin.Context, input *models.CreateUserWalletRequest) error {
+	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			errormsg := "user_id cannot be empty"
+			return errors.New(errormsg)
+		}
+		if !utils.ValidateUint(input.UserID) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			errormsg := fmt.Sprintf("user_id must be uint type. input: %v", input.GetUserID())
+			return errors.New(errormsg)
+		}
+
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		errormsg := fmt.Sprint("JSON error: &v", err.Error())
+		return errors.New(errormsg)
+	}
+	return nil
+}
+
 func CreateUserWallet(c *gin.Context) {
 	var (
 		input models.CreateUserWalletRequest
 		hold  models.Account
 	)
 
-	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.UserID).Scan(&hold).Error; err != nil {
+	if err := ValidateCreateUserWalletRequest(c, &input); err != nil {
+		log.Printf("Error during ValidateCreateUserWalletRequest: %v", err.Error())
+		return
+	}
+
+	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.GetUserID()).Scan(&hold).Error; err != nil {
 		//check if user exists
 		if hold.UserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("user_id does not exist.")})
