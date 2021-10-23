@@ -59,7 +59,6 @@ func CreateUserWallet(c *gin.Context) {
 
 	wallet := models.Wallet{
 		WalletID:      input.UserID,
-		UserID:        input.UserID,
 		WalletBalance: utils.Uint32(0),
 		WalletStatus:  utils.Uint32(constant.WALLET_STATUS_ACTIVE),
 		LastTopUp:     nil,
