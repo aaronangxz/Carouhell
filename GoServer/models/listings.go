@@ -55,6 +55,7 @@ type GetAllListingsResponse struct {
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -139,6 +140,7 @@ type GetSingleListingResponse struct {
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -270,6 +272,7 @@ type GetUserListingsResponse struct {
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -301,6 +304,7 @@ type GetLatestListingsResponse struct {
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -381,6 +385,7 @@ type GetListingsUsingFiltersResponse struct {
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
+	SellerID              uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
