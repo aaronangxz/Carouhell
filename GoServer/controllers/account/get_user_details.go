@@ -1,6 +1,7 @@
 package account
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -14,10 +15,21 @@ func GetUserDetails(c *gin.Context) {
 		userDetails models.Account
 	)
 
-	query := "SELECT * FROM acc_tab WHERE user_id = ?"
+	if err := c.ShouldBindJSON(&input); err != nil {
+		if input.UserID == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			log.Println("user_id cannot be empty.")
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
+		log.Printf("JSON error: %v\n", err.Error())
+		return
+	}
+
+	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE user_id = %v", input.GetUserID())
 	log.Println(query)
 
-	result := models.DB.Raw(query, input.GetUserID).Scan(&userDetails)
+	result := models.DB.Raw(query).Scan(&userDetails)
 	err := result.Error
 
 	if err != nil {
