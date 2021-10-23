@@ -201,7 +201,7 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create account.")})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create account and wallet.")})
 
 	data, err := json.Marshal(account)
 	if err != nil {
