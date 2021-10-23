@@ -38,6 +38,6 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Successful: GetAllListings. rows: %v\n", result.RowsAffected)
+	log.Printf("Successful: GetUserDetails. rows: %v\n", result.RowsAffected)
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieve user details."), "Data": userDetails})
 }
