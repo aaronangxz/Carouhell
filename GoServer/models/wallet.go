@@ -31,18 +31,18 @@ func (r *CreateUserWalletRequest) GetUserID() uint32 {
 	return 0
 }
 
-type GetUserWalletRequest struct {
+type GetUserWalletDetailsRequest struct {
 	UserID *uint32 `json:"user_id"`
 }
 
-func (r *GetUserWalletRequest) GetUserID() uint32 {
+func (r *GetUserWalletDetailsRequest) GetUserID() uint32 {
 	if r != nil && r.UserID != nil {
 		return *r.UserID
 	}
 	return 0
 }
 
-type GetUserWalletResponse struct {
+type GetUserWalletDetailsResponse struct {
 	WalletID      *uint32 `json:"wallet_id"`
 	UserID        *uint32 `json:"user_id"`
 	WalletBalance *uint32 `json:"wallet_balance"`

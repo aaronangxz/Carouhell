@@ -8,10 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUserWallet(c *gin.Context) {
+func GetUserWalletDetails(c *gin.Context) {
 	var (
-		input         models.GetUserWalletRequest
-		walletDetails models.GetUserWalletResponse
+		input         models.GetUserWalletDetailsRequest
+		walletDetails models.GetUserWalletDetailsResponse
 	)
 
 	if err := models.DB.Raw("SELECT * FROM wallet_tab WHERE user_id = ?", input.UserID).Scan(&walletDetails).Error; err != nil {
@@ -25,6 +25,4 @@ func GetUserWallet(c *gin.Context) {
 		log.Printf("Error during DB query: %v", err.Error())
 		return
 	}
-
-	//join wallet_transaction to get list of transaction
 }
