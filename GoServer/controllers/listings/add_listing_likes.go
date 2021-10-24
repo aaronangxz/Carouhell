@@ -19,7 +19,6 @@ func GetLatestLikes(c *gin.Context, input models.AddListingLikeRequest) (uint32,
 
 	//get current likes
 	resultCount := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND item_id = ?", input.GetItemID()).Count(&count)
-	log.Println(resultCount)
 	errCount := resultCount.Error
 
 	if errCount != nil {
