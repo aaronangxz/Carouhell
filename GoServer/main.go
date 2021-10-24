@@ -52,6 +52,7 @@ func main() {
 	//***************** Home Page *****************
 	r.POST("/create_listing", listings.CreateListing)
 	r.POST("/create_account", account.CreateAccount)
+	r.POST("/authenticate_user", account.AuthenticateUser)
 
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
