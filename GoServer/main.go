@@ -75,6 +75,7 @@ func main() {
 	//***************** Profile Page *****************
 	//returns based on user_id, sorted by listing_ctime DESC
 	r.POST("/get_user_listings", listings.GetUserListings)
+	r.POST("/add_user_review", account.AddUserReview)
 
 	//get_user_reviews
 	r.POST("/get_user_details", account.GetUserDetails)
