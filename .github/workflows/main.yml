@@ -24,18 +24,34 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "tic2601-t11" #Must be unique in Heroku
-          heroku_email: "angxze@gmail.com"
-          branch: master
-          appdir: "GoServer"
+      - name: Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      
+#       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+#         with:
+#           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#           heroku_app_name: "tic2601-t11" #Must be unique in Heroku
+#           heroku_email: "angxze@gmail.com"
+#           branch: master
+#           appdir: "GoServer"
       #Runs a single command using the runners shell
 #         run: |
 #          chmod +x ./GoServer/deploy.sh
 #          ./deploy.sh
 #         shell: bash
+      - name: Login Heroku
+        run: heroku container:login
       - name: Build Image
         working-directory: ./GoServer
         run: docker-compose build
