@@ -40,3 +40,10 @@ func ValidateGetUserListingsResult(results []models.GetUserListingsResponse) mod
 	}
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetUserListings success. results: %v", len(results)))
 }
+
+func ValidateGetListingReactionsResult(results []models.ListingReactionsComments) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetListingReactions success. results: %v", len(results)))
+}

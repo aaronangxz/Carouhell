@@ -61,5 +61,5 @@ func GetListingReactions(c *gin.Context) {
 	reactions.Comments = comments
 
 	log.Println("Successful: GetListingReactions.")
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieve listing reactions."), "Data": reactions})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingReactionsResult(reactions.Comments), "Data": reactions})
 }
