@@ -90,10 +90,10 @@ func AddListingComments(c *gin.Context) {
 
 	if err := result.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during AddListingLikes DB query: %v\n", err.Error())
+		log.Printf("Error during AddListingComments DB query: %v\n", err.Error())
 		return
 	}
 
-	log.Println("Successful: AddListingLikes.")
+	log.Println("Successful: AddListingComments.")
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully added comment to listing %v", input.GetItemID()))})
 }
