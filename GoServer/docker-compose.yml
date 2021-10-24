@@ -3,6 +3,7 @@ version: '3'
 
 services:
   server:
+    image: registry.heroku.com/tic2601-t11/web
     container_name: tic2601-server
     build:
       context: .
