@@ -404,11 +404,15 @@ func (r *GetListingReactionsRequest) GetItemID() uint32 {
 }
 
 type ListingReactionsComments struct {
-	UserName uint32 `json:"user_name"`
+	UserName string `json:"user_name"`
 	Comment  string `json:"comment"`
 	Ctime    int64  `json:"ctime"`
 }
+
+type ListingReactionsCount struct {
+	Count uint32 `json:"likes_count"`
+}
 type GetListingReactionsResponse struct {
-	LikesCount uint32 `json:"likes_count"`
-	Comments   []ListingReactionsComments
+	LikesCount uint32                     `json:"likes_count"`
+	Comments   []ListingReactionsComments `json:"comments"`
 }
