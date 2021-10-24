@@ -67,9 +67,9 @@ func main() {
 
 	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
-
-	//get_listing_reactions
+	r.POST("/get_listing_reactions", listings.GetListingReactions)
 	//add_listing_likes
+	//add_listing_comments
 	//purchase_single_item
 
 	//***************** Profile Page *****************

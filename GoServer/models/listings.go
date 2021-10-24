@@ -391,3 +391,24 @@ type GetListingsUsingFiltersResponse struct {
 	ListingMtime          int64  `json:"listing_mtime"`
 	ListingLikes          uint32 `json:"listing_likes"`
 }
+
+type GetListingReactionsRequest struct {
+	ItemID *uint32 `json:"item_id" binding:"required"`
+}
+
+func (r *GetListingReactionsRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+type ListingReactionsComments struct {
+	UserName uint32 `json:"user_name"`
+	Comment  string `json:"comment"`
+	Ctime    int64  `json:"ctime"`
+}
+type GetListingReactionsResponse struct {
+	LikesCount uint32 `json:"likes_count"`
+	Comments   []ListingReactionsComments
+}
