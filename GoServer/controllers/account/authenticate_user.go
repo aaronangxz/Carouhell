@@ -80,7 +80,7 @@ func AuthenticateUser(c *gin.Context) {
 	if result.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
-			log.Printf("Error during DB query: %v\n", result.Error.Error())
+			log.Printf("Error during check_user_exists DB query: %v\n", result.Error.Error())
 			return
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name does not exist.")})
@@ -95,7 +95,7 @@ func AuthenticateUser(c *gin.Context) {
 	if resultCredentials.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(resultCredentials.Error)})
-			log.Printf("Error during DB query: %v\n", resultCredentials.Error.Error())
+			log.Printf("Error during retrieve_credentials DB query: %v\n", resultCredentials.Error.Error())
 			return
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id does not exist.")})
