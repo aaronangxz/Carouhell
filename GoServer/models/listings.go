@@ -475,3 +475,30 @@ type GetUserLikedListingsResponse struct {
 	ListingMtime          int64  `json:"listing_mtime"`
 	ListingLikes          uint32 `json:"listing_likes"`
 }
+
+type AddListingCommentsRequest struct {
+	ItemID  *uint32 `json:"item_id" binding:"required"`
+	UserID  *uint32 `json:"user_id" binding:"required"`
+	Comment *string `json:"comment" binding:"required"`
+}
+
+func (r *AddListingCommentsRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+func (r *AddListingCommentsRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *AddListingCommentsRequest) GetComment() string {
+	if r != nil && r.Comment != nil {
+		return *r.Comment
+	}
+	return ""
+}
