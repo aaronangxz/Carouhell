@@ -146,3 +146,7 @@ func (r *AddUserReviewRequest) GetReviewText() string {
 	}
 	return ""
 }
+
+type AddUserReviewResponse struct {
+	Ratings float32 `json:"latest_ratings"`
+}

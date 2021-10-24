@@ -16,18 +16,18 @@ const (
 	ACC_STATUS_DISABLED = 2
 	ACC_STATUS_DELETED  = 3
 
-	USER_REVIEW_ONE_STAR   = 0
-	USER_REVIEW_TWO_STAR   = 1
-	USER_REVIEW_THREE_STAR = 2
-	USER_REVIEW_FOUR_STAR  = 3
-	USER_REVIEW_FIVE_STAR  = 4
+	USER_REVIEW_ONE_STAR   = 1
+	USER_REVIEW_TWO_STAR   = 2
+	USER_REVIEW_THREE_STAR = 3
+	USER_REVIEW_FOUR_STAR  = 4
+	USER_REVIEW_FIVE_STAR  = 5
 )
 
 func CheckAccConstant(field int, param uint32) bool {
 
 	SecurityQuestionList := [5]int{0, 1, 2, 3, 4}
 	AccStatusList := [4]int{0, 1, 2, 3}
-	UserReviewList := [5]int{0, 1, 2, 3, 4}
+	UserReviewList := [5]int{1, 2, 3, 4, 5}
 
 	switch field {
 	case ACC_CREATION_SECURITY_QUESTION:

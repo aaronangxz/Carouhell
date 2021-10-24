@@ -13,6 +13,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetLatestRatings(c *gin.Context, input models.AddUserReviewRequest) (float32, error) {
+	var count float32
+
+	//get current likes
+	query := "SELECT ROUND(CAST(SUM(ratings)/5)) AS count FROM user_review_tab WHERE seller_id = %v"
+	result := models.DB.Raw(query).Scan(&count)
+	err := result.Error
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during AddUserReview - GetLatestRatings DB query: %v\n", err.Error())
+		errormsg := fmt.Sprintf("Error during AddUserReview - GetLatestRatings DB query: %v\n", err.Error())
+		return 0, errors.New(errormsg)
+	}
+	return count, nil
+}
+
 func isExist(c *gin.Context, input models.AddUserReviewRequest) bool {
 	var (
 		count uint32
@@ -95,7 +112,8 @@ func ValidateAddUserReviewInput(c *gin.Context, input *models.AddUserReviewReque
 
 func AddUserReview(c *gin.Context) {
 	var (
-		input models.AddUserReviewRequest
+		input          models.AddUserReviewRequest
+		updatedRatings models.AddUserReviewResponse
 	)
 
 	if err := ValidateAddUserReviewRequest(c, &input); err != nil {
@@ -128,6 +146,14 @@ func AddUserReview(c *gin.Context) {
 		log.Printf("Error during AddUserReview DB query: %v", err.Error())
 		return
 	}
+
+	//get latest ratings
+	count, err := GetLatestRatings(c, input)
+	if err != nil {
+		return
+	}
+
+	updatedRatings.Ratings = count
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully added review.")})
 	log.Println("Successful: AddUserReview.")
