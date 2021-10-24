@@ -408,10 +408,6 @@ type ListingReactionsComments struct {
 	Comment  string `json:"comment"`
 	Ctime    int64  `json:"ctime"`
 }
-
-type ListingReactionsCount struct {
-	Count uint32 `json:"likes_count"`
-}
 type GetListingReactionsResponse struct {
 	LikesCount uint32                     `json:"likes_count"`
 	Comments   []ListingReactionsComments `json:"comments"`
