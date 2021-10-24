@@ -31,11 +31,16 @@ jobs:
           heroku_email: "angxze@gmail.com"
           branch: master
           appdir: "GoServer"
-          usedocker: true
-      # Runs a single command using the runners shell
-#       - name: Run a one-line script
-#         working-directory: ./GoServer
+      #Runs a single command using the runners shell
+      - name: Run a one-line script
+        working-directory: ./GoServer
 #         run: |
 #          chmod +x ./GoServer/deploy.sh
 #          ./deploy.sh
 #         shell: bash
+      - name: Build Image
+        run: docker-compose build
+      - name: Push Image
+        run: docker push registry.heroku.com/tic2601-t11/web
+      - name: Release Image
+        run: heroku container:release web -a tic2601-t11
