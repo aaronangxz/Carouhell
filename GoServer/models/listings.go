@@ -397,7 +397,7 @@ type ListingReactions struct {
 	UserID       *uint32 `json:"user_id"`
 	ItemID       *uint32 `json:"item_id"`
 	ReactionType *uint32 `json:"reaction_type"`
-	Comment      *uint32 `json:"comment"`
+	Comment      *string `json:"comment"`
 	Ctime        *uint32 `json:"ctime"`
 }
 
