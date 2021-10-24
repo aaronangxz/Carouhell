@@ -19,7 +19,7 @@ func GetLatestRatings(c *gin.Context, input models.AddUserReviewRequest) (float3
 	)
 
 	//get current likes
-	query := fmt.Sprintf("SELECT ROUND(CAST((SUM(ratings)/ COUNT(ratings)) AS decimal),1) AS ratings FROM user_review_tab WHERE seller_id = %v", input.GetSellerID())
+	query := fmt.Sprintf("SELECT ROUND((SUM(ratings)/ COUNT(ratings)) ,1) AS ratings FROM user_review_tab WHERE seller_id = %v", input.GetSellerID())
 	result := models.DB.Raw(query).Scan(&reviews)
 	err := result.Error
 
