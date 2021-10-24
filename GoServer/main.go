@@ -52,6 +52,7 @@ func main() {
 	//***************** Home Page *****************
 	r.POST("/create_listing", listings.CreateListing)
 	r.POST("/create_account", account.CreateAccount)
+	r.POST("/authenticate_user", account.AuthenticateUser)
 
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
@@ -66,9 +67,9 @@ func main() {
 
 	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
-
-	//get_listing_reactions
-	//add_listing_likes
+	r.POST("/get_listing_reactions", listings.GetListingReactions)
+	r.POST("/add_listing_likes", listings.AddListingLikes)
+	//add_listing_comments
 	//purchase_single_item
 
 	//***************** Profile Page *****************

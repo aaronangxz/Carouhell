@@ -391,3 +391,56 @@ type GetListingsUsingFiltersResponse struct {
 	ListingMtime          int64  `json:"listing_mtime"`
 	ListingLikes          uint32 `json:"listing_likes"`
 }
+
+type ListingReactions struct {
+	ID           *uint32 `json:"id"`
+	UserID       *uint32 `json:"user_id"`
+	ItemID       *uint32 `json:"item_id"`
+	ReactionType *uint32 `json:"reaction_type"`
+	Comment      *string `json:"comment"`
+	Ctime        *uint32 `json:"ctime"`
+}
+
+type GetListingReactionsRequest struct {
+	ItemID *uint32 `json:"item_id" binding:"required"`
+}
+
+func (r *GetListingReactionsRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+type ListingReactionsComments struct {
+	UserName string `json:"user_name"`
+	Comment  string `json:"comment"`
+	Ctime    int64  `json:"ctime"`
+}
+type GetListingReactionsResponse struct {
+	LikesCount uint32                     `json:"likes_count"`
+	Comments   []ListingReactionsComments `json:"comments"`
+}
+
+type AddListingLikeRequest struct {
+	ItemID *uint32 `json:"item_id" binding:"required"`
+	UserID *uint32 `json:"user_id" binding:"required"`
+}
+
+func (r *AddListingLikeRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+func (r *AddListingLikeRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+type AddListingLikeResponse struct {
+	LikesCount uint32 `json:"latest_likes_count"`
+}
