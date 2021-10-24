@@ -32,9 +32,6 @@ func GetListingReactions(c *gin.Context) {
 	}
 
 	//total likes
-	queryLikes := "SELECT COUNT(*) FROM listing_reactions_tab WHERE reaction_type = 0 AND item_id = " + fmt.Sprint(input.GetItemID())
-	log.Println(queryLikes)
-	//resultLikes := models.DB.Raw(queryLikes).Scan(&reactions)
 	resultLikes := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND item_id = ?", input.GetItemID()).Count(&count)
 	errLikes := resultLikes.Error
 
