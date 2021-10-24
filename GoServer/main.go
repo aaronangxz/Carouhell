@@ -69,7 +69,7 @@ func main() {
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
 	r.POST("/add_listing_likes", listings.AddListingLikes)
-	//add_listing_comments
+	r.POST("/add_listing_comments", listings.AddListingComments)
 	//purchase_single_item
 
 	//***************** Profile Page *****************
