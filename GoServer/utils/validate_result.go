@@ -47,3 +47,10 @@ func ValidateGetListingReactionsResult(results []models.ListingReactionsComments
 	}
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetListingReactions success. results: %v", len(results)))
 }
+
+func ValidateGetUserLikedListingsResult(results []models.GetUserLikedListingsResponse) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetUserLikedListings success. results: %v", len(results)))
+}

@@ -69,18 +69,19 @@ func main() {
 	r.DELETE("/delete_single_listing", listings.DeleteListing)
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
 	r.POST("/add_listing_likes", listings.AddListingLikes)
-	//add_listing_comments
+	r.POST("/add_listing_comments", listings.AddListingComments)
 	//purchase_single_item
 
 	//***************** Profile Page *****************
 	//returns based on user_id, sorted by listing_ctime DESC
 	r.POST("/get_user_listings", listings.GetUserListings)
+	r.POST("/add_user_review", account.AddUserReview)
 
 	//get_user_reviews
 	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
-	// get_user_saved_listings
+	r.POST("/get_user_liked_listings", listings.GetUserLikedListings)
 
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)

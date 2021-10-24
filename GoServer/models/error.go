@@ -89,6 +89,13 @@ func NewUnknownErrorResponse() ResponseMeta {
 	}
 }
 
+func NewUnknownErrorMessageResponse(mesage string) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "Unknown Error: " + mesage,
+		ErrorCode: CONSTANT_ERROR_UNKNOWN,
+	}
+}
+
 func NewDBErrorResponse(err error) ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "Database Error: " + err.Error(),

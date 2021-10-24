@@ -32,6 +32,13 @@ func (r *AccountCredentials) GetUserPassword() string {
 	return ""
 }
 
+type UserReview struct {
+	UserID     *uint32 `json:"user_id"`
+	SellerID   *uint32 `json:"seller_id"`
+	Ratings    *uint32 `json:"ratings"`
+	ReviewText *string `json:"review_text"`
+	Ctime      *int64  `json:"ctime"`
+}
 type CreateAccountRequest struct {
 	UserName             *string `json:"user_name" binding:"required"`
 	UserEmail            *string `json:"user_email" binding:"required"`
@@ -103,4 +110,43 @@ func (r *AuthenticateUser) GetUserPassword() string {
 		return *r.UserPassword
 	}
 	return ""
+}
+
+type AddUserReviewRequest struct {
+	UserID     *uint32 `json:"user_id" binding:"required"`
+	SellerID   *uint32 `json:"seller_id" binding:"required"`
+	Ratings    *uint32 `json:"ratings" binding:"required"`
+	ReviewText *string `json:"review_text" binding:"required"`
+}
+
+func (r *AddUserReviewRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *AddUserReviewRequest) GetSellerID() uint32 {
+	if r != nil && r.SellerID != nil {
+		return *r.SellerID
+	}
+	return 0
+}
+
+func (r *AddUserReviewRequest) GetRatings() uint32 {
+	if r != nil && r.Ratings != nil {
+		return *r.Ratings
+	}
+	return 0
+}
+
+func (r *AddUserReviewRequest) GetReviewText() string {
+	if r != nil && r.ReviewText != nil {
+		return *r.ReviewText
+	}
+	return ""
+}
+
+type AddUserReviewResponse struct {
+	Ratings float32 `json:"latest_ratings"`
 }
