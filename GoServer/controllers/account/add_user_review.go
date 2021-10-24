@@ -14,11 +14,13 @@ import (
 )
 
 func GetLatestRatings(c *gin.Context, input models.AddUserReviewRequest) (float32, error) {
-	var count float32
+	var (
+		reviews models.AddUserReviewResponse
+	)
 
 	//get current likes
-	query := "SELECT ROUND(CAST(SUM(ratings)/5)) AS count FROM user_review_tab WHERE seller_id = %v"
-	result := models.DB.Raw(query).Scan(&count)
+	query := fmt.Sprintf("SELECT ROUND(CAST((SUM(ratings)/ COUNT(ratings)) AS decimal),1) AS ratings FROM user_review_tab WHERE seller_id = %v", input.GetSellerID())
+	result := models.DB.Raw(query).Scan(&reviews)
 	err := result.Error
 
 	if err != nil {
@@ -27,7 +29,7 @@ func GetLatestRatings(c *gin.Context, input models.AddUserReviewRequest) (float3
 		errormsg := fmt.Sprintf("Error during AddUserReview - GetLatestRatings DB query: %v\n", err.Error())
 		return 0, errors.New(errormsg)
 	}
-	return count, nil
+	return reviews.Ratings, nil
 }
 
 func isExist(c *gin.Context, input models.AddUserReviewRequest) bool {
@@ -155,6 +157,6 @@ func AddUserReview(c *gin.Context) {
 
 	updatedRatings.Ratings = count
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully added review.")})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully added review."), "Data": updatedRatings})
 	log.Println("Successful: AddUserReview.")
 }

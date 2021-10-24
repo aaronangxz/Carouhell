@@ -113,7 +113,7 @@ func (r *AuthenticateUser) GetUserPassword() string {
 }
 
 type AddUserReviewRequest struct {
-	UserID     *uint32 `json:"user_name" binding:"required"`
+	UserID     *uint32 `json:"user_id" binding:"required"`
 	SellerID   *uint32 `json:"seller_id" binding:"required"`
 	Ratings    *uint32 `json:"ratings" binding:"required"`
 	ReviewText *string `json:"review_text" binding:"required"`
