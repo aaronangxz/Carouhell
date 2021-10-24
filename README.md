@@ -28,6 +28,8 @@
 | 1.7         | 725c67b4ab0f   | 13/10/2021     | Good | [#52](https://github.com/aaronangxz/TIC2601/pull/52) |
 | 1.8         | 7407470db9ce   | 16/10/2021     | Good | [#71](https://github.com/aaronangxz/TIC2601/pull/71) |
 | 1.9         | 538070d6030f   | 22/10/2021     | Good | [#84](https://github.com/aaronangxz/TIC2601/pull/84) |
+| 2.0         | 46a8b45c3312   | 23/10/2021     | Good | [#100](https://github.com/aaronangxz/TIC2601/pull/100) |
+| 2.1         | 538070d6030f   | 24/10/2021     | Good | [#127](https://github.com/aaronangxz/TIC2601/pull/127) |
 
 <h2>Architecture</h2>
 

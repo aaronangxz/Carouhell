@@ -24,6 +24,14 @@ type AccountCredentials struct {
 	UserSecurityQuestion *uint32 `json:"user_security_question"`
 	UserSecurityAnswer   *string `json:"user_security_answer"`
 }
+
+func (r *AccountCredentials) GetUserPassword() string {
+	if r != nil && r.UserPassword != nil {
+		return *r.UserPassword
+	}
+	return ""
+}
+
 type CreateAccountRequest struct {
 	UserName             *string `json:"user_name" binding:"required"`
 	UserEmail            *string `json:"user_email" binding:"required"`
@@ -76,4 +84,23 @@ func (r *GetUserDetailsRequest) GetUserID() uint32 {
 		return *r.UserID
 	}
 	return 0
+}
+
+type AuthenticateUser struct {
+	UserName     *string `json:"user_name" binding:"required"`
+	UserPassword *string `json:"user_password" binding:"required"`
+}
+
+func (r *AuthenticateUser) GetUserName() string {
+	if r != nil && r.UserName != nil {
+		return *r.UserName
+	}
+	return ""
+}
+
+func (r *AuthenticateUser) GetUserPassword() string {
+	if r != nil && r.UserPassword != nil {
+		return *r.UserPassword
+	}
+	return ""
 }
