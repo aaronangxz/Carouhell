@@ -32,13 +32,12 @@ jobs:
           branch: master
           appdir: "GoServer"
       #Runs a single command using the runners shell
-      - name: Run a one-line script
-        working-directory: ./GoServer
 #         run: |
 #          chmod +x ./GoServer/deploy.sh
 #          ./deploy.sh
 #         shell: bash
       - name: Build Image
+        working-directory: ./GoServer
         run: docker-compose build
       - name: Push Image
         run: docker push registry.heroku.com/tic2601-t11/web
