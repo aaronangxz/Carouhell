@@ -80,7 +80,7 @@ func main() {
 	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
-	// get_user_saved_listings
+	r.POST("/get_user_liked_listings", listings.GetUserLikedListings)
 
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
