@@ -24,11 +24,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "tic2601-t11" #Must be unique in Heroku
+          heroku_email: "angxze@gmail.com"
+          branch: master
+          appdir: "GoServer"
+          usedocker: true
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        working-directory: ./GoServer
-        run: |
-         chmod +x ./GoServer/deploy.sh
-         ./deploy.sh
-        shell: bash
+#       - name: Run a one-line script
+#         working-directory: ./GoServer
+#         run: |
+#          chmod +x ./GoServer/deploy.sh
+#          ./deploy.sh
+#         shell: bash
