@@ -14,8 +14,9 @@ import (
 
 func GetListingByItemID(c *gin.Context) {
 	var (
-		singleListing models.GetSingleListingResponse
-		input         models.GetSingleListingRequest
+		resp     models.GetSingleListingResponse
+		input    models.GetSingleListingRequest
+		comments []models.ListingReactionsComments
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -36,24 +37,40 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
+	//get listing info
 	query := fmt.Sprintf("%v AND l.item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
-
-	result := models.DB.Raw(query).Scan(&singleListing)
+	result := models.DB.Raw(query).Scan(&resp)
 	err := result.Error
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during GetListingByItemID DB query: %v\n", err.Error())
+		log.Printf("Error during GetListingByItemID - listing DB query: %v\n", err.Error())
 		return
 	}
 
-	data, err := json.Marshal(singleListing)
+	//retrieve comments
+	queryComments := "SELECT a.user_name, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a " +
+		"WHERE l.user_id = a.user_id AND item_id = " + fmt.Sprint(input.GetItemID()) + " AND reaction_type = 1 ORDER BY ctime ASC"
+	log.Println(queryComments)
+	resultComments := models.DB.Raw(queryComments).Scan(&comments)
+	errComments := resultComments.Error
+
+	if errComments != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(errComments)})
+		log.Printf("Error during GetListingByItemID - comments DB query: %v\n", errComments.Error())
+		return
+	}
+
+	resp.Comments = comments
+	resp.CommentCount = uint32(len(comments))
+
+	data, err := json.Marshal(resp)
 	if err != nil {
 		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("GetListingByItemID success."), "Data": singleListing})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("GetListingByItemID success."), "Data": resp})
 	log.Printf("Successful: GetListingByItemID. rows: %v\n", result.RowsAffected)
 	log.Printf("Result: %s\n", data)
 }

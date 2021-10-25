@@ -48,9 +48,9 @@ func GetListingReactions(c *gin.Context) {
 	resultComments := models.DB.Raw(queryComments).Scan(&comments)
 	errComments := resultComments.Error
 
-	if errLikes != nil {
+	if errComments != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(errComments)})
-		log.Printf("Error during GetListingReactions - likes_count DB query: %v\n", errComments.Error())
+		log.Printf("Error during GetListingReactions - comment DB query: %v\n", errComments.Error())
 		return
 	}
 
