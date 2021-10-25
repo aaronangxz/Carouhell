@@ -60,6 +60,7 @@ func ValidateAuthenticateUserInput(c *gin.Context, input *models.AuthenticateUse
 func AuthenticateUser(c *gin.Context) {
 	var (
 		input           models.AuthenticateUser
+		resp            models.AuthenticateUserResponse
 		hold            models.Account
 		holdCredentials models.AccountCredentials
 	)
@@ -111,6 +112,8 @@ func AuthenticateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully logged in.")})
+	resp.UserID = hold.GetUserID()
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully logged in."), "Data": resp})
 	log.Printf("Successful: AuthenticateUser. user_id: %v", hold.GetUserID())
 }
