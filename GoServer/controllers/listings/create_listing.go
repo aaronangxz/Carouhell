@@ -128,7 +128,6 @@ func CreateListing(c *gin.Context) {
 	// Validate input
 	var (
 		input models.CreateListingRequest
-		hold  models.Account
 	)
 
 	if err := ValidateCreateListingRequest(c, &input); err != nil {
@@ -178,14 +177,8 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//check if seller exists
-	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.SellerID).Scan(&hold).Error; err != nil {
-		if hold.UserID == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("seller_id does not exist.")})
-			log.Printf("seller not found:  %v", input.GetSellerID())
-			return
-		}
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during DB query: %v", err.Error())
+	if err := utils.ValidateUserID(c, input.GetSellerID()); err != nil {
+		log.Printf("Error during ValidateUserID: %v", err.Error())
 		return
 	}
 
@@ -241,5 +234,6 @@ func CreateListing(c *gin.Context) {
 	if err != nil {
 		log.Printf("Failed to marshal JSON results: %v", err.Error())
 	}
+
 	log.Printf("Successful: CreateListing. Data: %s", data)
 }

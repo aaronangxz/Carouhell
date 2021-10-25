@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -19,6 +20,7 @@ func UploadBase64Image(item_id uint32, base64File string) (string, error) {
 
 	decode, err := base64.StdEncoding.DecodeString(base64File)
 	if err != nil {
+		log.Printf("Error during UploadBase64Image base64 decode: %v\n", err)
 		return "", err
 	}
 
@@ -32,9 +34,11 @@ func UploadBase64Image(item_id uint32, base64File string) (string, error) {
 	})
 
 	if s3err != nil {
+		log.Printf("Error during UploadBase64Image S3 PutObject: %v\n", err)
 		return "", err
 	}
 
 	fileName := fmt.Sprintf("https://%v.s3.%v.amazonaws.com/listing_%v.jpg", s3Bucket, s3Region, item_id)
+	log.Printf("Successfully uploaded image: %v\n", fileName)
 	return fileName, nil
 }
