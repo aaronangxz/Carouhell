@@ -14,45 +14,63 @@
 
 <h2>Master Branch (Live)</h2>
 
-- This branch is deployed on https://tic2601-t11.herokuapp.com, all features are somewhat stable
+- This branch is deployed on https://tic2601-t11.herokuapp.com, all features are stable
 - Do not merge WIP features here
 
-<h2>Docker Container Update History</h2>
+<h2>Work Flow</h2>
 
-| Version     | ImageID        | Date | Status | PR |
-| ----------- | -------------- | ---- | ---| ---|
-| 1.0         | 14173bd8f6a2   | 24/09/2021     | Good | |
-| 1.1         | 9396ef44918a   | 25/09/2021     | Good | |
-| 1.2         | 614d41e318e1   | 26/09/2021     | Good | |
-| 1.3         | 3c664a7938cf   | 27/09/2021     | Good | [#33](https://github.com/aaronangxz/TIC2601/pull/33) |
-| 1.4         | 8f52518e400f   | 30/09/2021     | Good | |
-| 1.5         | 700032e186ac   | 03/10/2021     | FAIL | [#44](https://github.com/aaronangxz/TIC2601/pull/44) |
-| 1.6         | d85840c3a753   | 03/10/2021     | Good | [#50](https://github.com/aaronangxz/TIC2601/pull/50) |
-| 1.7         | 725c67b4ab0f   | 13/10/2021     | Good | [#52](https://github.com/aaronangxz/TIC2601/pull/52) |
-| 1.8         | 7407470db9ce   | 16/10/2021     | Good | [#71](https://github.com/aaronangxz/TIC2601/pull/71) |
-| 1.9         | 538070d6030f   | 22/10/2021     | Good | [#84](https://github.com/aaronangxz/TIC2601/pull/84) |
-| 2.0         | 46a8b45c3312   | 23/10/2021     | Good | [#100](https://github.com/aaronangxz/TIC2601/pull/100) |
-| 2.1         | 538070d6030f   | 24/10/2021     | Good | [#127](https://github.com/aaronangxz/TIC2601/pull/127) |
+1. Open [Issue](https://github.com/aaronangxz/TIC2601/issues) to specify feature type
+2. `git pull` the latest commit from `test` branch
+3. Work on the new feature and commit to a new branch `<name>/<feature#>/<description>`. [Example](https://github.com/aaronangxz/TIC2601/issues/89)
+4. Create [Pull request](https://github.com/aaronangxz/TIC2601/pulls) to `test`
+5. Once feature is done, test locally and ensure main flow is ok.
+6. `git merge origin/test` to retrieve all latest changes in `test` branch.
+7. Ensure `Build` check (automatically run for every commit in PR) is ok.
+8. If everything is ok, merge into `test` and add this feature into the next [Release](https://github.com/aaronangxz/TIC2601/pull/137).
+9. Locally test the `test` branch and ensure everything is ok.
+10. Merge `test` into `master`, CI/CD will automatically deploy to live.
 
-<h2>Architecture</h2>
+<h1>Architecture</h1>
 
 <p align="center">
 <img src="tic2601-architecture.png" width="1000">
 </p>
 
-<h2>Docker Deployment</h2>
+<h1>Local Testing</h1>
+
+<h2>Build using DockerFile</h2>
 
 1. Write `Dockerfile`
 2. To build: `docker build --tag tic2601 .` (single dockerfile) / `docker build -f Dockerfile.server .` (multi dockerfiles)
 3. Tag docker image `docker tag <imageid> tic2601:<version>`
 4. `docker run tic2601` will run container isolated from network.
 5. Use `docker run --publish 8080:8080 tic2601` to expose container to network and port. ([host_port]:[container_port])
-6. Deploy to Heroku : https://devcenter.heroku.com/articles/container-registry-and-runtime
-7. Login via `heroku container:login`
-9. Push image `docker tag <imageid> registry.heroku.com/<app>/<process-type>` , `docker push registry.heroku.com/<app>/<process-type>` app is the name of heroku app, process type is `web` 
-10. Release image `heroku container:release web -a tic2601-t11`
 
-<h2>MySQL</h2>
+<h2>Build using DockerCompose</h2>
+
+1. Write `docker-compose.yaml`
+2. To build: `docker-compsoe build`
+3. To run `docker-compose up`
+
+<h1>Deployment</h1>
+
+<h2>CI/CD</h2>
+
+1. CI/CD has been set up for this repo: [WorkFlows](https://github.com/aaronangxz/TIC2601/actions)
+2. The following changes will trigger the Deployment pipeline:
+- Push / Merge pull requests to `master` branch
+3. The following changes will trigger the Build pipeline:
+- Push / Create pull requests to `test` branch
+
+<h2>Manual Deployment</h2>
+
+1. Follow steps above to build Docker imgage.
+2. Login via `heroku container:login`
+3. Tag image with Heroku registry link `docker tag <imageid> registry.heroku.com/tic2601-t11/web`
+4. Push the tagged image `docker push registry.heroku.com/tic2601-t11/web`
+5. Release image `heroku container:release web -a tic2601-t11`
+
+<h1>Database Commands</h1>
 
 1. Access within docker container:
     - `docker exec -it tic2601-db bash`
@@ -76,10 +94,10 @@
         - Password:`f25c7f6b`
         - Default Schema:`heroku_bdc39d4687a85d4`
 
-<h2>Test API endpoints</h2>
+<h1>Test API endpoints</h1>
 
 Postman Workspace: https://www.postman.com/science-specialist-94927587/workspace/tic2601
 
-<h2>Test Branch</h2>
+<h1>Test Branch</h1>
 
 Refer to https://github.com/aaronangxz/TIC2601/tree/test
