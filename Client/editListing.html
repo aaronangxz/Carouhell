@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TIC2601</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="index.js"></script>
+  <script> 
+    $(function(){
+      $("#header").load("navbar.html");
+    });
+    </script> 
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Edit Listing</h1>
+        <form id="createNewListing" method="post">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" class="form-control" id="itemName" placeholder="Enter item name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemPrice">Item Price</label>
+                        <input type="number" class="form-control" id="itemPrice" placeholder="Enter item price">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemQty">Item Quantity</label>
+                        <input type="number" class="form-control" id="itemQty" placeholder="Enter item quantity">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="condition">Select Condition</label>
+                        <select class="form-control disabled" id="condition">
+                          <option>Brand New</option>
+                          <option>Used</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemDesc">Item Description</label>
+                        <textarea class="form-control" id="itemDesc" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemCat">Select Category</label>
+                        <select class="form-control" id="itemCat">
+                          <option value="1">Electronic Devices</option>
+                          <option value="2">Men's Fashion</option>
+                          <option value="3">Woman's Fashion</option>
+                          <option value="4">Pets</option>
+                          <option value="5">Furniture</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemStatus">Item Status</label>
+                        <select class="form-control" id="itemStatus">
+                          <option value="1">Available</option>
+                          <option value="2">Sold</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="img"><b>Add Images</b></label>
+                          <br><img id="myImg" src="#">
+                        <input name="img" type="file" class="form-control-file" id="img">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="collection">Collection/Shipping</label>
+                        <select class="form-control" id="collection">
+                          <option value="1">Meet Up</option>
+                          <option value="2">Delivery</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="location">Location for MeetUp</label>
+                        <select class="form-control" id="location">
+                          <option value="1">North</option>
+                          <option value="2">South</option>
+                          <option value="3">East</option>
+                          <option value="4">West</option>
+                          <option value="5">Central</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <input type="button" class="btn btn-primary" onclick="createListing()" value="Create Listing"/>
+                </div>
+            </div>
+
+
+           
+            
+    </form>
+    </div>
+    <script>
+        window.addEventListener('load', function() 
+        {
+            document.querySelector('input[type="file"]').addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    var img = document.querySelector('img');
+                    img.onload = () => {
+                        URL.revokeObjectURL(img.src);  // no longer needed, free memory
+                    }
+
+                    img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                }
+            });
+        });
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const itemID = urlParams.get('itemID')
+        console.log(itemID);
+
+    
+    </script>
+    <script src="listing.js"></script>
+  </body>
+</html>

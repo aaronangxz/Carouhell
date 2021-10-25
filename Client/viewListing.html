@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TIC601</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="index.js"></script>
+  <script src="listing.js"></script>
+  <script> 
+    $(function(){
+      $("#header").load("navbar.html");
+    });
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const itemID = urlParams.get('itemID')
+    console.log(itemID);
+
+    $(document).ready(viewListingByItemId(itemID));
+
+    </script> 
+    <style>
+        p.thick {
+        font-weight: bold;
+        }
+        /* .img-fluid{
+            max-width: 70% !important;
+        } */
+        #listingContent {
+            font-size: 16px;
+        }
+        .col{
+            font-size:20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container" id="listingContent">
+    </div>
+    
+  </body>
+</html>
