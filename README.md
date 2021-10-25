@@ -1,6 +1,6 @@
 <h1 align = "center"> TIC 2601 </h1>
 
-[![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml)
+[![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) 
 
 <!-- <p align="center">
 <!-- <img src = https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg> -->
