@@ -24,7 +24,7 @@ func UploadBase64Image(item_id uint32, base64File string) (string, error) {
 
 	_, s3err := s3.New(models.S3Client).PutObject(&s3.PutObjectInput{
 		Bucket:          aws.String(s3Bucket),
-		Key:             aws.String("listing:" + fmt.Sprint(item_id) + ".jpg"),
+		Key:             aws.String("listing_" + fmt.Sprint(item_id) + ".jpg"),
 		Body:            bytes.NewReader(decode),
 		ContentEncoding: aws.String("base64"),
 		ContentType:     aws.String("image/jpg"),
@@ -35,6 +35,6 @@ func UploadBase64Image(item_id uint32, base64File string) (string, error) {
 		return "", err
 	}
 
-	fileName := fmt.Sprintf("https://%v.s3.%v.amazonaws.com/%v.jpg", s3Bucket, s3Region, item_id)
+	fileName := fmt.Sprintf("https://%v.s3.%v.amazonaws.com/listing_%v.jpg", s3Bucket, s3Region, item_id)
 	return fileName, nil
 }

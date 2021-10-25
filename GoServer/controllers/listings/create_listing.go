@@ -229,7 +229,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ?", imageUrl).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during image write: %v", err.Error())
 		return
