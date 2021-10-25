@@ -11,42 +11,42 @@ services:
     ports:
       - 8080:8080
     restart: on-failure
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     volumes:
       - ".:/app"
     env_file: .env
-    links:
-      - "database"
+    # links:
+    #   - "database"
 
-  database:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.db
-    container_name: tic2601-db
-    environment: 
-      - MYSQL_ROOT_HOST=${TEST_DB_HOST} 
-      - MYSQL_USER=${TEST_DB_USER}
-      - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
-      - MYSQL_DATABASE=${TEST_DB_NAME}
-      - MYSQL_ROOT_PASSWORD=${TEST_DB_PASSWORD}
-    ports:
-      - 3305:3306
-    volumes:
-      - tic2601-data:/var/lib/mysql
+  # database:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile.db
+  #   container_name: tic2601-db
+  #   environment: 
+  #     - MYSQL_ROOT_HOST=${TEST_DB_HOST} 
+  #     - MYSQL_USER=${TEST_DB_USER}
+  #     - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
+  #     - MYSQL_DATABASE=${TEST_DB_NAME}
+  #     - MYSQL_ROOT_PASSWORD=${TEST_DB_PASSWORD}
+  #   ports:
+  #     - 3305:3306
+  #   volumes:
+  #     - tic2601-data:/var/lib/mysql
 
-  pma:
-    image: phpmyadmin/phpmyadmin
-    depends_on:
-      - database
-    ports:
-      - 5003:80
-    environment:
-      - 'PMA_HOST=database'
-      - 'PMA_PORT=3306'
-      - MYSQL_USER=${TEST_DB_USER}
-      - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
-    container_name: tic2601-server-pma
+  # pma:
+  #   image: phpmyadmin/phpmyadmin
+  #   depends_on:
+  #     - database
+  #   ports:
+  #     - 5003:80
+  #   environment:
+  #     - 'PMA_HOST=database'
+  #     - 'PMA_PORT=3306'
+  #     - MYSQL_USER=${TEST_DB_USER}
+  #     - MYSQL_PASSWORD=${TEST_DB_PASSWORD}
+  #   container_name: tic2601-server-pma
 
 # persisted storage
 volumes:
