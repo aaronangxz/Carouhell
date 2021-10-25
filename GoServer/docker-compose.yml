@@ -15,7 +15,7 @@ services:
     #   - database
     volumes:
       - ".:/app"
-    env_file: .env
+    # env_file: .env
     # links:
     #   - "database"
 
