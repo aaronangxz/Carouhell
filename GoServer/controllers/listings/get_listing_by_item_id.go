@@ -63,6 +63,7 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	resp.Comments = comments
+	resp.CommentCount = uint32(len(comments))
 
 	data, err := json.Marshal(resp)
 	if err != nil {

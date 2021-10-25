@@ -145,6 +145,7 @@ type GetSingleListingResponse struct {
 	ListingCtime          int64                      `json:"listing_ctime"`
 	ListingMtime          int64                      `json:"listing_mtime"`
 	ListingLikes          uint32                     `json:"listing_likes"`
+	CommentCount          uint32                     `json:"listing_comment_count"`
 	Comments              []ListingReactionsComments `json:"listing_comments"`
 }
 
