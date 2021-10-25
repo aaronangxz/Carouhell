@@ -2,6 +2,7 @@ package listings
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -35,10 +36,10 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	query := utils.GetListingFixedQuery()
+	query := fmt.Sprintf("%v AND l.item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
 
-	result := models.DB.Raw(query, input.GetItemID()).Scan(&singleListing)
+	result := models.DB.Raw(query).Scan(&singleListing)
 	err := result.Error
 
 	if err != nil {

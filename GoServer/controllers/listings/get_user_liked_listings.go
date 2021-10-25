@@ -39,7 +39,7 @@ func GetUserLikedListings(c *gin.Context) {
 	query := fmt.Sprintf(utils.GetListingQueryWithCustomCondition()+" AND l.item_id IN"+
 		" (SELECT r.item_id FROM listing_reactions_tab r"+
 		" WHERE r.user_id = %v AND r.reaction_type = %v)"+
-		" GROUP BY l.item_id ORDER BY listing_reactions_tab.ctime DESC)", input.GetUserID(), constant.LISTING_REACTION_TYPE_LIKE)
+		" GROUP BY l.item_id ORDER BY listing_reactions_tab.ctime DESC", input.GetUserID(), constant.LISTING_REACTION_TYPE_LIKE)
 	log.Println(query)
 
 	result := models.DB.Raw(query).Scan(&userLikedListings)
