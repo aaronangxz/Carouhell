@@ -114,6 +114,6 @@ func AuthenticateUser(c *gin.Context) {
 
 	resp.UserID = hold.GetUserID()
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully logged in."), "Data": resp})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully authenticated user."), "Data": resp})
 	log.Printf("Successful: AuthenticateUser. user_id: %v", hold.GetUserID())
 }
