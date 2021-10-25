@@ -30,16 +30,16 @@ func LoadEnv() {
 //NewDatabase : intializes and returns mysql db
 func NewMySQL() {
 
-	URL := "b0bc6fadb8432d:f25c7f6b@tcp(us-cdbr-east-04.cleardb.com:3306)/heroku_bdc39d4687a85d4"
-	fmt.Println(URL)
+	URL := fmt.Sprintf("%v:%v@tcp(%v)/%v", os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
+	log.Printf("Connecting to %v", URL)
 	db, err := gorm.Open("mysql", URL)
 
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error while establishing DB Connection: %v", err)
 		panic("Failed to connect to database!")
 	}
 
-	log.Println("Database connection established")
+	log.Println("NewMySQL: Database connection established")
 	DB = db
 }
 
@@ -53,7 +53,7 @@ func NewAWSInstance() {
 	_, err := creds.Get()
 
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error while establishing S3 Credentials: %v", err)
 	}
 
 	cfg := aws.NewConfig().WithRegion(s3Region).WithCredentials(creds)
@@ -61,7 +61,8 @@ func NewAWSInstance() {
 	s3Connection, err := session.NewSession(cfg)
 
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error while establishing S3 Session: %v", err)
 	}
+	log.Println("NewAWSInstance: S3 connection established")
 	S3Client = s3Connection
 }
