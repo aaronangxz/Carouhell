@@ -200,7 +200,7 @@ func CreateListing(c *gin.Context) {
 		ItemLocation:          input.ItemLocation,
 		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
 		ItemCategory:          input.ItemCategory,
-		ItemImage:             input.ItemImage,
+		ItemImage:             nil,
 		SellerID:              input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
@@ -211,6 +211,27 @@ func CreateListing(c *gin.Context) {
 		Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during DB query: %v", err.Error())
+		return
+	}
+
+	//upload image
+	imageUrl, err := utils.UploadBase64Image(listings.GetItemID(), input.GetItemImage())
+	if err != nil {
+		//roll back listing create
+		if errRollback := models.DB.Table("acc_tab").Delete(&listings).Error; errRollback != nil {
+			log.Printf("Error during CreateListing - listing_tab roll back: %v", err.Error())
+		} else {
+			log.Print("rollback listing_tab successful")
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image.")})
+		log.Printf("Error during image upload: %v", err)
+		return
+	}
+
+	//write image URL to DB
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ?", imageUrl).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during image write: %v", err.Error())
 		return
 	}
 

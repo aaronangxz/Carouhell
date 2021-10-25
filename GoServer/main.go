@@ -6,7 +6,6 @@ import (
 
 	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
-	"github.com/aaronangxz/TIC2601/controllers/notifications"
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -47,8 +46,8 @@ func main() {
 	})
 
 	//Available endpoints
-	r.POST("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
-	r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
+	// r.POST("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
+	// r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
 	// r.POST("/upload_image", utils.UploadImage)
 
 	//***************** Home Page *****************
