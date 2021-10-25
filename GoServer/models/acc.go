@@ -112,6 +112,9 @@ func (r *AuthenticateUser) GetUserPassword() string {
 	return ""
 }
 
+type AuthenticateUserResponse struct {
+	UserID uint32 `json:"user_id"`
+}
 type AddUserReviewRequest struct {
 	UserID     *uint32 `json:"user_id" binding:"required"`
 	SellerID   *uint32 `json:"seller_id" binding:"required"`
