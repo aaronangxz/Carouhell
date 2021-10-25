@@ -128,7 +128,6 @@ func CreateListing(c *gin.Context) {
 	// Validate input
 	var (
 		input models.CreateListingRequest
-		hold  models.Account
 	)
 
 	if err := ValidateCreateListingRequest(c, &input); err != nil {
@@ -178,14 +177,8 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//check if seller exists
-	if err := models.DB.Raw("SELECT * FROM acc_tab WHERE user_id = ?", input.SellerID).Scan(&hold).Error; err != nil {
-		if hold.UserID == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundMessageResponse("seller_id does not exist.")})
-			log.Printf("seller not found:  %v", input.GetSellerID())
-			return
-		}
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during DB query: %v", err.Error())
+	if err := utils.ValidateUserID(c, input.GetSellerID()); err != nil {
+		log.Printf("Error during ValidateUserID: %v", err.Error())
 		return
 	}
 
@@ -200,7 +193,7 @@ func CreateListing(c *gin.Context) {
 		ItemLocation:          input.ItemLocation,
 		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
 		ItemCategory:          input.ItemCategory,
-		ItemImage:             input.ItemImage,
+		ItemImage:             nil,
 		SellerID:              input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
@@ -214,11 +207,33 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	//upload image
+	imageUrl, err := utils.UploadBase64Image(listings.GetItemID(), input.GetItemImage())
+	if err != nil {
+		//roll back listing create
+		if errRollback := models.DB.Table("acc_tab").Delete(&listings).Error; errRollback != nil {
+			log.Printf("Error during CreateListing - listing_tab roll back: %v", err.Error())
+		} else {
+			log.Print("rollback listing_tab successful")
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image.")})
+		log.Printf("Error during image upload: %v", err)
+		return
+	}
+
+	//write image URL to DB
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during image write: %v", err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetItemID()))})
 
 	data, err := json.Marshal(listings)
 	if err != nil {
 		log.Printf("Failed to marshal JSON results: %v", err.Error())
 	}
+
 	log.Printf("Successful: CreateListing. Data: %s", data)
 }

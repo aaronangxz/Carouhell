@@ -3,6 +3,10 @@ module github.com/aaronangxz/TIC2601
 go 1.16
 
 require (
+	github.com/aws/aws-sdk-go v1.41.9
+	github.com/aws/aws-sdk-go-v2 v1.10.0 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.9.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.17.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20191124224453-732737034ffd // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/gin-contrib/cors v1.3.1
@@ -15,5 +19,4 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v1.12.0 // indirect
-	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
 )
