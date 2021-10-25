@@ -3,18 +3,21 @@ package models
 import (
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-//Change CurrentENV : live / test
 var (
-	DB         *gorm.DB
-	CurrentENV = "test"
+	DB       *gorm.DB
+	S3Client *session.Session
 )
 
 func LoadEnv() {
@@ -26,50 +29,40 @@ func LoadEnv() {
 
 //NewDatabase : intializes and returns mysql db
 func NewMySQL() {
-	//USER := os.Getenv("TEST_DB_USER")
-	//PASS := os.Getenv("TEST_DB_PASSWORD")
-	//HOST := os.Getenv("TEST_DB_HOST")
-	//PORT := os.Getenv("TEST_DB_PORT")
-	//DBNAME := os.Getenv("TEST_DB_NAME")
 
-	//URL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", USER, PASS, HOST, PORT, DBNAME)
-	//URL := fmt.Sprintf("%s:%s@tcp(tic2601-db)/%s", USER, PASS, DBNAME)
-	URL := "b0bc6fadb8432d:f25c7f6b@tcp(us-cdbr-east-04.cleardb.com:3306)/heroku_bdc39d4687a85d4"
-	fmt.Println(URL)
+	URL := fmt.Sprintf("%v:%v@tcp(%v)/%v", os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
+	log.Printf("Connecting to %v", URL)
 	db, err := gorm.Open("mysql", URL)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error while establishing DB Connection: %v", err)
 		panic("Failed to connect to database!")
 	}
 
-	fmt.Println("Database connection established")
-
-	//db.AutoMigrate(&Listing{})
-	//db.AutoMigrate(&Notification{})
+	log.Println("NewMySQL: Database connection established")
 	DB = db
 }
 
-func DBName() string {
-	switch CurrentENV {
-	case "test":
-		return "tic2601_test_db"
-	case "live":
-		return "tic2601_db"
-	default:
-		return "tic2601_test_db"
+func NewAWSInstance() {
+	awsAccessKey := os.Getenv("AWS_ACCESS_KEY")
+	awsSecretKey := os.Getenv("AWS_SECRET_KEY")
+	s3Region := os.Getenv("AWS_S3_REGION")
+
+	creds := credentials.NewStaticCredentials(awsAccessKey, awsSecretKey, "")
+
+	_, err := creds.Get()
+
+	if err != nil {
+		log.Printf("Error while establishing S3 Credentials: %v", err)
 	}
+
+	cfg := aws.NewConfig().WithRegion(s3Region).WithCredentials(creds)
+
+	s3Connection, err := session.NewSession(cfg)
+
+	if err != nil {
+		log.Printf("Error while establishing S3 Session: %v", err)
+	}
+	log.Println("NewAWSInstance: S3 connection established")
+	S3Client = s3Connection
 }
-
-// func ConnectDataBase() {
-// 	database, err := gorm.Open("sqlite3", "test.db")
-
-// 	if err != nil {
-// 		panic("Failed to connect to database!")
-// 	}
-
-// 	database.AutoMigrate(&Listing{})
-// 	database.AutoMigrate(&Notification{})
-
-// 	DB = database
-// }
