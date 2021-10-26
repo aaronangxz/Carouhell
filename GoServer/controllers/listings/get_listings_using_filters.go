@@ -23,9 +23,9 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 			return errors.New(errormsg)
 		}
 
-		if input.LocationFilter.Location != nil && !utils.ValidateString(input.LocationFilter.Location) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be string type.")})
-			errormsg := fmt.Sprintf("location must be string. input: %v", input.LocationFilter.GetLocation())
+		if input.LocationFilter.Location != nil && !utils.ValidateUint(input.LocationFilter.Location) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be uint type.")})
+			errormsg := fmt.Sprintf("location must be uint. input: %v", input.LocationFilter.GetLocation())
 			return errors.New(errormsg)
 		}
 
@@ -74,7 +74,12 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 		errormsg := fmt.Sprintf("unknown sort_flag. input: %v", input.GetSortFlag())
 		return errors.New(errormsg)
 	}
-
+	//check location
+	if !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetLocation())) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location is invalid.")})
+		errormsg := fmt.Sprintf("unknown location. input: %v", input.GetLocation())
+		return errors.New(errormsg)
+	}
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
 		if input.PriceFilter.GetMaxPrice() < input.PriceFilter.GetMinPrice() {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price cannot > max_price.")})
