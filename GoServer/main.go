@@ -87,6 +87,7 @@ func main() {
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
 	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
+	r.POST("/top_up_user_wallet", wallet.TopUpUserWallet)
 
 	r.Run()
 }
