@@ -18,7 +18,7 @@ func GetUserListings(c *gin.Context) {
 		input          models.GetUserListingsRequest
 		extraCondition = ""
 		orderCondition = " ORDER BY listing_ctime DESC"
-		whereCondition = " AND l.seller_id = ?"
+		whereCondition = " AND l.l_seller_id = ?"
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {

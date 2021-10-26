@@ -19,7 +19,7 @@ func GetLatestRatings(c *gin.Context, input models.AddUserReviewRequest) (float3
 	)
 
 	//get current likes
-	query := fmt.Sprintf("SELECT ROUND((SUM(ratings)/ COUNT(ratings)) ,1) AS ratings FROM user_review_tab WHERE seller_id = %v", input.GetSellerID())
+	query := fmt.Sprintf("SELECT ROUND((SUM(ratings)/ COUNT(ratings)) ,1) AS ratings FROM user_review_tab WHERE rv_seller_id = %v", input.GetSellerID())
 	result := models.DB.Raw(query).Scan(&reviews)
 	err := result.Error
 
@@ -38,7 +38,7 @@ func isExist(c *gin.Context, input models.AddUserReviewRequest) bool {
 	)
 
 	result := models.DB.Table("user_review_tab").
-		Where("user_id = ? AND seller_id = ?",
+		Where("rv_user_id = ? AND rv_seller_id = ?",
 			input.GetUserID(), input.GetSellerID()).Count(&count)
 
 	if err := result.Error; err != nil {
@@ -55,22 +55,22 @@ func isExist(c *gin.Context, input models.AddUserReviewRequest) bool {
 
 func ValidateAddUserReviewRequest(c *gin.Context, input *models.AddUserReviewRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
-		if input.UserID == nil {
+		if input.RVUserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
 			errormsg := "user_id cannot be empty"
 			return errors.New(errormsg)
 		}
-		if !utils.ValidateUint(input.UserID) {
+		if !utils.ValidateUint(input.RVUserID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
 			errormsg := fmt.Sprintf("user_id must be uint type. input: %v", input.GetUserID())
 			return errors.New(errormsg)
 		}
-		if input.SellerID == nil {
+		if input.RVSellerID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id cannot be empty.")})
 			errormsg := "seller_id cannot be empty"
 			return errors.New(errormsg)
 		}
-		if !utils.ValidateUint(input.SellerID) {
+		if !utils.ValidateUint(input.RVSellerID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id must be uint type.")})
 			errormsg := fmt.Sprintf("seller_id must be uint type. input: %v", input.GetUserID())
 			return errors.New(errormsg)
@@ -136,8 +136,8 @@ func AddUserReview(c *gin.Context) {
 	}
 
 	review := models.UserReview{
-		UserID:     input.UserID,
-		SellerID:   input.SellerID,
+		RVUserID:   input.RVUserID,
+		RVSellerID: input.RVSellerID,
 		Ratings:    input.Ratings,
 		ReviewText: input.ReviewText,
 		Ctime:      utils.Int64(time.Now().Unix()),

@@ -77,8 +77,8 @@ func AddListingComments(c *gin.Context) {
 
 	//write listing_reactions_tab
 	reaction := models.ListingReactions{
-		UserID:       input.UserID,
-		ItemID:       input.ItemID,
+		RTUserID:     input.UserID,
+		RTItemID:     input.ItemID,
 		ReactionType: utils.Uint32(constant.LISTING_REACTION_TYPE_COMMENT),
 		Comment:      input.Comment,
 		Ctime:        utils.Uint32(uint32(time.Now().Unix())),

@@ -67,26 +67,6 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 			errormsg := fmt.Sprintf("item_description must be string type. input: %v", input.GetItemDescription())
 			return errors.New(errormsg)
 		}
-		if input.ItemShippingInfo == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shipping_info cannot be empty.")})
-			errormsg := "item_shipping_info cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateUint(input.ItemShippingInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shipping_info must be uint type.")})
-			errormsg := fmt.Sprintf("item_shipping_info must be uint type. input: %v", input.GetShippingInfo())
-			return errors.New(errormsg)
-		}
-		if input.ItemPaymentInfo == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_payment_info cannot be empty.")})
-			errormsg := "item_payment_info cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateUint(input.ItemPaymentInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_payment_info must be uint type.")})
-			errormsg := fmt.Sprintf("item_payment_info must be uint type. input: %v", input.GetPaymentInfo())
-			return errors.New(errormsg)
-		}
 		if input.ItemLocation == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
 			errormsg := "item_location cannot be empty"
@@ -188,13 +168,11 @@ func CreateListing(c *gin.Context) {
 		ItemQuantity:          input.ItemQuantity,
 		ItemPurchasedQuantity: utils.Uint32(0),
 		ItemDescription:       input.ItemDescription,
-		ItemShippingInfo:      input.ItemShippingInfo,
-		ItemPaymentInfo:       input.ItemPaymentInfo,
 		ItemLocation:          input.ItemLocation,
 		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
 		ItemCategory:          input.ItemCategory,
 		ItemImage:             nil,
-		SellerID:              input.SellerID,
+		LSellerID:             input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
 		ListingLikes:          utils.Uint32(0),
