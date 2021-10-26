@@ -80,5 +80,5 @@ func TopUpUserWallet(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully top up wallet."), "Data": resp})
 
-	log.Printf("Successful: TopUpUserWallet. Data: %v", resp)
+	log.Printf("Successful: TopUpUserWallet. Updated balance: %v", resp)
 }

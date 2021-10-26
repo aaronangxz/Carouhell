@@ -63,7 +63,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 		return 0, err
 	}
 
-	updateWalletBalance := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = %v, last_top_up = %v WHERE wallet_id = %v",
+	updateWalletBalance := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance + %v, last_top_up = %v WHERE wallet_id = %v",
 		input.GetAmount(), time.Now().Unix(), input.GetUserID())
 	if err := tx.Exec(updateWalletBalance).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:updateWalletBalance: %v", err.Error())
@@ -80,6 +80,9 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 		return 0, err
 	}
 
-	log.Printf("committing StartWalletTopUpTx: %v", tx.Commit().Error)
-	return resp.WalletBalance, tx.Commit().Error
+	log.Println("committing StartWalletTopUpTx")
+	if err := tx.Commit().Error; err != nil {
+		return 0, err
+	}
+	return resp.WalletBalance, nil
 }
