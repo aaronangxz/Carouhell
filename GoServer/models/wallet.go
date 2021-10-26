@@ -48,3 +48,26 @@ type GetUserWalletDetailsResponse struct {
 	LastTopUp     *int64  `json:"last_top_up"`
 	LastUsed      *int64  `json:"last_used"`
 }
+
+type TopUpUserWalletRequest struct {
+	UserID *uint32 `json:"user_id" binding:"required"`
+	Amount *uint32 `json:"amount" binding:"required"`
+}
+
+func (r *TopUpUserWalletRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *TopUpUserWalletRequest) GetAmount() uint32 {
+	if r != nil && r.Amount != nil {
+		return *r.Amount
+	}
+	return 0
+}
+
+type TopUpUserWalletResponse struct {
+	WalletBalance uint32 `json:"wallet_balance"`
+}
