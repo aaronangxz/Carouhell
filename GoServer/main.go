@@ -58,7 +58,7 @@ func main() {
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
 	//returns all, sorted by listing_ctime DESC
-	r.POST("/get_latest_listings", listings.GetLatestListings)
+	r.GET("/get_latest_listings", listings.GetLatestListings)
 	//returns based on filters, sorted by listing_ctime DESC
 	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
 
