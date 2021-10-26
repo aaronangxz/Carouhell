@@ -46,6 +46,11 @@ func ValidateTopUpUserWalletInput(c *gin.Context, input *models.TopUpUserWalletR
 		errormsg := "amount cannot be 0"
 		return errors.New(errormsg)
 	}
+	if input.GetAmount() < 500 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Minimum top up amount is $5.")})
+		errormsg := "amount cannot be < $5"
+		return errors.New(errormsg)
+	}
 	return nil
 }
 
