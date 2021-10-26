@@ -72,8 +72,8 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 			errormsg := "item_location cannot be empty"
 			return errors.New(errormsg)
 		}
-		if !utils.ValidateString(input.ItemLocation) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be string type.")})
+		if !utils.ValidateUint(input.ItemLocation) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be uint type.")})
 			errormsg := fmt.Sprintf("item_location must be string type. input: %v", input.GetItemLocation())
 			return errors.New(errormsg)
 		}
@@ -150,9 +150,10 @@ func CreateListing(c *gin.Context) {
 		input.SetItemDescription("This item has no description.")
 	}
 
-	if input.GetItemLocation() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
-		log.Print("item_location cannot be empty.")
+	//check location
+	if !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation())) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location is invalid.")})
+		log.Printf("invalid item_location: %v", input.GetItemLocation())
 		return
 	}
 
@@ -175,7 +176,6 @@ func CreateListing(c *gin.Context) {
 		LSellerID:             input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
-		ListingLikes:          utils.Uint32(0),
 	}
 
 	if err := models.DB.Table("listing_tab").Create(&listings).
@@ -200,7 +200,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during image write: %v", err.Error())
 		return

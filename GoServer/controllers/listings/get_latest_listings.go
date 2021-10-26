@@ -15,7 +15,7 @@ func GetLatestListings(c *gin.Context) {
 		listings []models.GetLatestListingsResponse
 	)
 
-	query := utils.GetListingQueryWithCustomCondition() + " ORDER BY listing_ctime DESC GROUP BY l.l_item_id"
+	query := utils.GetListingQueryWithCustomCondition() + " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
 	log.Println(query)
 
 	result := models.DB.Raw(query).Scan(&listings)

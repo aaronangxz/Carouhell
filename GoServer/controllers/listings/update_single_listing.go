@@ -48,9 +48,9 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 			errormsg := fmt.Sprintf("item_description must be string. input: %v", input.GetItemDescription())
 			return errors.New(errormsg)
 		}
-		if input.ItemLocation != nil && !utils.ValidateString(input.ItemLocation) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be string type.")})
-			errormsg := fmt.Sprintf("item_location must be string. input: %v", input.GetItemLocation())
+		if input.ItemLocation != nil && !utils.ValidateUint(input.ItemLocation) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be uint type.")})
+			errormsg := fmt.Sprintf("item_location must be uint. input: %v", input.GetItemLocation())
 			return errors.New(errormsg)
 		}
 		if input.ItemCategory != nil && !utils.ValidateUint(input.ItemCategory) {
@@ -104,9 +104,9 @@ func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListin
 		return errors.New(errormsg)
 	}
 
-	if input.ItemLocation != nil && input.GetItemLocation() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty. Set to null if no changes needed.")})
-		errormsg := fmt.Sprintf("item_location cannot be empty. input: %v", input.GetItemLocation())
+	if input.ItemLocation != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category does not exist.")})
+		errormsg := fmt.Sprintf("item_category does not exist. input: %v", input.GetItemLocation())
 		return errors.New(errormsg)
 	}
 

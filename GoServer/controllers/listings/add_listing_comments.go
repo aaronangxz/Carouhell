@@ -24,7 +24,7 @@ func isSpam(c *gin.Context, input models.AddListingCommentsRequest) bool {
 	}
 
 	result := models.DB.Table("listing_reactions_tab").
-		Where(" reaction_type = ? AND user_id = ? AND item_id = ? AND ? - ctime <= 60",
+		Where(" reaction_type = ? AND rt_user_id = ? AND rt_item_id = ? AND ? - ctime <= 60",
 			constant.LISTING_REACTION_TYPE_COMMENT, input.GetUserID(), input.GetItemID(), time.Now().Unix()).Count(&count)
 
 	if err := result.Error; err != nil {
@@ -34,6 +34,7 @@ func isSpam(c *gin.Context, input models.AddListingCommentsRequest) bool {
 	}
 
 	if count > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Not allowed to comment again within 60 secs.")})
 		return true
 	}
 	return false
@@ -87,7 +88,6 @@ func AddListingComments(c *gin.Context) {
 	//spam prevention, not allowed to post again within 60 secs
 	if isSpam(c, input) {
 		log.Printf("comment spam detected. user_id: %v, item_id: %v", input.GetUserID(), input.GetItemID())
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Not allowed to comment again within 60 secs.")})
 		return
 	}
 

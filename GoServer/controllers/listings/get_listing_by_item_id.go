@@ -38,7 +38,7 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	//get listing info
-	query := fmt.Sprintf("%v AND l.item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
+	query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
 	result := models.DB.Raw(query).Scan(&resp)
 	err := result.Error

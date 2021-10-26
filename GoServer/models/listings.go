@@ -16,14 +16,13 @@ type Listing struct {
 	ItemQuantity          *uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity *uint32 `json:"item_purchasedquantity"`
 	ItemDescription       *string `json:"item_description"`
-	ItemLocation          *string `json:"item_location"`
+	ItemLocation          *uint32 `json:"item_location"`
 	ItemStatus            *uint32 `json:"item_status"`
 	ItemCategory          *uint32 `json:"item_category"`
 	ItemImage             *string `json:"item_image"`
 	LSellerID             *uint32 `json:"seller_id"`
 	ListingCtime          *int64  `json:"listing_ctime"`
 	ListingMtime          *int64  `json:"listing_mtime"`
-	ListingLikes          *uint32 `json:"listing_likes"`
 }
 
 func (r *Listing) GetItemID() uint32 {
@@ -47,7 +46,7 @@ type GetAllListingsResponse struct {
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
@@ -64,7 +63,7 @@ type CreateListingRequest struct {
 	ItemImage       *string `json:"item_image" binding:"required"`
 	ItemQuantity    *uint32 `json:"item_quantity" binding:"required"`
 	ItemDescription *string `json:"item_description" binding:"required"`
-	ItemLocation    *string `json:"item_location" binding:"required"`
+	ItemLocation    *uint32 `json:"item_location" binding:"required"`
 	ItemCategory    *uint32 `json:"item_category" binding:"required"`
 	SellerID        *uint32 `json:"seller_id" binding:"required"`
 }
@@ -93,7 +92,7 @@ func (r CreateListingRequest) SetItemDescription(s string) {
 	*r.ItemDescription = s
 }
 
-func (r CreateListingRequest) GetItemLocation() string {
+func (r CreateListingRequest) GetItemLocation() uint32 {
 	return *r.ItemLocation
 }
 
@@ -120,7 +119,7 @@ type GetSingleListingResponse struct {
 	ItemQuantity          uint32                     `json:"item_quantity"`
 	ItemPurchasedQuantity uint32                     `json:"item_purchasedquantity"`
 	ItemDescription       string                     `json:"item_description"`
-	ItemLocation          string                     `json:"item_location"`
+	ItemLocation          uint32                     `json:"item_location"`
 	ItemStatus            uint32                     `json:"item_status"`
 	ItemCategory          uint32                     `json:"item_category"`
 	ItemImage             string                     `json:"item_image"`
@@ -147,7 +146,7 @@ type UpdateListingRequest struct {
 	ItemPrice       *uint32 `json:"item_price"`
 	ItemQuantity    *uint32 `json:"item_quantity"`
 	ItemDescription *string `json:"item_description"`
-	ItemLocation    *string `json:"item_location"`
+	ItemLocation    *uint32 `json:"item_location"`
 	ItemCategory    *uint32 `json:"item_category"`
 	ItemImage       *string `json:"item_image"`
 	LSellerID       *uint32 `json:"seller_id"`
@@ -188,11 +187,11 @@ func (r *UpdateListingRequest) GetItemDescription() string {
 	return ""
 }
 
-func (r *UpdateListingRequest) GetItemLocation() string {
+func (r *UpdateListingRequest) GetItemLocation() uint32 {
 	if r != nil && r.ItemName != nil {
 		return *r.ItemLocation
 	}
-	return ""
+	return 0
 }
 
 func (r *UpdateListingRequest) GetItemCategory() uint32 {
@@ -236,7 +235,7 @@ type GetUserListingsResponse struct {
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
@@ -266,7 +265,7 @@ type GetLatestListingsResponse struct {
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
@@ -345,7 +344,7 @@ type GetListingsUsingFiltersResponse struct {
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
@@ -427,7 +426,7 @@ type GetUserLikedListingsResponse struct {
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
