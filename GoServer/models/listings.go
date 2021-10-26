@@ -293,7 +293,7 @@ type CategoryFilter struct {
 }
 
 type LocationFilter struct {
-	Location *string `json:"location"`
+	Location *uint32 `json:"location"`
 }
 
 type PriceFilter struct {
@@ -325,7 +325,7 @@ func (r CategoryFilter) GetItemCategory() uint32 {
 	return *r.ItemCategory
 }
 
-func (r LocationFilter) GetLocation() string {
+func (r LocationFilter) GetLocation() uint32 {
 	return *r.Location
 }
 
