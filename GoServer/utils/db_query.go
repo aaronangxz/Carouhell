@@ -10,22 +10,20 @@ import (
 )
 
 const (
-	ListingFixedQuery = "SELECT l.item_id, l.item_name, l.item_price, l.item_quantity," +
-		" l.item_purchased_quantity, l.item_description, l.item_shipping_info," +
-		" l.item_payment_info,l.item_location, l.item_status, l.item_category," +
-		" l.item_image, l.seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.item_id) as listing_likes" +
+	ListingFixedQuery = "SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity," +
+		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category," +
+		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes" +
 		" FROM acc_tab a, listing_tab l" +
-		" LEFT JOIN listing_reactions_tab ON l.item_id = listing_reactions_tab.item_id AND listing_reactions_tab.reaction_type = 0" +
-		" WHERE l.seller_id = a.user_id" +
-		" GROUP BY l.item_id"
+		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = 0" +
+		" WHERE l.l_seller_id = a.a_user_id" +
+		" GROUP BY l.l_item_id"
 
-	ListingQueryWithCustomCondition = "SELECT l.item_id, l.item_name, l.item_price, l.item_quantity," +
-		" l.item_purchased_quantity, l.item_description, l.item_shipping_info," +
-		" l.item_payment_info,l.item_location, l.item_status, l.item_category," +
-		" l.item_image, l.seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.item_id) as listing_likes" +
+	ListingQueryWithCustomCondition = "SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity," +
+		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category," +
+		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes" +
 		" FROM acc_tab a, listing_tab l" +
-		" LEFT JOIN listing_reactions_tab ON l.item_id = listing_reactions_tab.item_id AND listing_reactions_tab.reaction_type = 0" +
-		" WHERE l.seller_id = a.user_id"
+		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = 0" +
+		" WHERE l.l_seller_id = a.a_user_id"
 )
 
 //Fixed query, not possible to append WHERE clause
@@ -55,7 +53,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 	if err := tx.Error; err != nil {
 		return 0, err
 	}
-	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wallet_id,transaction_ctime,transaction_amount,transaction_type)"+
+	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wt_wallet_id,transaction_ctime,transaction_amount,transaction_type)"+
 		"VALUES (%v,%v,%v,%v)", input.GetUserID(), time.Now().Unix(), input.GetAmount(), constant.TRANSACTION_TYPE_TOPUP)
 	if err := tx.Exec(updateWalletTransaction).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:updateWalletTransaction: %v", err.Error())

@@ -7,6 +7,7 @@ const (
 	LISTING_CONSTANT_TYPE_SHIPPING_TYPE = 2
 	LISTING_CONSTANT_TYPE_PAYMENT_TYPE  = 3
 	LISTING_CONSTANT_TYPE_REACTION_TYPE = 4
+	LISTING_CONSTANT_TYPE_LOCATION      = 5
 
 	//item statuses
 	ITEM_STATUS_ALL     = 0
@@ -33,6 +34,17 @@ const (
 
 	LISTING_REACTION_TYPE_LIKE    = 0
 	LISTING_REACTION_TYPE_COMMENT = 1
+
+	LOCATION_1  = 0
+	LOCATION_2  = 1
+	LOCATION_3  = 2
+	LOCATION_4  = 3
+	LOCATION_5  = 4
+	LOCATION_6  = 5
+	LOCATION_7  = 6
+	LOCATION_8  = 7
+	LOCATION_9  = 8
+	LOCATION_10 = 9
 )
 
 func CheckListingConstant(field int, param uint32) bool {
@@ -41,6 +53,8 @@ func CheckListingConstant(field int, param uint32) bool {
 	ItemCategoryList := [2]int{0, 1}
 	ShippingTypeList := [3]int{0, 1, 2}
 	PaymentTypeList := [5]int{0, 1, 2, 3, 4}
+	ListingReactionList := [2]int{0, 1}
+	LocationList := [10]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	switch field {
 	case 0:
@@ -63,6 +77,18 @@ func CheckListingConstant(field int, param uint32) bool {
 		}
 	case 3:
 		for _, elem := range PaymentTypeList {
+			if param == uint32(elem) {
+				return true
+			}
+		}
+	case 4:
+		for _, elem := range ListingReactionList {
+			if param == uint32(elem) {
+				return true
+			}
+		}
+	case 5:
+		for _, elem := range LocationList {
 			if param == uint32(elem) {
 				return true
 			}

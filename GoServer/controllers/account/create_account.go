@@ -165,7 +165,7 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	credentials := models.AccountCredentials{
-		UserID:               account.UserID,
+		CUserID:              account.AUserID,
 		UserPassword:         input.UserPassword,
 		UserSecurityQuestion: input.UserSecurityQuestion,
 		UserSecurityAnswer:   input.UserSecurityAnswer,
@@ -188,7 +188,7 @@ func CreateAccount(c *gin.Context) {
 
 	//create wallet
 	wallet := models.Wallet{
-		WalletID:      account.UserID,
+		WalletID:      account.AUserID,
 		WalletBalance: utils.Uint32(0),
 		WalletStatus:  utils.Uint32(constant.WALLET_STATUS_ACTIVE),
 		LastTopUp:     nil,

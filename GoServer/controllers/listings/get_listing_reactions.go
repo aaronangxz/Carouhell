@@ -32,7 +32,7 @@ func GetListingReactions(c *gin.Context) {
 	}
 
 	//total likes
-	resultLikes := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND item_id = ?", input.GetItemID()).Count(&count)
+	resultLikes := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND rt_item_id = ?", input.GetItemID()).Count(&count)
 	errLikes := resultLikes.Error
 
 	if errLikes != nil {
@@ -43,7 +43,7 @@ func GetListingReactions(c *gin.Context) {
 
 	//retrieve comments
 	queryComments := "SELECT a.user_name, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a " +
-		"WHERE l.user_id = a.user_id AND item_id = " + fmt.Sprint(input.GetItemID()) + " AND reaction_type = 1 ORDER BY ctime ASC"
+		"WHERE l.rt_user_id = a.a_user_id AND l.rt_item_id = " + fmt.Sprint(input.GetItemID()) + " AND l.reaction_type = 1 ORDER BY l.ctime ASC"
 	log.Println(queryComments)
 	resultComments := models.DB.Raw(queryComments).Scan(&comments)
 	errComments := resultComments.Error

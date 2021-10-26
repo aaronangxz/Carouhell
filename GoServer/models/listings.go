@@ -10,52 +10,47 @@ func SetMaxListingsResponseSize() *uint32 {
 }
 
 type Listing struct {
-	ItemID                *uint32 `json:"item_id" gorm:"primary_key"`
+	LItemID               *uint32 `json:"item_id" gorm:"primary_key"`
 	ItemName              *string `json:"item_name"`
 	ItemPrice             *uint32 `json:"item_price"`
 	ItemQuantity          *uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity *uint32 `json:"item_purchasedquantity"`
 	ItemDescription       *string `json:"item_description"`
-	ItemShippingInfo      *uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       *uint32 `json:"item_paymentinfo"`
-	ItemLocation          *string `json:"item_location"`
+	ItemLocation          *uint32 `json:"item_location"`
 	ItemStatus            *uint32 `json:"item_status"`
 	ItemCategory          *uint32 `json:"item_category"`
 	ItemImage             *string `json:"item_image"`
-	SellerID              *uint32 `json:"seller_id"`
+	LSellerID             *uint32 `json:"seller_id"`
 	ListingCtime          *int64  `json:"listing_ctime"`
 	ListingMtime          *int64  `json:"listing_mtime"`
-	ListingLikes          *uint32 `json:"listing_likes"`
 }
 
 func (r *Listing) GetItemID() uint32 {
-	if r != nil && r.ItemID != nil {
-		return *r.ItemID
+	if r != nil && r.LItemID != nil {
+		return *r.LItemID
 	}
 	return 0
 }
 
 func (r *Listing) GetSellerID() uint32 {
-	if r != nil && r.SellerID != nil {
-		return *r.SellerID
+	if r != nil && r.LSellerID != nil {
+		return *r.LSellerID
 	}
 	return 0
 }
 
 type GetAllListingsResponse struct {
-	ItemID                uint32 `json:"item_id"`
+	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
+	LSellerID             uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -63,16 +58,14 @@ type GetAllListingsResponse struct {
 }
 
 type CreateListingRequest struct {
-	ItemName         *string `json:"item_name" binding:"required"`
-	ItemPrice        *uint32 `json:"item_price" binding:"required"`
-	ItemImage        *string `json:"item_image" binding:"required"`
-	ItemQuantity     *uint32 `json:"item_quantity" binding:"required"`
-	ItemDescription  *string `json:"item_description" binding:"required"`
-	ItemShippingInfo *uint32 `json:"item_shipping_info" binding:"required"`
-	ItemPaymentInfo  *uint32 `json:"item_payment_info" binding:"required"`
-	ItemLocation     *string `json:"item_location" binding:"required"`
-	ItemCategory     *uint32 `json:"item_category" binding:"required"`
-	SellerID         *uint32 `json:"seller_id" binding:"required"`
+	ItemName        *string `json:"item_name" binding:"required"`
+	ItemPrice       *uint32 `json:"item_price" binding:"required"`
+	ItemImage       *string `json:"item_image" binding:"required"`
+	ItemQuantity    *uint32 `json:"item_quantity" binding:"required"`
+	ItemDescription *string `json:"item_description" binding:"required"`
+	ItemLocation    *uint32 `json:"item_location" binding:"required"`
+	ItemCategory    *uint32 `json:"item_category" binding:"required"`
+	SellerID        *uint32 `json:"seller_id" binding:"required"`
 }
 
 func (r CreateListingRequest) GetItemName() string {
@@ -99,15 +92,7 @@ func (r CreateListingRequest) SetItemDescription(s string) {
 	*r.ItemDescription = s
 }
 
-func (r CreateListingRequest) GetShippingInfo() uint32 {
-	return *r.ItemShippingInfo
-}
-
-func (r CreateListingRequest) GetPaymentInfo() uint32 {
-	return *r.ItemPaymentInfo
-}
-
-func (r CreateListingRequest) GetItemLocation() string {
+func (r CreateListingRequest) GetItemLocation() uint32 {
 	return *r.ItemLocation
 }
 
@@ -128,19 +113,17 @@ func (r GetSingleListingRequest) GetItemID() uint32 {
 }
 
 type GetSingleListingResponse struct {
-	ItemID                uint32                     `json:"item_id"`
+	LItemID               uint32                     `json:"item_id"`
 	ItemName              string                     `json:"item_name"`
 	ItemPrice             uint32                     `json:"item_price"`
 	ItemQuantity          uint32                     `json:"item_quantity"`
 	ItemPurchasedQuantity uint32                     `json:"item_purchasedquantity"`
 	ItemDescription       string                     `json:"item_description"`
-	ItemShippingInfo      uint32                     `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32                     `json:"item_paymentinfo"`
-	ItemLocation          string                     `json:"item_location"`
+	ItemLocation          uint32                     `json:"item_location"`
 	ItemStatus            uint32                     `json:"item_status"`
 	ItemCategory          uint32                     `json:"item_category"`
 	ItemImage             string                     `json:"item_image"`
-	SellerID              uint32                     `json:"seller_id"`
+	LSellerID             uint32                     `json:"seller_id"`
 	SellerName            string                     `json:"seller_name"`
 	ListingCtime          int64                      `json:"listing_ctime"`
 	ListingMtime          int64                      `json:"listing_mtime"`
@@ -158,22 +141,20 @@ func (r DeleteSingleListingRequest) GetItemID() uint32 {
 }
 
 type UpdateListingRequest struct {
-	ItemID           *uint32 `json:"item_id"`
-	ItemName         *string `json:"item_name"`
-	ItemPrice        *uint32 `json:"item_price"`
-	ItemQuantity     *uint32 `json:"item_quantity"`
-	ItemDescription  *string `json:"item_description"`
-	ItemShippingInfo *uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo  *uint32 `json:"item_paymentinfo"`
-	ItemLocation     *string `json:"item_location"`
-	ItemCategory     *uint32 `json:"item_category"`
-	ItemImage        *string `json:"item_image"`
-	SellerID         *uint32 `json:"seller_id"`
+	LItemID         *uint32 `json:"item_id"`
+	ItemName        *string `json:"item_name"`
+	ItemPrice       *uint32 `json:"item_price"`
+	ItemQuantity    *uint32 `json:"item_quantity"`
+	ItemDescription *string `json:"item_description"`
+	ItemLocation    *uint32 `json:"item_location"`
+	ItemCategory    *uint32 `json:"item_category"`
+	ItemImage       *string `json:"item_image"`
+	LSellerID       *uint32 `json:"seller_id"`
 }
 
 func (r *UpdateListingRequest) GetItemID() uint32 {
-	if r != nil && r.ItemID != nil {
-		return *r.ItemID
+	if r != nil && r.LItemID != nil {
+		return *r.LItemID
 	}
 	return 0
 }
@@ -206,25 +187,11 @@ func (r *UpdateListingRequest) GetItemDescription() string {
 	return ""
 }
 
-func (r *UpdateListingRequest) GetShippingInfo() uint32 {
-	if r != nil && r.ItemShippingInfo != nil {
-		return *r.ItemShippingInfo
-	}
-	return 0
-}
-
-func (r *UpdateListingRequest) GetPaymentInfo() uint32 {
-	if r != nil && r.ItemPaymentInfo != nil {
-		return *r.ItemPaymentInfo
-	}
-	return 0
-}
-
-func (r *UpdateListingRequest) GetItemLocation() string {
+func (r *UpdateListingRequest) GetItemLocation() uint32 {
 	if r != nil && r.ItemName != nil {
 		return *r.ItemLocation
 	}
-	return ""
+	return 0
 }
 
 func (r *UpdateListingRequest) GetItemCategory() uint32 {
@@ -242,8 +209,8 @@ func (r *UpdateListingRequest) GetItemImage() string {
 }
 
 func (r *UpdateListingRequest) GetSellerID() uint32 {
-	if r != nil && r.SellerID != nil {
-		return *r.SellerID
+	if r != nil && r.LSellerID != nil {
+		return *r.LSellerID
 	}
 	return 0
 }
@@ -262,19 +229,17 @@ func (r GetUserListingsRequest) GetLimit() uint32 {
 }
 
 type GetUserListingsResponse struct {
-	ItemID                uint32 `json:"item_id"`
+	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
+	LSellerID             uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -294,19 +259,17 @@ type GetLatestListingsRequest struct {
 }
 
 type GetLatestListingsResponse struct {
-	ItemID                uint32 `json:"item_id"`
+	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
+	LSellerID             uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -375,19 +338,17 @@ func (r PriceFilter) GetMaxPrice() uint32 {
 }
 
 type GetListingsUsingFiltersResponse struct {
-	ItemID                uint32 `json:"item_id"`
+	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
+	LSellerID             uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
@@ -395,9 +356,9 @@ type GetListingsUsingFiltersResponse struct {
 }
 
 type ListingReactions struct {
-	ID           *uint32 `json:"id"`
-	UserID       *uint32 `json:"user_id"`
-	ItemID       *uint32 `json:"item_id"`
+	ReactionsID  *uint32 `json:"id"`
+	RTUserID     *uint32 `json:"user_id"`
+	RTItemID     *uint32 `json:"item_id"`
 	ReactionType *uint32 `json:"reaction_type"`
 	Comment      *string `json:"comment"`
 	Ctime        *uint32 `json:"ctime"`
@@ -459,19 +420,17 @@ func (r *GetUserLikedListingsRequest) GetUserID() uint32 {
 }
 
 type GetUserLikedListingsResponse struct {
-	ItemID                uint32 `json:"item_id"`
+	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
 	ItemPrice             uint32 `json:"item_price"`
 	ItemQuantity          uint32 `json:"item_quantity"`
 	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
 	ItemDescription       string `json:"item_description"`
-	ItemShippingInfo      uint32 `json:"item_shippinginfo"`
-	ItemPaymentInfo       uint32 `json:"item_paymentinfo"`
-	ItemLocation          string `json:"item_location"`
+	ItemLocation          uint32 `json:"item_location"`
 	ItemStatus            uint32 `json:"item_status"`
 	ItemCategory          uint32 `json:"item_category"`
 	ItemImage             string `json:"item_image"`
-	SellerID              uint32 `json:"seller_id"`
+	LSellerID             uint32 `json:"seller_id"`
 	SellerName            string `json:"seller_name"`
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
