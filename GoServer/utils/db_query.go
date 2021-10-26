@@ -39,6 +39,7 @@ func GetListingQueryWithCustomCondition() string {
 	return ListingQueryWithCustomCondition
 }
 
+//Transaction to top up wallet and update corresponding tables
 func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 	var (
 		resp models.TopUpUserWalletResponse
