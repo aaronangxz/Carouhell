@@ -17,12 +17,12 @@ import (
 func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateListingRequest) error {
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
-		if input.ItemID == nil {
+		if input.LItemID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
 			errormsg := "item_id is empty"
 			return errors.New(errormsg)
 		}
-		if !utils.ValidateUint(input.ItemID) {
+		if !utils.ValidateUint(input.LItemID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be uint type.")})
 			errormsg := fmt.Sprintf("item_id must be uint. input: %v", input.GetItemID())
 			return errors.New(errormsg)
@@ -48,19 +48,9 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 			errormsg := fmt.Sprintf("item_description must be string. input: %v", input.GetItemDescription())
 			return errors.New(errormsg)
 		}
-		if input.ItemShippingInfo != nil && !utils.ValidateUint(input.ItemShippingInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shippinginfo must be uint type.")})
-			errormsg := fmt.Sprintf("item_shippinginfo must be uint. input: %v", input.GetShippingInfo())
-			return errors.New(errormsg)
-		}
-		if input.ItemPaymentInfo != nil && !utils.ValidateUint(input.ItemPaymentInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_paymentinfo must be uint type.")})
-			errormsg := fmt.Sprintf("item_paymentinfo must be uint. input: %v", input.GetPaymentInfo())
-			return errors.New(errormsg)
-		}
-		if input.ItemLocation != nil && !utils.ValidateString(input.ItemLocation) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be string type.")})
-			errormsg := fmt.Sprintf("item_location must be string. input: %v", input.GetItemLocation())
+		if input.ItemLocation != nil && !utils.ValidateUint(input.ItemLocation) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be uint type.")})
+			errormsg := fmt.Sprintf("item_location must be uint. input: %v", input.GetItemLocation())
 			return errors.New(errormsg)
 		}
 		if input.ItemCategory != nil && !utils.ValidateUint(input.ItemCategory) {
@@ -73,7 +63,7 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 			errormsg := fmt.Sprintf("item_image must be string. input: %v", input.GetItemImage())
 			return errors.New(errormsg)
 		}
-		if input.SellerID != nil && !utils.ValidateUint(input.SellerID) {
+		if input.LSellerID != nil && !utils.ValidateUint(input.LSellerID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id must be uint type.")})
 			errormsg := fmt.Sprintf("seller_id must be uint. input: %v", input.GetSellerID())
 			return errors.New(errormsg)
@@ -108,29 +98,15 @@ func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListin
 	}
 
 	//Not in enum
-	if input.ItemShippingInfo != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_SHIPPING_TYPE, input.GetShippingInfo()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shippinginfo does not exist.")})
-		errormsg := fmt.Sprintf("item_shippinginfo does not exist. input: %v", input.GetShippingInfo())
-		return errors.New(errormsg)
-	}
-
-	//Not in enum
-	if input.ItemPaymentInfo != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_PAYMENT_TYPE, input.GetPaymentInfo()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_paymentinfo does not exist.")})
-		errormsg := fmt.Sprintf("item_paymentinfo does not exist. input: %v", input.GetPaymentInfo())
-		return errors.New(errormsg)
-	}
-
-	//Not in enum
 	if input.ItemCategory != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category does not exist.")})
 		errormsg := fmt.Sprintf("item_category does not exist. input: %v", input.GetItemCategory())
 		return errors.New(errormsg)
 	}
 
-	if input.ItemLocation != nil && input.GetItemLocation() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty. Set to null if no changes needed.")})
-		errormsg := fmt.Sprintf("item_location cannot be empty. input: %v", input.GetItemLocation())
+	if input.ItemLocation != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category does not exist.")})
+		errormsg := fmt.Sprintf("item_category does not exist. input: %v", input.GetItemLocation())
 		return errors.New(errormsg)
 	}
 
@@ -168,7 +144,7 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//Check if record exists
 	//If yes, retrieve and store original records
-	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE item_id = ?", input.ItemID).Scan(&originalListing).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE l_item_id = ?", input.LItemID).Scan(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("DB Error: %v", err.Error())
 		return
@@ -205,12 +181,6 @@ func UpdateSingleListing(c *gin.Context) {
 	if input.ItemDescription == nil {
 		input.ItemDescription = originalListing.ItemDescription
 	}
-	if input.ItemShippingInfo == nil {
-		input.ItemShippingInfo = originalListing.ItemShippingInfo
-	}
-	if input.ItemPaymentInfo == nil {
-		input.ItemPaymentInfo = originalListing.ItemPaymentInfo
-	}
 	if input.ItemLocation == nil {
 		input.ItemLocation = originalListing.ItemLocation
 	}
@@ -224,9 +194,8 @@ func UpdateSingleListing(c *gin.Context) {
 	//If all good, proceed to update
 	if err := models.DB.Exec("UPDATE listing_tab SET "+
 		"item_name = ?, item_price = ?, item_quantity = ?,"+
-		"item_description = ?, item_shipping_info = ?, item_payment_info = ?,"+
-		"item_location = ?, item_category = ?, item_image = ?, listing_mtime = ? WHERE item_id = ?",
-		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(), input.GetShippingInfo(), input.GetPaymentInfo(),
+		"item_description = ?, item_location = ?, item_category = ?, item_image = ?, listing_mtime = ? WHERE l_item_id = ?",
+		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
 		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during DB query: %v", err.Error())

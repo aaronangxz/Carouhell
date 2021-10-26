@@ -93,7 +93,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 		categoryCondition = ""
 		locationCondition = ""
 		priceCondition    = ""
-		groupCondition    = " GROUP BY l.item_id"
+		groupCondition    = " GROUP BY l.l_item_id"
 		orderCondition    = " ORDER BY"
 	)
 

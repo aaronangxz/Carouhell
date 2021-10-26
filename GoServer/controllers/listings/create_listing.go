@@ -67,33 +67,13 @@ func ValidateCreateListingRequest(c *gin.Context, input *models.CreateListingReq
 			errormsg := fmt.Sprintf("item_description must be string type. input: %v", input.GetItemDescription())
 			return errors.New(errormsg)
 		}
-		if input.ItemShippingInfo == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shipping_info cannot be empty.")})
-			errormsg := "item_shipping_info cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateUint(input.ItemShippingInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_shipping_info must be uint type.")})
-			errormsg := fmt.Sprintf("item_shipping_info must be uint type. input: %v", input.GetShippingInfo())
-			return errors.New(errormsg)
-		}
-		if input.ItemPaymentInfo == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_payment_info cannot be empty.")})
-			errormsg := "item_payment_info cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateUint(input.ItemPaymentInfo) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_payment_info must be uint type.")})
-			errormsg := fmt.Sprintf("item_payment_info must be uint type. input: %v", input.GetPaymentInfo())
-			return errors.New(errormsg)
-		}
 		if input.ItemLocation == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
 			errormsg := "item_location cannot be empty"
 			return errors.New(errormsg)
 		}
-		if !utils.ValidateString(input.ItemLocation) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be string type.")})
+		if !utils.ValidateUint(input.ItemLocation) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location must be uint type.")})
 			errormsg := fmt.Sprintf("item_location must be string type. input: %v", input.GetItemLocation())
 			return errors.New(errormsg)
 		}
@@ -170,9 +150,10 @@ func CreateListing(c *gin.Context) {
 		input.SetItemDescription("This item has no description.")
 	}
 
-	if input.GetItemLocation() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location cannot be empty.")})
-		log.Print("item_location cannot be empty.")
+	//check location
+	if !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation())) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location is invalid.")})
+		log.Printf("invalid item_location: %v", input.GetItemLocation())
 		return
 	}
 
@@ -188,16 +169,13 @@ func CreateListing(c *gin.Context) {
 		ItemQuantity:          input.ItemQuantity,
 		ItemPurchasedQuantity: utils.Uint32(0),
 		ItemDescription:       input.ItemDescription,
-		ItemShippingInfo:      input.ItemShippingInfo,
-		ItemPaymentInfo:       input.ItemPaymentInfo,
 		ItemLocation:          input.ItemLocation,
 		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
 		ItemCategory:          input.ItemCategory,
 		ItemImage:             nil,
-		SellerID:              input.SellerID,
+		LSellerID:             input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
-		ListingLikes:          utils.Uint32(0),
 	}
 
 	if err := models.DB.Table("listing_tab").Create(&listings).
@@ -222,7 +200,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during image write: %v", err.Error())
 		return

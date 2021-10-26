@@ -91,7 +91,7 @@ func AuthenticateUser(c *gin.Context) {
 	}
 
 	//retrieve credentials
-	resultCredentials := models.DB.Raw("SELECT * FROM acc_credentials_tab WHERE user_id = ?", hold.GetUserID()).Scan(&holdCredentials)
+	resultCredentials := models.DB.Raw("SELECT * FROM acc_credentials_tab WHERE c_user_id = ?", hold.GetUserID()).Scan(&holdCredentials)
 
 	if resultCredentials.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {

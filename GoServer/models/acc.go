@@ -1,7 +1,7 @@
 package models
 
 type Account struct {
-	UserID        *uint32 `json:"user_id" gorm:"primary_key"`
+	AUserID       *uint32 `json:"user_id" gorm:"primary_key"`
 	UserName      *string `json:"user_name"`
 	UserEmail     *string `json:"user_email"`
 	UserCtime     *int64  `json:"user_ctime"`
@@ -12,14 +12,14 @@ type Account struct {
 }
 
 func (r *Account) GetUserID() uint32 {
-	if r != nil && r.UserID != nil {
-		return *r.UserID
+	if r != nil && r.AUserID != nil {
+		return *r.AUserID
 	}
 	return 0
 }
 
 type AccountCredentials struct {
-	UserID               *uint32 `json:"user_id" gorm:"primary_key"`
+	CUserID              *uint32 `json:"user_id" gorm:"primary_key"`
 	UserPassword         *string `json:"user_password"`
 	UserSecurityQuestion *uint32 `json:"user_security_question"`
 	UserSecurityAnswer   *string `json:"user_security_answer"`
@@ -33,8 +33,8 @@ func (r *AccountCredentials) GetUserPassword() string {
 }
 
 type UserReview struct {
-	UserID     *uint32 `json:"user_id"`
-	SellerID   *uint32 `json:"seller_id"`
+	RVUserID   *uint32 `json:"user_id"`
+	RVSellerID *uint32 `json:"seller_id"`
 	Ratings    *uint32 `json:"ratings"`
 	ReviewText *string `json:"review_text"`
 	Ctime      *int64  `json:"ctime"`
@@ -116,22 +116,22 @@ type AuthenticateUserResponse struct {
 	UserID uint32 `json:"user_id"`
 }
 type AddUserReviewRequest struct {
-	UserID     *uint32 `json:"user_id" binding:"required"`
-	SellerID   *uint32 `json:"seller_id" binding:"required"`
+	RVUserID   *uint32 `json:"user_id" binding:"required"`
+	RVSellerID *uint32 `json:"seller_id" binding:"required"`
 	Ratings    *uint32 `json:"ratings" binding:"required"`
 	ReviewText *string `json:"review_text" binding:"required"`
 }
 
 func (r *AddUserReviewRequest) GetUserID() uint32 {
-	if r != nil && r.UserID != nil {
-		return *r.UserID
+	if r != nil && r.RVUserID != nil {
+		return *r.RVUserID
 	}
 	return 0
 }
 
 func (r *AddUserReviewRequest) GetSellerID() uint32 {
-	if r != nil && r.SellerID != nil {
-		return *r.SellerID
+	if r != nil && r.RVSellerID != nil {
+		return *r.RVSellerID
 	}
 	return 0
 }

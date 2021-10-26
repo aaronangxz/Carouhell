@@ -58,7 +58,7 @@ func main() {
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
 	//returns all, sorted by listing_ctime DESC
-	r.POST("/get_latest_listings", listings.GetLatestListings)
+	r.GET("/get_latest_listings", listings.GetLatestListings)
 	//returns based on filters, sorted by listing_ctime DESC
 	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
 
@@ -87,6 +87,7 @@ func main() {
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
 	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
+	r.POST("/top_up_user_wallet", wallet.TopUpUserWallet)
 
 	r.Run()
 }

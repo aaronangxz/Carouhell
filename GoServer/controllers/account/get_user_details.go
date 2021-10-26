@@ -26,7 +26,7 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
-	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE user_id = %v", input.GetUserID())
+	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE a_user_id = %v", input.GetUserID())
 	log.Println(query)
 
 	result := models.DB.Raw(query).Scan(&userDetails)

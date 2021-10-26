@@ -18,7 +18,7 @@ func GetLatestLikes(c *gin.Context, input models.AddListingLikeRequest) (uint32,
 	var count uint32
 
 	//get current likes
-	resultCount := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND item_id = ?", input.GetItemID()).Count(&count)
+	resultCount := models.DB.Table("listing_reactions_tab").Where("reaction_type = 0 AND rt_item_id = ?", input.GetItemID()).Count(&count)
 	errCount := resultCount.Error
 
 	if errCount != nil {
@@ -60,15 +60,15 @@ func AddListingLikes(c *gin.Context) {
 
 	//write listing_reactions_tab
 	reaction := models.ListingReactions{
-		UserID:       input.UserID,
-		ItemID:       input.ItemID,
+		RTUserID:     input.UserID,
+		RTItemID:     input.ItemID,
 		ReactionType: utils.Uint32(constant.LISTING_REACTION_TYPE_LIKE),
 		Comment:      nil,
 		Ctime:        utils.Uint32(uint32(time.Now().Unix())),
 	}
 
 	//check if exists, if yes, delete record
-	query := fmt.Sprintf("SELECT * FROM listing_reactions_tab WHERE user_id = %v AND item_id = %v AND reaction_type = %v", input.GetUserID(), input.GetItemID(), constant.LISTING_REACTION_TYPE_LIKE)
+	query := fmt.Sprintf("SELECT * FROM listing_reactions_tab WHERE rt_user_id = %v AND rt_item_id = %v AND reaction_type = %v", input.GetUserID(), input.GetItemID(), constant.LISTING_REACTION_TYPE_LIKE)
 	find := models.DB.Raw(query).Scan(&hold)
 
 	if find.Error != nil {
@@ -81,7 +81,7 @@ func AddListingLikes(c *gin.Context) {
 
 	//delete record
 	if find.RowsAffected > 0 {
-		deleteQuery := fmt.Sprintf("DELETE FROM listing_reactions_tab WHERE user_id = %v AND item_id = %v AND reaction_type = %v", input.GetUserID(), input.GetItemID(), constant.LISTING_REACTION_TYPE_LIKE)
+		deleteQuery := fmt.Sprintf("DELETE FROM listing_reactions_tab WHERE rt_user_id = %v AND rt_item_id = %v AND reaction_type = %v", input.GetUserID(), input.GetItemID(), constant.LISTING_REACTION_TYPE_LIKE)
 		if err := models.DB.Exec(deleteQuery).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 			log.Printf("Error during AddListingLikes DB - roll_back_likes query: %v\n", err.Error())
