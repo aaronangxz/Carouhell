@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/aaronangxz/TIC2601/constant"
@@ -16,6 +17,11 @@ func isSpam(c *gin.Context, input models.AddListingCommentsRequest) bool {
 	var (
 		count uint32
 	)
+
+	//if antispam is off
+	if os.Getenv("CONFIG_ANTISPAM") == "FALSE" {
+		return false
+	}
 
 	result := models.DB.Table("listing_reactions_tab").
 		Where(" reaction_type = ? AND user_id = ? AND item_id = ? AND ? - ctime <= 60",
