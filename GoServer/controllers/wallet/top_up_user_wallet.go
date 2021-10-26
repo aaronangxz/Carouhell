@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
-	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
@@ -72,20 +70,13 @@ func TopUpUserWallet(c *gin.Context) {
 		return
 	}
 
-	query := fmt.Sprintf("BEGIN;"+
-		"INSERT INTO wallet_transactions_tab (wallet_id,transaction_ctime,transaction_amount,transaction_type)"+
-		"VALUES (%v,%v,%v,%v);"+
-		"UPDATE wallet_tab "+
-		"SET wallet_balance = %v, last_top_up = %v WHERE wallet_id = %v;"+
-		"SELECT wallet_balance FROM wallet_tab WHERE wallet_id = %v;COMMIT;",
-		input.GetUserID(), time.Now().Unix(), input.GetAmount(), constant.TRANSACTION_TYPE_TOPUP,
-		input.GetAmount(), time.Now().Unix(), input.GetUserID(), input.GetUserID())
-
-	if err := models.DB.Exec(query).Scan(&resp).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during TopUpUserWallet DB query: %v", err.Error())
+	updatedWalletBalance, err := utils.StartWalletTopUpTx(input)
+	if err != nil {
+		log.Printf("Error during StartWalletTopUpTx: %v", err.Error())
 		return
 	}
+
+	resp.WalletBalance = updatedWalletBalance
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully top up wallet."), "Data": resp})
 
