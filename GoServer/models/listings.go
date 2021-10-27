@@ -1,6 +1,7 @@
 package models
 
 var (
+	MaxStringLength                = uint32(256)
 	MaxItemNameStringLength        = uint32(256)
 	MaxItemDescriptionStringLength = uint32(256)
 	MaxListingsResponseSize        = uint32(50)
