@@ -2,7 +2,7 @@ package models
 
 var (
 	MaxStringLength                = uint32(256)
-	MaxItemNameStringLength        = uint32(256)
+	MaxItemNameStringLength        = uint32(25)
 	MaxItemDescriptionStringLength = uint32(256)
 	MaxListingsResponseSize        = uint32(50)
 	DefaultImagePrefix             = "https://tic2601test.s3.ap-southeast-1.amazonaws.com/"
