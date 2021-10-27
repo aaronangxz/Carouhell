@@ -142,9 +142,10 @@ func UpdateSingleListing(c *gin.Context) {
 		return
 	}
 
-	//Check if record exists
+	//Check if record exists and is not sold / deleted
 	//If yes, retrieve and store original records
-	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE l_item_id = ?", input.LItemID).Scan(&originalListing).Error; err != nil {
+	query := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v AND item_status = %v", input.LItemID, constant.ITEM_STATUS_NORMAL)
+	if err := models.DB.Raw(query).Scan(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("DB Error: %v", err.Error())
 		return
@@ -152,7 +153,11 @@ func UpdateSingleListing(c *gin.Context) {
 
 	if originalListing.GetSellerID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
-		log.Printf("Record not found: user_id: %v", input.GetItemID())
+		log.Printf("item not found: item_id: %v", input.GetItemID())
+		return
+	} else if originalListing.GetItemStatus() != constant.ITEM_STATUS_NORMAL {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
+		log.Printf("item is sold. item_id: %v", input.GetItemID())
 		return
 	}
 

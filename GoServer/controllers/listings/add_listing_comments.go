@@ -34,7 +34,7 @@ func isSpam(c *gin.Context, input models.AddListingCommentsRequest) bool {
 	}
 
 	if count > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Not allowed to comment again within 60 secs.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("ANTISPAM toggle is on. Not allowed to comment again within 60 secs.")})
 		return true
 	}
 	return false

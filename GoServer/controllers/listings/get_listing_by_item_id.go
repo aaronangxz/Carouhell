@@ -37,7 +37,7 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-	//get listing info
+	//also return deleted and sold items
 	query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
 	result := models.DB.Raw(query).Scan(&resp)
@@ -46,6 +46,12 @@ func GetListingByItemID(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetListingByItemID - listing DB query: %v\n", err.Error())
+		return
+	}
+
+	if resp.LItemID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
+		log.Printf("item not found: item_id: %v", input.GetItemID())
 		return
 	}
 
@@ -70,7 +76,7 @@ func GetListingByItemID(c *gin.Context) {
 		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("GetListingByItemID success."), "Data": resp})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDResult(resp), "Data": resp})
 	log.Printf("Successful: GetListingByItemID. rows: %v\n", result.RowsAffected)
 	log.Printf("Result: %s\n", data)
 }

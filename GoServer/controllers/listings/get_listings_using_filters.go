@@ -166,7 +166,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 		orderCondition += " listing_likes DESC, listing_ctime DESC"
 	}
 
-	query := utils.GetListingQueryWithCustomCondition() +
+	query := utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
 		nameCondition + categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
 
 	log.Printf("Executing DB query: %v\n", query)
