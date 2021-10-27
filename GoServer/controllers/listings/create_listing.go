@@ -121,9 +121,9 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
-	if !utils.ValidateMaxStringLength(input.GetItemName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		log.Printf("item_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetItemName()))
+	if !utils.ValidateMaxItemNameStringLength(input.GetItemName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxItemNameStringLength) + " chars.")})
+		log.Printf("item_name length cannot exceed %v. input :%v", models.MaxItemNameStringLength, len(input.GetItemName()))
 		return
 	}
 
@@ -148,6 +148,13 @@ func CreateListing(c *gin.Context) {
 	//allow blank
 	if input.GetItemDescription() == "" {
 		input.SetItemDescription("This item has no description.")
+	}
+
+	//check description length
+	if !utils.ValidateMaxItemDescriptionStringLength(input.GetItemName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_description cannot exceed " + fmt.Sprint(models.MaxItemDescriptionStringLength) + " chars.")})
+		log.Printf("item_description length cannot exceed %v. input :%v", models.MaxItemDescriptionStringLength, len(input.GetItemName()))
+		return
 	}
 
 	//check location
