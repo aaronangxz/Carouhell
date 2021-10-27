@@ -186,7 +186,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//upload image
-	imageUrl, err := utils.UploadBase64Image(listings.GetItemID(), input.GetItemImage())
+	imageUrl, err := utils.UploadBase64Image(listings.GetLItemID(), input.GetItemImage())
 	if err != nil {
 		//roll back listing create
 		if errRollback := models.DB.Table("listing_tab").Delete(&listings).Error; errRollback != nil {
@@ -200,13 +200,13 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetLItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during image write: %v", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetItemID()))})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetLItemID()))})
 
 	data, err := json.Marshal(listings)
 	if err != nil {
