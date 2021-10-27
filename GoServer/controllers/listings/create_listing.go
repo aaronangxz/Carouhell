@@ -189,12 +189,12 @@ func CreateListing(c *gin.Context) {
 	imageUrl, err := utils.UploadBase64Image(listings.GetItemID(), input.GetItemImage())
 	if err != nil {
 		//roll back listing create
-		if errRollback := models.DB.Table("acc_tab").Delete(&listings).Error; errRollback != nil {
+		if errRollback := models.DB.Table("listing_tab").Delete(&listings).Error; errRollback != nil {
 			log.Printf("Error during CreateListing - listing_tab roll back: %v", err.Error())
 		} else {
 			log.Print("rollback listing_tab successful")
 		}
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image. Listing not created.")})
 		log.Printf("Error during image upload: %v", err)
 		return
 	}
