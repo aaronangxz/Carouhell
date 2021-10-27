@@ -15,6 +15,7 @@ func GetAllListings(c *gin.Context) {
 		listings []models.GetAllListingsResponse
 	)
 
+	//only return available items
 	query := utils.GetListingFixedQuery()
 	log.Println(query)
 

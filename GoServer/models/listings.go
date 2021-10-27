@@ -1,8 +1,12 @@
 package models
 
 var (
-	MaxStringLength         = uint32(256)
-	MaxListingsResponseSize = uint32(50)
+	MaxStringLength                = uint32(256)
+	MaxItemNameStringLength        = uint32(25)
+	MaxItemDescriptionStringLength = uint32(256)
+	MaxListingsResponseSize        = uint32(50)
+	DefaultImagePrefix             = "https://tic2601test.s3.ap-southeast-1.amazonaws.com/"
+	DefaultImageExtension          = ".jpg"
 )
 
 func SetMaxListingsResponseSize() *uint32 {
@@ -25,16 +29,23 @@ type Listing struct {
 	ListingMtime          *int64  `json:"listing_mtime"`
 }
 
-func (r *Listing) GetItemID() uint32 {
+func (r *Listing) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
 	}
 	return 0
 }
 
-func (r *Listing) GetSellerID() uint32 {
+func (r *Listing) GetLSellerID() uint32 {
 	if r != nil && r.LSellerID != nil {
 		return *r.LSellerID
+	}
+	return 0
+}
+
+func (r *Listing) GetItemStatus() uint32 {
+	if r != nil && r.ItemStatus != nil {
+		return *r.ItemStatus
 	}
 	return 0
 }
@@ -152,7 +163,7 @@ type UpdateListingRequest struct {
 	LSellerID       *uint32 `json:"seller_id"`
 }
 
-func (r *UpdateListingRequest) GetItemID() uint32 {
+func (r *UpdateListingRequest) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
 	}
@@ -293,7 +304,7 @@ type CategoryFilter struct {
 }
 
 type LocationFilter struct {
-	Location *string `json:"location"`
+	Location *uint32 `json:"location"`
 }
 
 type PriceFilter struct {
@@ -325,7 +336,7 @@ func (r CategoryFilter) GetItemCategory() uint32 {
 	return *r.ItemCategory
 }
 
-func (r LocationFilter) GetLocation() string {
+func (r LocationFilter) GetLocation() uint32 {
 	return *r.Location
 }
 

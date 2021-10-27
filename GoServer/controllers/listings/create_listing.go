@@ -121,9 +121,9 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
-	if !utils.ValidateMaxStringLength(input.GetItemName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		log.Printf("item_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetItemName()))
+	if !utils.ValidateMaxItemNameStringLength(input.GetItemName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxItemNameStringLength) + " chars.")})
+		log.Printf("item_name length cannot exceed %v. input :%v", models.MaxItemNameStringLength, len(input.GetItemName()))
 		return
 	}
 
@@ -148,6 +148,13 @@ func CreateListing(c *gin.Context) {
 	//allow blank
 	if input.GetItemDescription() == "" {
 		input.SetItemDescription("This item has no description.")
+	}
+
+	//check description length
+	if !utils.ValidateMaxItemDescriptionStringLength(input.GetItemName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_description cannot exceed " + fmt.Sprint(models.MaxItemDescriptionStringLength) + " chars.")})
+		log.Printf("item_description length cannot exceed %v. input :%v", models.MaxItemDescriptionStringLength, len(input.GetItemName()))
+		return
 	}
 
 	//check location
@@ -186,27 +193,27 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//upload image
-	imageUrl, err := utils.UploadBase64Image(listings.GetItemID(), input.GetItemImage())
+	imageUrl, err := utils.UploadBase64Image(listings.GetLItemID(), input.GetItemImage())
 	if err != nil {
 		//roll back listing create
-		if errRollback := models.DB.Table("acc_tab").Delete(&listings).Error; errRollback != nil {
+		if errRollback := models.DB.Table("listing_tab").Delete(&listings).Error; errRollback != nil {
 			log.Printf("Error during CreateListing - listing_tab roll back: %v", err.Error())
 		} else {
 			log.Print("rollback listing_tab successful")
 		}
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image. Listing not created.")})
 		log.Printf("Error during image upload: %v", err)
 		return
 	}
 
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetItemID()).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetLItemID()).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during image write: %v", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetItemID()))})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetLItemID()))})
 
 	data, err := json.Marshal(listings)
 	if err != nil {

@@ -23,9 +23,9 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 			return errors.New(errormsg)
 		}
 
-		if input.LocationFilter.Location != nil && !utils.ValidateString(input.LocationFilter.Location) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be string type.")})
-			errormsg := fmt.Sprintf("location must be string. input: %v", input.LocationFilter.GetLocation())
+		if input.LocationFilter.Location != nil && !utils.ValidateUint(input.LocationFilter.Location) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("location must be uint type.")})
+			errormsg := fmt.Sprintf("location must be uint. input: %v", input.LocationFilter.GetLocation())
 			return errors.New(errormsg)
 		}
 
@@ -74,7 +74,12 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 		errormsg := fmt.Sprintf("unknown sort_flag. input: %v", input.GetSortFlag())
 		return errors.New(errormsg)
 	}
-
+	//check location
+	if input.CategoryFilter.ItemCategory != nil && !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION_DIRECTION, input.GetLocation())) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_location")})
+		errormsg := fmt.Sprintf("unknown item_location. input: %v", input.GetLocation())
+		return errors.New(errormsg)
+	}
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice != nil {
 		if input.PriceFilter.GetMaxPrice() < input.PriceFilter.GetMinPrice() {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("min_price cannot > max_price.")})
@@ -107,7 +112,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 		return
 	}
 
-	//build SQL queries
+	//build keyword SQL query
 	if input.SearchKeyword != nil {
 		key := "'%" + input.GetSearchKeyword() + "%'"
 		nameCondition += fmt.Sprintf(" AND item_name LIKE %v", key)
@@ -121,9 +126,18 @@ func GetListingsUsingFilters(c *gin.Context) {
 
 	}
 
-	if input.LocationFilter.Location != nil {
-		// locationCondition += " item_location = '" + fmt.Sprint(input.LocationFilter.GetLocation()) + "'"
-		locationCondition += fmt.Sprintf(" AND item_location = '%v'", input.LocationFilter.GetLocation())
+	//build location SQL query
+	if input.Location != nil {
+		locationCondition = " AND FIND_IN_SET(item_location,'"
+		locationList := constant.GetLocationFromDirection(input.GetLocation())
+
+		for i, element := range locationList {
+			if i == len(locationList)-1 {
+				locationCondition += fmt.Sprintf("%v')", element)
+				break
+			}
+			locationCondition += fmt.Sprintf("%v,", element)
+		}
 	}
 
 	if input.PriceFilter.MinPrice != nil && input.PriceFilter.MaxPrice == nil {
@@ -152,7 +166,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 		orderCondition += " listing_likes DESC, listing_ctime DESC"
 	}
 
-	query := utils.GetListingQueryWithCustomCondition() +
+	query := utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
 		nameCondition + categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
 
 	log.Printf("Executing DB query: %v\n", query)

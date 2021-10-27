@@ -56,6 +56,7 @@ func GetUserListings(c *gin.Context) {
 		extraCondition = " LIMIT " + fmt.Sprint(input.GetLimit())
 	}
 
+	//also return deleted and sold items
 	query := utils.GetListingQueryWithCustomCondition() + whereCondition + orderCondition + extraCondition
 	log.Println(query)
 
