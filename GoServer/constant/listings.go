@@ -94,48 +94,43 @@ const (
 
 func CheckListingConstant(field int, param uint32) bool {
 
-	itemStatusList := [4]int{0, 1, 2, 3}
-	itemCategoryList := [18]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	itemStatusList := [4]uint32{0, 1, 2, 3}
+	itemCategoryList := [18]uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		11, 12, 13, 14, 15, 16, 17}
-	listingReactionList := [2]int{0, 1}
-	locationList := [45]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	listingReactionList := [2]uint32{0, 1}
+	locationList := [45]uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 		21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
 		31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 		41, 42, 43, 44}
-	listingDirectionList := [5]int{0, 1, 2, 3, 4}
+	listingDirectionList := [5]uint32{0, 1, 2, 3, 4}
 
 	switch field {
 	case LISTING_CONSTANT_TYPE_ITEM_STATUS:
-		for _, elem := range itemStatusList {
-			if param == uint32(elem) {
-				return true
-			}
+		if param > uint32(len(itemStatusList)-1) {
+			return false
 		}
+		return itemStatusList[param] == param
 	case LISTING_CONSTANT_TYPE_ITEM_CATEGORY:
-		for _, elem := range itemCategoryList {
-			if param == uint32(elem) {
-				return true
-			}
+		if param > uint32(len(itemCategoryList)-1) {
+			return false
 		}
+		return itemCategoryList[param] == param
 	case LISTING_CONSTANT_TYPE_REACTION_TYPE:
-		for _, elem := range listingReactionList {
-			if param == uint32(elem) {
-				return true
-			}
+		if param > uint32(len(listingReactionList)-1) {
+			return false
 		}
+		return listingReactionList[param] == param
 	case LISTING_CONSTANT_TYPE_LOCATION:
-		for _, elem := range locationList {
-			if param == uint32(elem) {
-				return true
-			}
+		if param > uint32(len(locationList)-1) {
+			return false
 		}
+		return locationList[param] == param
 	case LISTING_CONSTANT_TYPE_LOCATION_DIRECTION:
-		for _, elem := range listingDirectionList {
-			if param == uint32(elem) {
-				return true
-			}
+		if param > uint32(len(listingDirectionList)-1) {
+			return false
 		}
+		return listingDirectionList[param] == param
 	}
 	return false
 }

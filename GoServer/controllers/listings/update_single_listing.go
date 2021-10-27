@@ -98,15 +98,15 @@ func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListin
 	}
 
 	//Not in enum
-	if input.ItemCategory != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
+	if input.ItemCategory != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_ITEM_CATEGORY, input.GetItemCategory()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category does not exist.")})
 		errormsg := fmt.Sprintf("item_category does not exist. input: %v", input.GetItemCategory())
 		return errors.New(errormsg)
 	}
 
-	if input.ItemLocation != nil && constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_category does not exist.")})
-		errormsg := fmt.Sprintf("item_category does not exist. input: %v", input.GetItemLocation())
+	if input.ItemLocation != nil && !constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION, input.GetItemLocation()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_location does not exist.")})
+		errormsg := fmt.Sprintf("item_location does not exist. input: %v", input.GetItemLocation())
 		return errors.New(errormsg)
 	}
 
@@ -181,9 +181,6 @@ func UpdateSingleListing(c *gin.Context) {
 	if input.ItemCategory == nil {
 		input.ItemCategory = originalListing.ItemCategory
 	}
-	if input.ItemImage == nil {
-		input.ItemImage = originalListing.ItemImage
-	}
 
 	//upload image if any
 	if input.ItemImage != nil {
@@ -195,6 +192,11 @@ func UpdateSingleListing(c *gin.Context) {
 			log.Printf("Error during image upload: %v", err)
 			return
 		}
+	}
+
+	//if none, use the original image
+	if input.ItemImage == nil {
+		input.ItemImage = originalListing.ItemImage
 	}
 
 	//If all good, proceed to update
