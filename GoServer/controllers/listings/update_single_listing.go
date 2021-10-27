@@ -162,18 +162,6 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	// //If request fields are empty, we dont want to override empty fields into DB
-	// inputValue := reflect.ValueOf(&input)
-	// originalValue := reflect.ValueOf(&originalListing)
-
-	// inputElement := inputValue.Elem()
-	// originalElement := originalValue.Elem()
-
-	// //Fill up nil fields with original values
-	// for i := 0; i < inputElement.NumField(); i++ {
-	// 	if inputElement.Field(i).IsNil() {
-	// 		inputElement = originalElement.Field(i)
-	// 	}
-	// }
 	if input.ItemName == nil {
 		input.ItemName = originalListing.ItemName
 	}
@@ -196,12 +184,26 @@ func UpdateSingleListing(c *gin.Context) {
 		input.ItemImage = originalListing.ItemImage
 	}
 
+	//upload image if any
+	if input.ItemImage != nil {
+		//upload image
+		imageURL, err := utils.UploadBase64Image(originalListing.GetItemID(), input.GetItemImage())
+		input.ItemImage = &imageURL
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image. Listing not updated.")})
+			log.Printf("Error during image upload: %v", err)
+			return
+		}
+	}
+
 	//If all good, proceed to update
-	if err := models.DB.Exec("UPDATE listing_tab SET "+
-		"item_name = ?, item_price = ?, item_quantity = ?,"+
-		"item_description = ?, item_location = ?, item_category = ?, item_image = ?, listing_mtime = ? WHERE l_item_id = ?",
+	query = fmt.Sprintf("UPDATE listing_tab SET "+
+		"item_name = %v, item_price = %v, item_quantity = %v,"+
+		"item_description = %v, item_location = %v, item_category = %v, item_image = %v, listing_mtime = %v WHERE l_item_id = %v",
 		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
-		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetItemID()).Error; err != nil {
+		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetItemID())
+	log.Println(query)
+	if err := models.DB.Exec(query).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during DB query: %v", err.Error())
 		return
