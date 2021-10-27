@@ -1,9 +1,11 @@
 package listings
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 
@@ -15,7 +17,8 @@ func GetLatestListings(c *gin.Context) {
 		listings []models.GetLatestListingsResponse
 	)
 
-	query := utils.GetListingQueryWithCustomCondition() + " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
+	//only return available items
+	query := utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v GROUP BY l.l_item_id ORDER BY listing_ctime DESC", constant.ITEM_STATUS_NORMAL)
 	log.Println(query)
 
 	result := models.DB.Raw(query).Scan(&listings)

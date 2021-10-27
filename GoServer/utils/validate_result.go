@@ -54,3 +54,10 @@ func ValidateGetUserLikedListingsResult(results []models.GetUserLikedListingsRes
 	}
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetUserLikedListings success. results: %v", len(results)))
 }
+
+func ValidateGetListingByItemIDResult(results models.GetSingleListingResponse) models.ResponseMeta {
+	if results.LItemID == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse("GetListingByItemID success.")
+}

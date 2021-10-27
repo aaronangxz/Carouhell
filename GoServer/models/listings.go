@@ -39,6 +39,13 @@ func (r *Listing) GetSellerID() uint32 {
 	return 0
 }
 
+func (r *Listing) GetItemStatus() uint32 {
+	if r != nil && r.ItemStatus != nil {
+		return *r.ItemStatus
+	}
+	return 0
+}
+
 type GetAllListingsResponse struct {
 	LItemID               uint32 `json:"item_id"`
 	ItemName              string `json:"item_name"`
