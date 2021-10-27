@@ -2,10 +2,11 @@ package constant
 
 const (
 	//listing constant groups
-	LISTING_CONSTANT_TYPE_ITEM_STATUS   = 0
-	LISTING_CONSTANT_TYPE_ITEM_CATEGORY = 1
-	LISTING_CONSTANT_TYPE_REACTION_TYPE = 2
-	LISTING_CONSTANT_TYPE_LOCATION      = 3
+	LISTING_CONSTANT_TYPE_ITEM_STATUS        = 0
+	LISTING_CONSTANT_TYPE_ITEM_CATEGORY      = 1
+	LISTING_CONSTANT_TYPE_REACTION_TYPE      = 2
+	LISTING_CONSTANT_TYPE_LOCATION           = 3
+	LISTING_CONSTANT_TYPE_LOCATION_DIRECTION = 4
 
 	//item_status
 	ITEM_STATUS_ALL     = 0
@@ -83,45 +84,82 @@ const (
 	LOCATION_TUAS            = 42
 	LOCATION_WOODLANDS       = 43
 	LOCATION_YISHUN          = 44
+
+	LOCATION_DIRECTION_NORTH   = 0
+	LOCATION_DIRECTION_SOUTH   = 1
+	LOCATION_DIRECTION_EAST    = 2
+	LOCATION_DIRECTION_WEST    = 3
+	LOCATION_DIRECTION_CENTRAL = 4
 )
 
 func CheckListingConstant(field int, param uint32) bool {
 
-	ItemStatusList := [4]int{0, 1, 2, 3}
-	ItemCategoryList := [18]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	itemStatusList := [4]int{0, 1, 2, 3}
+	itemCategoryList := [18]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		11, 12, 13, 14, 15, 16, 17}
-	ListingReactionList := [2]int{0, 1}
-	LocationList := [45]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	listingReactionList := [2]int{0, 1}
+	locationList := [45]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 		21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
 		31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 		41, 42, 43, 44}
+	listingDirectionList := [5]int{0, 1, 2, 3, 4}
 
 	switch field {
-	case 0:
-		for _, elem := range ItemStatusList {
+	case LISTING_CONSTANT_TYPE_ITEM_STATUS:
+		for _, elem := range itemStatusList {
 			if param == uint32(elem) {
 				return true
 			}
 		}
-	case 1:
-		for _, elem := range ItemCategoryList {
+	case LISTING_CONSTANT_TYPE_ITEM_CATEGORY:
+		for _, elem := range itemCategoryList {
 			if param == uint32(elem) {
 				return true
 			}
 		}
-	case 2:
-		for _, elem := range ListingReactionList {
+	case LISTING_CONSTANT_TYPE_REACTION_TYPE:
+		for _, elem := range listingReactionList {
 			if param == uint32(elem) {
 				return true
 			}
 		}
-	case 3:
-		for _, elem := range LocationList {
+	case LISTING_CONSTANT_TYPE_LOCATION:
+		for _, elem := range locationList {
+			if param == uint32(elem) {
+				return true
+			}
+		}
+	case LISTING_CONSTANT_TYPE_LOCATION_DIRECTION:
+		for _, elem := range listingDirectionList {
 			if param == uint32(elem) {
 				return true
 			}
 		}
 	}
 	return false
+}
+
+func GetLocationFromDirection(param uint32) []uint32 {
+	var (
+		locationNorthList   = []uint32{0, 2, 17, 18, 27, 31, 32, 35, 37, 41, 43, 44}
+		locationSouthList   = []uint32{5, 7, 28, 19, 21, 23}
+		locationEastList    = []uint32{1, 8, 12, 13, 16, 25, 33, 34, 38}
+		locationWestList    = []uint32{3, 4, 6, 9, 10, 14, 15, 26, 40, 42}
+		locationCentralList = []uint32{11, 19, 20, 22, 24, 29, 30, 36, 39}
+	)
+
+	switch param {
+	case LOCATION_DIRECTION_NORTH:
+		return locationNorthList
+	case LOCATION_DIRECTION_SOUTH:
+		return locationSouthList
+	case LOCATION_DIRECTION_EAST:
+		return locationEastList
+	case LOCATION_DIRECTION_WEST:
+		return locationWestList
+	case LOCATION_DIRECTION_CENTRAL:
+		return locationCentralList
+	}
+	return nil
 }
