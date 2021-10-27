@@ -24,7 +24,7 @@ func ValidateUpdateSingleListingRequest(c *gin.Context, input *models.UpdateList
 		}
 		if !utils.ValidateUint(input.LItemID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be uint type.")})
-			errormsg := fmt.Sprintf("item_id must be uint. input: %v", input.GetItemID())
+			errormsg := fmt.Sprintf("item_id must be uint. input: %v", input.GetLItemID())
 			return errors.New(errormsg)
 		}
 		//other fields only check when it is not nil because we allow it to be empty
@@ -79,9 +79,9 @@ func ValidateUpdateSingleListingInput(c *gin.Context, input *models.UpdateListin
 	//Allow:
 	//quantity to be 0
 	//description to be blank
-	if input.GetItemID() == 0 {
+	if input.GetLItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be > 0.")})
-		errormsg := fmt.Sprintf("item_id must > 0. input: %v", input.GetItemID())
+		errormsg := fmt.Sprintf("item_id must > 0. input: %v", input.GetLItemID())
 		return errors.New(errormsg)
 	}
 
@@ -144,36 +144,25 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//Check if record exists and is not sold / deleted
 	//If yes, retrieve and store original records
-	query := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v AND item_status = %v", input.LItemID, constant.ITEM_STATUS_NORMAL)
+	query := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v AND item_status = %v", input.GetLItemID(), constant.ITEM_STATUS_NORMAL)
+	log.Println(query)
 	if err := models.DB.Raw(query).Scan(&originalListing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("DB Error: %v", err.Error())
 		return
 	}
 
-	if originalListing.GetSellerID() == 0 {
+	if originalListing.GetLItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
-		log.Printf("item not found: item_id: %v", input.GetItemID())
+		log.Printf("item not found: item_id: %v", input.GetLItemID())
 		return
 	} else if originalListing.GetItemStatus() != constant.ITEM_STATUS_NORMAL {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
-		log.Printf("item is sold. item_id: %v", input.GetItemID())
+		log.Printf("item is sold. item_id: %v", input.GetLItemID())
 		return
 	}
 
 	// //If request fields are empty, we dont want to override empty fields into DB
-	// inputValue := reflect.ValueOf(&input)
-	// originalValue := reflect.ValueOf(&originalListing)
-
-	// inputElement := inputValue.Elem()
-	// originalElement := originalValue.Elem()
-
-	// //Fill up nil fields with original values
-	// for i := 0; i < inputElement.NumField(); i++ {
-	// 	if inputElement.Field(i).IsNil() {
-	// 		inputElement = originalElement.Field(i)
-	// 	}
-	// }
 	if input.ItemName == nil {
 		input.ItemName = originalListing.ItemName
 	}
@@ -196,16 +185,32 @@ func UpdateSingleListing(c *gin.Context) {
 		input.ItemImage = originalListing.ItemImage
 	}
 
+	//upload image if any
+	if input.ItemImage != nil {
+		//upload image
+		imageURL, err := utils.UploadBase64Image(originalListing.GetLItemID(), input.GetItemImage())
+		input.ItemImage = &imageURL
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Failed to upload image. Listing not updated.")})
+			log.Printf("Error during image upload: %v", err)
+			return
+		}
+	}
+
 	//If all good, proceed to update
-	if err := models.DB.Exec("UPDATE listing_tab SET "+
-		"item_name = ?, item_price = ?, item_quantity = ?,"+
-		"item_description = ?, item_location = ?, item_category = ?, item_image = ?, listing_mtime = ? WHERE l_item_id = ?",
+	query = fmt.Sprintf("UPDATE listing_tab SET "+
+		"item_name = '%v', item_price = %v, item_quantity = %v,"+
+		"item_description = '%v', item_location = %v, item_category = %v, item_image = '%v', listing_mtime = %v WHERE l_item_id = %v",
 		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
-		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetItemID()).Error; err != nil {
+		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetLItemID())
+	log.Println(query)
+	if err := models.DB.Exec(query).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during DB query: %v", err.Error())
 		return
 	}
+
+	//will replace existing image in S3, hence we dont remove image even if PATCH failed
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully updated listing details.")})
 	log.Printf("Successful: UpdateSingleListing.")

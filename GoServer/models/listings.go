@@ -3,6 +3,8 @@ package models
 var (
 	MaxStringLength         = uint32(256)
 	MaxListingsResponseSize = uint32(50)
+	DefaultImagePrefix      = "https://tic2601test.s3.ap-southeast-1.amazonaws.com/"
+	DefaultImageExtension   = ".jpg"
 )
 
 func SetMaxListingsResponseSize() *uint32 {
@@ -25,14 +27,14 @@ type Listing struct {
 	ListingMtime          *int64  `json:"listing_mtime"`
 }
 
-func (r *Listing) GetItemID() uint32 {
+func (r *Listing) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
 	}
 	return 0
 }
 
-func (r *Listing) GetSellerID() uint32 {
+func (r *Listing) GetLSellerID() uint32 {
 	if r != nil && r.LSellerID != nil {
 		return *r.LSellerID
 	}
@@ -159,7 +161,7 @@ type UpdateListingRequest struct {
 	LSellerID       *uint32 `json:"seller_id"`
 }
 
-func (r *UpdateListingRequest) GetItemID() uint32 {
+func (r *UpdateListingRequest) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
 	}
