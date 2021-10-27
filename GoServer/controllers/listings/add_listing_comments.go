@@ -48,22 +48,27 @@ func AddListingComments(c *gin.Context) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.ItemID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id cannot be empty.")})
+			log.Println("item_id cannot be empty.")
 			return
 		}
 		if !utils.ValidateUint(input.ItemID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_id must be uint type.")})
+			log.Println("item_id must be uint type.")
 			return
 		}
 		if input.UserID == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			log.Println("user_id cannot be empty.")
 			return
 		}
 		if !utils.ValidateUint(input.UserID) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			log.Println("user_id must be uint type.")
 			return
 		}
 		if input.Comment == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("comment cannot be empty.")})
+			log.Println("comment canot be empty.")
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
@@ -73,6 +78,12 @@ func AddListingComments(c *gin.Context) {
 	if !utils.ValidateMaxStringLength(input.GetComment()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("comment cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		log.Printf("comment length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetComment()))
+		return
+	}
+
+	if input.GetComment() == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("comment canot be empty.")})
+		log.Println("comment canot be empty.")
 		return
 	}
 
