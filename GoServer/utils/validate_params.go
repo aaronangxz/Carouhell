@@ -13,7 +13,7 @@ func ValidateLimitMax(a uint32, b uint32) bool {
 }
 
 func ValidateMaxStringLength(s string) bool {
-	return len(s) < int(models.MaxItemNameStringLength)
+	return len(s) < int(models.MaxStringLength)
 }
 
 func ValidateMaxItemNameStringLength(s string) bool {
