@@ -108,6 +108,7 @@ func CreateListing(c *gin.Context) {
 	// Validate input
 	var (
 		input models.CreateListingRequest
+		resp  models.CreateListingResponse
 	)
 
 	if err := ValidateCreateListingRequest(c, &input); err != nil {
@@ -213,7 +214,9 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully create listing. item_id: %v", listings.GetLItemID()))})
+	resp.LItemID = listings.GetLItemID()
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create listing."), "Data": resp})
 
 	data, err := json.Marshal(listings)
 	if err != nil {

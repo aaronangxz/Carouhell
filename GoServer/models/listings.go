@@ -115,6 +115,10 @@ func (r CreateListingRequest) GetSellerID() uint32 {
 	return *r.SellerID
 }
 
+type CreateListingResponse struct {
+	LItemID uint32 `json:"item_id"`
+}
+
 type GetSingleListingRequest struct {
 	ItemID *uint32 `json:"item_id" binding:"required"`
 }
