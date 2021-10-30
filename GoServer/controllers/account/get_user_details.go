@@ -4,15 +4,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/models"
+	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetUserDetails(c *gin.Context) {
 	var (
-		input       models.GetUserDetailsRequest
-		userDetails models.Account
+		input        models.GetUserDetailsRequest
+		accountResp  models.Account
+		ratingsResp  models.UserRatings
+		reviewsResp  []models.UserReview
+		listingsResp []models.GetUserListingsResponse
+		userDetails  models.GetUserDetailsResponse
+		mainstart    = time.Now().Unix()
+		start        = int64(0)
+		end          = int64(0)
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -26,18 +35,78 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
-	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE a_user_id = %v", input.GetUserID())
-	log.Println(query)
-
-	result := models.DB.Raw(query).Scan(&userDetails)
-	err := result.Error
-
-	if err != nil {
+	//retrieve acc info
+	accQuery := fmt.Sprintf("SELECT * FROM acc_tab WHERE a_user_id = %v", input.GetUserID())
+	log.Println(accQuery)
+	start = time.Now().Unix()
+	result := models.DB.Raw(accQuery).Scan(&accountResp)
+	if err := result.Error; err != nil {
+		end = time.Now().Unix()
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during GetUserDetails DB query: %v\n", err.Error())
+		log.Printf("Error during GetUserDetails after %vs - retrieve acc info DB query: %v\n", end-start, err.Error())
 		return
 	}
+	end = time.Now().Unix()
+	log.Printf("Success: GetUserDetails after %vs - retrieve acc info DB query", end-start)
 
-	log.Printf("Successful: GetUserDetails. rows: %v\n", result.RowsAffected)
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieve user details."), "Data": userDetails})
+	//retrieve reviews
+	reviewQuery := fmt.Sprintf("SELECT * FROM user_review_tab WHERE rv_seller_id = %v ORDER BY ctime DESC", input.GetUserID())
+	log.Println(reviewQuery)
+	start = time.Now().Unix()
+	result = models.DB.Raw(reviewQuery).Scan(&reviewsResp)
+	if err := result.Error; err != nil {
+		end = time.Now().Unix()
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetUserDetails after %vs- retrieve reviews DB query: %v\n", end-start, err.Error())
+		return
+	}
+	end = time.Now().Unix()
+	log.Printf("Success: GetUserDetails after %vs - retrieve reviews info DB query", end-start)
+
+	//retrieve listings
+	whereCondition := fmt.Sprintf(" AND l.l_seller_id = %v", input.GetUserID())
+	orderCondition := " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
+	listingQuery := utils.GetListingQueryWithCustomCondition() + whereCondition + orderCondition
+	log.Println(listingQuery)
+	start = time.Now().Unix()
+	result = models.DB.Raw(listingQuery).Scan(&listingsResp)
+	if err := result.Error; err != nil {
+		end = time.Now().Unix()
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetUserDetails after %vs- retrieve listings DB query: %v\n", end-start, err.Error())
+		return
+	}
+	end = time.Now().Unix()
+	log.Printf("Success: GetUserDetails after %vs - retrieve listings info DB query", end-start)
+
+	//get latest ratings
+	ratingsQuery := fmt.Sprintf("SELECT ROUND((SUM(ratings)/ COUNT(ratings)) ,1) AS ratings FROM user_review_tab WHERE rv_seller_id = %v", input.GetUserID())
+	start = time.Now().Unix()
+	result = models.DB.Raw(ratingsQuery).Scan(&ratingsResp)
+	if err := result.Error; err != nil {
+		end = time.Now().Unix()
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetUserDetails after %vs- get latest ratings DB query: %v\n", end-start, err.Error())
+		return
+	}
+	log.Printf("Success: GetUserDetails after %vs - get latest ratings DB query", end-start)
+
+	//put into struct
+	userDetails.AccountInfo = accountResp
+	userDetails.Ratings = ratingsResp
+	userDetails.ReviewCount = uint32(len(reviewsResp))
+	userDetails.UserReviews = reviewsResp
+	userDetails.UserListings = listingsResp
+
+	if listingsResp[0].LItemID == 0 {
+		userDetails.UserListings = []models.GetUserListingsResponse{}
+		userDetails.ListingCount = uint32(0)
+	} else {
+		userDetails.UserListings = listingsResp
+		userDetails.ListingCount = uint32(len(listingsResp))
+	}
+
+	mainend := time.Now().Unix()
+	log.Printf("Successful: GetUserDetails after %vs. user_id: %v\n", mainend-mainstart, input.GetUserID())
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully retrieved user details of %v", input.GetUserID())), "Data": userDetails})
 }
