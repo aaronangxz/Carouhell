@@ -8,15 +8,20 @@ type Wallet struct {
 	LastUsed      *int64  `json:"last_used"`
 }
 
+func (r *Wallet) GetWalletBalance() uint32 {
+	if r != nil && r.WalletBalance != nil {
+		return *r.WalletBalance
+	}
+	return 0
+}
+
 type WalletTransaction struct {
-	TransactionID     *uint32 `json:"transaction_id"`
-	WalletID          *uint32 `json:"wallet_id" gorm:"primary_key"`
-	ItemID            *uint32 `json:"item_id"`
-	PaymentType       *uint32 `json:"payment_type"`
-	TransactionAmount *uint32 `json:"transaction_amount"`
-	TransactionStatus *uint32 `json:"transaction_status"`
+	WtTransactionID   *uint32 `json:"wt_transaction_id"`
+	WtWalletID        *uint32 `json:"wt_wallet_id" gorm:"primary_key"`
 	TransactionCtime  *int64  `json:"transaction_ctime"`
-	TransactionMtime  *int64  `json:"transaction_mtime"`
+	TransactionAmount *uint32 `json:"transaction_amount"`
+	TransactionType   *uint32 `json:"transaction_type"`
+	TransactionRef    *uint32 `json:"transaction_ref"`
 }
 
 type CreateUserWalletRequest struct {
