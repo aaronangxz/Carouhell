@@ -154,7 +154,6 @@ func CreateAccount(c *gin.Context) {
 		UserStatus:    utils.Uint32(constant.ACC_STATUS_ACTIVE),
 		UserImage:     nil,
 		UserLastLogin: utils.Int64(time.Now().Unix()),
-		UserRating:    utils.Uint32(0),
 	}
 
 	//write to acc_tab
