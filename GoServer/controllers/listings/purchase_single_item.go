@@ -163,7 +163,7 @@ func PurchaseSingleItem(c *gin.Context) {
 	//update listing quantity
 	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - 1 WHERE l_item_id = %v", input.GetItemID())
 	log.Println(updateListingQuery)
-	updateListing := models.DB.Raw(updateListingQuery)
+	updateListing := models.DB.Exec(updateListingQuery)
 	if err := updateListing.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during PurchaseSingleItem - update listing quantity DB query: %v", err.Error())
@@ -173,7 +173,7 @@ func PurchaseSingleItem(c *gin.Context) {
 	//update wallet balance
 	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE wallet_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
 	log.Println(updateWalletQuery)
-	updateWallet := models.DB.Raw(updateWalletQuery)
+	updateWallet := models.DB.Exec(updateWalletQuery)
 	if err := updateWallet.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during PurchaseSingleItem - update wallet balance DB query: %v", err.Error())
