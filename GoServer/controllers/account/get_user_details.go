@@ -16,7 +16,7 @@ func GetUserDetails(c *gin.Context) {
 		input        models.GetUserDetailsRequest
 		accountResp  models.Account
 		ratingsResp  models.UserRatings
-		reviewsResp  []models.UserReview
+		reviewsResp  []models.UserReviewWithNames
 		listingsResp []models.GetUserListingsResponse
 		userDetails  models.GetUserDetailsResponse
 		mainstart    = time.Now().Unix()

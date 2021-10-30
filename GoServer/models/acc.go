@@ -33,6 +33,14 @@ func (r *AccountCredentials) GetUserPassword() string {
 
 type UserReview struct {
 	RVUserID   *uint32 `json:"user_id"`
+	RVSellerID *uint32 `json:"seller_id"`
+	Ratings    *uint32 `json:"ratings"`
+	ReviewText *string `json:"review_text"`
+	Ctime      *int64  `json:"ctime"`
+}
+
+type UserReviewWithNames struct {
+	RVUserID   *uint32 `json:"user_id"`
 	UserName   *string `json:"user_name"`
 	RVSellerID *uint32 `json:"seller_id"`
 	Ratings    *uint32 `json:"ratings"`
@@ -100,7 +108,7 @@ type GetUserDetailsResponse struct {
 	AccountInfo  Account                   `json:"account_info"`
 	Ratings      UserRatings               `json:"ratings"`
 	ReviewCount  uint32                    `json:"review_count"`
-	UserReviews  []UserReview              `json:"user_reviews"`
+	UserReviews  []UserReviewWithNames     `json:"user_reviews"`
 	ListingCount uint32                    `json:"listing_count"`
 	UserListings []GetUserListingsResponse `json:"user_listings"`
 }
