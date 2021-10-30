@@ -16,7 +16,7 @@ func GetUserDetails(c *gin.Context) {
 		input        models.GetUserDetailsRequest
 		accountResp  models.Account
 		ratingsResp  models.UserRatings
-		reviewsResp  []models.UserReview
+		reviewsResp  []models.UserReviewWithNames
 		listingsResp []models.GetUserListingsResponse
 		userDetails  models.GetUserDetailsResponse
 		mainstart    = time.Now().Unix()
@@ -50,7 +50,7 @@ func GetUserDetails(c *gin.Context) {
 	log.Printf("Success: GetUserDetails after %vs - retrieve acc info DB query", end-start)
 
 	//retrieve reviews
-	reviewQuery := fmt.Sprintf("SELECT * FROM user_review_tab WHERE rv_seller_id = %v ORDER BY ctime DESC", input.GetUserID())
+	reviewQuery := fmt.Sprintf("SELECT r.*, a.user_name AS user_name FROM user_review_tab r, acc_tab a WHERE r.rv_seller_id = %v AND r.rv_user_id= a.a_user_id ORDER BY ctime DESC", input.GetUserID())
 	log.Println(reviewQuery)
 	start = time.Now().Unix()
 	result = models.DB.Raw(reviewQuery).Scan(&reviewsResp)
@@ -96,14 +96,12 @@ func GetUserDetails(c *gin.Context) {
 	userDetails.Ratings = ratingsResp
 	userDetails.ReviewCount = uint32(len(reviewsResp))
 	userDetails.UserReviews = reviewsResp
+	userDetails.ListingCount = uint32(len(listingsResp))
 	userDetails.UserListings = listingsResp
 
-	if listingsResp[0].LItemID == 0 {
+	if listingsResp == nil {
 		userDetails.UserListings = []models.GetUserListingsResponse{}
 		userDetails.ListingCount = uint32(0)
-	} else {
-		userDetails.UserListings = listingsResp
-		userDetails.ListingCount = uint32(len(listingsResp))
 	}
 
 	mainend := time.Now().Unix()
