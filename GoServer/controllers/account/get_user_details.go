@@ -96,14 +96,12 @@ func GetUserDetails(c *gin.Context) {
 	userDetails.Ratings = ratingsResp
 	userDetails.ReviewCount = uint32(len(reviewsResp))
 	userDetails.UserReviews = reviewsResp
+	userDetails.ListingCount = uint32(len(listingsResp))
 	userDetails.UserListings = listingsResp
 
-	if listingsResp[0].LItemID == 0 {
+	if listingsResp == nil {
 		userDetails.UserListings = []models.GetUserListingsResponse{}
 		userDetails.ListingCount = uint32(0)
-	} else {
-		userDetails.UserListings = listingsResp
-		userDetails.ListingCount = uint32(len(listingsResp))
 	}
 
 	mainend := time.Now().Unix()

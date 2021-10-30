@@ -8,7 +8,6 @@ type Account struct {
 	UserStatus    *uint32 `json:"user_status"`
 	UserImage     *string `json:"user_image"`
 	UserLastLogin *int64  `json:"user_last_login"`
-	UserRating    *uint32 `json:"user_rating"`
 }
 
 func (r *Account) GetUserID() uint32 {
