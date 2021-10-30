@@ -93,6 +93,18 @@ func (r *GetUserDetailsRequest) GetUserID() uint32 {
 	return 0
 }
 
+type UserRatings struct {
+	Ratings float32 `json:"user_ratings"`
+}
+type GetUserDetailsResponse struct {
+	AccountInfo  Account                   `json:"account_info"`
+	Ratings      UserRatings               `json:"ratings"`
+	ReviewCount  uint32                    `json:"review_count"`
+	UserReviews  []UserReview              `json:"user_reviews"`
+	ListingCount uint32                    `json:"listing_count"`
+	UserListings []GetUserListingsResponse `json:"user_listings"`
+}
+
 type AuthenticateUser struct {
 	UserName     *string `json:"user_name" binding:"required"`
 	UserPassword *string `json:"user_password" binding:"required"`

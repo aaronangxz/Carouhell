@@ -17,7 +17,7 @@ func GetUserListings(c *gin.Context) {
 		userListings   []models.GetUserListingsResponse
 		input          models.GetUserListingsRequest
 		extraCondition = ""
-		orderCondition = " ORDER BY listing_ctime DESC"
+		orderCondition = " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
 		whereCondition = " AND l.l_seller_id = ?"
 	)
 

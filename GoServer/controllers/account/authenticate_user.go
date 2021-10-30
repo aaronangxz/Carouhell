@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
@@ -81,7 +82,7 @@ func AuthenticateUser(c *gin.Context) {
 	if result.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
-			log.Printf("Error during check_user_exists DB query: %v\n", result.Error.Error())
+			log.Printf("Error during AuthenticateUser - check_user_exists DB query: %v\n", result.Error.Error())
 			return
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name does not exist.")})
@@ -96,7 +97,7 @@ func AuthenticateUser(c *gin.Context) {
 	if resultCredentials.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(resultCredentials.Error)})
-			log.Printf("Error during retrieve_credentials DB query: %v\n", resultCredentials.Error.Error())
+			log.Printf("Error during AuthenticateUser - retrieve_credentials DB query: %v\n", resultCredentials.Error.Error())
 			return
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id does not exist.")})
@@ -109,6 +110,14 @@ func AuthenticateUser(c *gin.Context) {
 	if input.GetUserPassword() != holdCredentials.GetUserPassword() {
 		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewParamErrorsResponse("Incorrect password.")})
 		log.Println("Incorrect password.")
+		return
+	}
+
+	updateLastLoginQuery := fmt.Sprintf("UPDATE acc_tab SET user_last_login = %v WHERE a_user_id = %v", time.Now().Unix(), hold.GetUserID())
+	updateLastLoginresult := models.DB.Exec(updateLastLoginQuery)
+	if updateLastLoginresult.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(updateLastLoginresult.Error)})
+		log.Printf("Error during AuthenticateUser - update user_last_login DB query: %v\n", updateLastLoginresult.Error.Error())
 		return
 	}
 
