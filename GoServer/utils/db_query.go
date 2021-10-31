@@ -85,3 +85,73 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 	}
 	return resp.WalletBalance, nil
 }
+
+//Transaction to purchase item and update corresponding tables
+func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint32) error {
+
+	log.Println("beginning StartItemPurchaseTx")
+	tx := models.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			log.Println("failed to recover: StartItemPurchaseTx")
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	//insert into listing_transaction
+	listingTransaction := models.ListingTransaction{
+		LtItemID:            input.ItemID,
+		LtUserID:            input.UserID,
+		TransactionCtime:    Int64(time.Now().Unix()),
+		TransactionQuantity: input.PurchaseQuantity,
+		TransactionAmount:   Uint32(totalPrice),
+		TransactionStatus:   Uint32(constant.LISTING_TRANSACTION_STATUS_SUCCESS),
+	}
+	if err := tx.Table("listing_transactions_tab").Create(&listingTransaction).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:insertListingTransaction: %v", err.Error())
+		log.Println("rolling back insertListingTransaction")
+		tx.Rollback()
+		return err
+	}
+
+	walletTransaction := models.WalletTransaction{
+		WtWalletID:        input.UserID,
+		TransactionCtime:  Int64(time.Now().Unix()),
+		TransactionAmount: Uint32(totalPrice),
+		TransactionType:   Uint32(constant.TRANSACTION_TYPE_PURCHASE),
+		TransactionRef:    listingTransaction.LtTransactionID,
+	}
+	if err := tx.Table("wallet_transactions_tab").Create(walletTransaction).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateWalletTransaction: %v", err.Error())
+		log.Println("rolling back updateWalletTransaction")
+		tx.Rollback()
+		return err
+	}
+
+	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - 1, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetItemID())
+	log.Println(updateListingQuery)
+	if err := tx.Exec(updateListingQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateListing: %v", err.Error())
+		log.Println("rolling back updateListing")
+		tx.Rollback()
+		return err
+	}
+
+	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE wallet_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
+	log.Println(updateWalletQuery)
+	if err := tx.Exec(updateWalletQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateWalletBalance: %v", err.Error())
+		log.Println("rolling back updateWalletBalance")
+		tx.Rollback()
+		return err
+	}
+
+	log.Println("committing StartItemPurchaseTx")
+	if err := tx.Commit().Error; err != nil {
+		return err
+	}
+	return nil
+}
