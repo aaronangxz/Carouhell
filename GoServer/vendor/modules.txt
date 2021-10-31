@@ -79,6 +79,9 @@ github.com/go-sql-driver/mysql
 ## explicit
 # github.com/golang/protobuf v1.3.3
 github.com/golang/protobuf/proto
+# github.com/gomodule/redigo v1.8.5
+## explicit
+github.com/gomodule/redigo/redis
 # github.com/jinzhu/gorm v1.9.2
 ## explicit
 github.com/jinzhu/gorm
@@ -108,6 +111,8 @@ github.com/mattn/go-sqlite3
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
 github.com/modern-go/reflect2
+# github.com/stretchr/testify v1.5.1
+## explicit
 # github.com/ugorji/go/codec v1.1.7
 github.com/ugorji/go/codec
 # golang.org/x/crypto v0.0.0-20210921155107-089bfa567519

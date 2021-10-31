@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/gomodule/redigo/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -18,6 +19,7 @@ import (
 var (
 	DB       *gorm.DB
 	S3Client *session.Session
+	Redis    redis.Conn
 )
 
 func LoadEnv() {
@@ -65,4 +67,12 @@ func NewAWSInstance() {
 	}
 	log.Println("NewAWSInstance: S3 connection established")
 	S3Client = s3Connection
+}
+
+func NewRedis() {
+	c, err := redis.DialURL(os.Getenv("REDIS_URL"), redis.DialTLSSkipVerify(true))
+	if err != nil {
+		log.Printf("Error while establishing Redis: %v", err)
+	}
+	Redis = c
 }

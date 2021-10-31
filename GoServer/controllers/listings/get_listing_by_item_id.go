@@ -37,13 +37,17 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
+	//check Redis
+	val, err := models.Redis.Do("GET", fmt.Sprintf("GetListingByItemID:%", input.GetItemID()))
+	if err != nil {
+
+	}
+
 	//also return deleted and sold items
 	query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
 	result := models.DB.Raw(query).Scan(&resp)
-	err := result.Error
-
-	if err != nil {
+	if err := result.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetListingByItemID - listing DB query: %v\n", err.Error())
 		return
