@@ -13,7 +13,19 @@ import (
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func HashSecret(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+
+	if err != nil {
+		return "", err
+	}
+
+	log.Println("Successfully hashed secret")
+	return string(bytes), nil
+}
 
 func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -163,11 +175,27 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	//hash password
+	hashedPassword, err := HashSecret(input.GetUserPassword())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
+		log.Printf("Error during HashSecret - password: %v", err)
+		return
+	}
+
+	//hash password
+	hashedSecurityAnswer, err := HashSecret(input.GetUserSecurityAnswer())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
+		log.Printf("Error during HashSecret - security question: %v", err)
+		return
+	}
+
 	credentials := models.AccountCredentials{
 		CUserID:              account.AUserID,
-		UserPassword:         input.UserPassword,
+		UserPassword:         utils.String(hashedPassword),
 		UserSecurityQuestion: input.UserSecurityQuestion,
-		UserSecurityAnswer:   input.UserSecurityAnswer,
+		UserSecurityAnswer:   utils.String(hashedSecurityAnswer),
 	}
 
 	//write to acc_credentials_tab
