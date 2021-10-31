@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
@@ -124,59 +123,67 @@ func PurchaseSingleItem(c *gin.Context) {
 		return
 	}
 
-	//insert into listing_transaction
-	listingTransaction := models.ListingTransaction{
-		LtItemID:            input.ItemID,
-		LtUserID:            input.UserID,
-		TransactionCtime:    utils.Int64(time.Now().Unix()),
-		TransactionQuantity: input.PurchaseQuantity,
-		TransactionAmount:   utils.Uint32(totalPrice),
-		TransactionStatus:   utils.Uint32(constant.LISTING_TRANSACTION_STATUS_SUCCESS),
-	}
+	/*
+		//insert into listing_transaction
+		listingTransaction := models.ListingTransaction{
+			LtItemID:            input.ItemID,
+			LtUserID:            input.UserID,
+			TransactionCtime:    utils.Int64(time.Now().Unix()),
+			TransactionQuantity: input.PurchaseQuantity,
+			TransactionAmount:   utils.Uint32(totalPrice),
+			TransactionStatus:   utils.Uint32(constant.LISTING_TRANSACTION_STATUS_SUCCESS),
+		}
 
-	if err := models.DB.Table("listing_transactions_tab").Create(&listingTransaction).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during PurchaseSingleItem - update listing transaction tab DB query: %v", err.Error())
-		return
-	}
-
-	//insert into wallet_transaction
-	walletTransaction := models.WalletTransaction{
-		WtWalletID:        input.UserID,
-		TransactionCtime:  utils.Int64(time.Now().Unix()),
-		TransactionAmount: utils.Uint32(totalPrice),
-		TransactionType:   utils.Uint32(constant.TRANSACTION_TYPE_PURCHASE),
-		TransactionRef:    listingTransaction.LtTransactionID,
-	}
-	if err := models.DB.Table("wallet_transactions_tab").Create(&walletTransaction).Error; err != nil {
-		//if fail, rollback listing_transaction
-		if err := models.DB.Table("listing_transactions_tab").Delete(&listingTransaction).Error; err != nil {
+		if err := models.DB.Table("listing_transactions_tab").Create(&listingTransaction).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-			log.Printf("Error during PurchaseSingleItem - rollback listing transaction tab DB query: %v", err.Error())
+			log.Printf("Error during PurchaseSingleItem - update listing transaction tab DB query: %v", err.Error())
 			return
 		}
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during PurchaseSingleItem - update wallet transaction tab DB query: %v", err.Error())
-		return
-	}
 
-	//update listing quantity
-	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - 1 WHERE l_item_id = %v", input.GetItemID())
-	log.Println(updateListingQuery)
-	updateListing := models.DB.Exec(updateListingQuery)
-	if err := updateListing.Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during PurchaseSingleItem - update listing quantity DB query: %v", err.Error())
-		return
-	}
+		//insert into wallet_transaction
+		walletTransaction := models.WalletTransaction{
+			WtWalletID:        input.UserID,
+			TransactionCtime:  utils.Int64(time.Now().Unix()),
+			TransactionAmount: utils.Uint32(totalPrice),
+			TransactionType:   utils.Uint32(constant.TRANSACTION_TYPE_PURCHASE),
+			TransactionRef:    listingTransaction.LtTransactionID,
+		}
+		if err := models.DB.Table("wallet_transactions_tab").Create(&walletTransaction).Error; err != nil {
+			//if fail, rollback listing_transaction
+			if err := models.DB.Table("listing_transactions_tab").Delete(&listingTransaction).Error; err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+				log.Printf("Error during PurchaseSingleItem - rollback listing transaction tab DB query: %v", err.Error())
+				return
+			}
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during PurchaseSingleItem - update wallet transaction tab DB query: %v", err.Error())
+			return
+		}
 
-	//update wallet balance
-	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE wallet_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
-	log.Println(updateWalletQuery)
-	updateWallet := models.DB.Exec(updateWalletQuery)
-	if err := updateWallet.Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during PurchaseSingleItem - update wallet balance DB query: %v", err.Error())
+		//update listing quantity
+		updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - 1, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetItemID())
+		log.Println(updateListingQuery)
+		updateListing := models.DB.Exec(updateListingQuery)
+		if err := updateListing.Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during PurchaseSingleItem - update listing quantity DB query: %v", err.Error())
+			return
+		}
+
+		//update wallet balance
+		updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE wallet_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
+		log.Println(updateWalletQuery)
+		updateWallet := models.DB.Exec(updateWalletQuery)
+		if err := updateWallet.Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during PurchaseSingleItem - update wallet balance DB query: %v", err.Error())
+			return
+		}
+	*/
+
+	if err := utils.StartItemPurchaseTx(input, totalPrice); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during item purchase.")})
+		log.Printf("Error during StartItemPurchaseTx: %v", err.Error())
 		return
 	}
 
