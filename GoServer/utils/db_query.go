@@ -24,6 +24,24 @@ var (
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", constant.LISTING_REACTION_TYPE_LIKE)
+
+	WalletTransactionQuery = fmt.Sprintf("SELECT transaction_history.lt_item_id AS item_id," +
+		" transaction_history.transaction_amount, " +
+		" transaction_history.transaction_type, " +
+		" transaction_history.transaction_ctime, " +
+		" item_info.item_name,item_info.item_image FROM(" +
+		" SELECT lt_item_id , transaction_amount, transaction_type, transaction_ctime FROM(" +
+		" SELECT lt_item_id, transaction_amount, 2 AS transaction_type, transaction_ctime FROM listing_transactions_tab " +
+		" WHERE lt_item_id IN" +
+		" (SELECT l_item_id FROM listing_tab " +
+		" WHERE l_seller_id = ?)" +
+		" UNION ALL" +
+		" SELECT NULL AS lt_item_id, transaction_amount, transaction_type, transaction_ctime FROM wallet_transactions_tab" +
+		" WHERE wt_wallet_id = ? ) AS transactions) AS transaction_history" +
+		" LEFT JOIN" +
+		" (SELECT l_item_id, item_name, item_image FROM listing_tab) " +
+		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id" +
+		" ORDER BY transaction_ctime DESC")
 )
 
 //Fixed query, not possible to append WHERE clause
@@ -35,6 +53,10 @@ func GetListingFixedQuery() string {
 //Query without GROUP BY,ORDER BY; must append it after WHERE clauses
 func GetListingQueryWithCustomCondition() string {
 	return ListingQueryWithCustomCondition
+}
+
+func GetWalletTransactionQuery() string {
+	return WalletTransactionQuery
 }
 
 //Transaction to top up wallet and update corresponding tables

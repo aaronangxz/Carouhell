@@ -46,25 +46,32 @@ func (r *GetUserWalletDetailsRequest) GetUserID() uint32 {
 	return 0
 }
 
+type WalletTransactionBasic struct {
+	TransactionAmount *uint32 `json:"transaction_amount"`
+	TransactionCtime  *int64  `json:"transaction_ctime"`
+	TransactionType   *uint32 `json:"transaction_type"`
+}
 type WalletTransactionListingDetails struct {
-	LItemID   *uint32 `json:"item_id"`
+	ItemID    *uint32 `json:"item_id"`
 	ItemName  *string `json:"item_name"`
 	ItemImage *string `json:"item_image"`
 }
 type WalletTransactionsWithListing struct {
-	TransactionInfo WalletTransaction `json:"transactions_info"`
-
+	//TransactionInfo WalletTransactionBasic `json:"transactions_info"`
+	TransactionAmount *uint32 `json:"transaction_amount"`
+	TransactionCtime  *int64  `json:"transaction_ctime"`
+	TransactionType   *uint32 `json:"transaction_type"`
 	//if is listing purchase, not NULL else NULL
-	TransactionListingDetails WalletTransactionListingDetails `json:"transaction_listing_details"`
+	//TransactionListingDetails WalletTransactionListingDetails `json:"transaction_listing_details"`
+	ItemID    *uint32 `json:"item_id"`
+	ItemName  *string `json:"item_name"`
+	ItemImage *string `json:"item_image"`
 }
 
 type GetUserWalletDetailsResponse struct {
-	WalletID      *uint32                         `json:"wallet_id"`
-	WalletBalance *uint32                         `json:"wallet_balance"`
-	WalletStatus  *uint32                         `json:"wallet_status"`
-	LastTopUp     *int64                          `json:"last_top_up"`
-	LastUsed      *int64                          `json:"last_used"`
-	Transactions  []WalletTransactionsWithListing `json:"transactions"`
+	WalletInfo        Wallet                          `json:"wallet_info"`
+	TransactionsCount *uint32                         `json:"transactions_count"`
+	Transactions      []WalletTransactionsWithListing `json:"transactions"`
 }
 
 type TopUpUserWalletRequest struct {
