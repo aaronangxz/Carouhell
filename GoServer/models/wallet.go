@@ -8,6 +8,13 @@ type Wallet struct {
 	LastUsed      *int64  `json:"last_used"`
 }
 
+func (r *Wallet) GetWalletBalance() uint32 {
+	if r != nil && r.WalletBalance != nil {
+		return *r.WalletBalance
+	}
+	return 0
+}
+
 type WalletTransaction struct {
 	WtTransactionID   *uint32 `json:"transaction_id"`
 	WtWalletID        *uint32 `json:"wallet_id" gorm:"primary_key"`

@@ -43,9 +43,23 @@ func (r *Listing) GetLSellerID() uint32 {
 	return 0
 }
 
+func (r *Listing) GetItemQuantity() uint32 {
+	if r != nil && r.ItemQuantity != nil {
+		return *r.ItemQuantity
+	}
+	return 0
+}
+
 func (r *Listing) GetItemStatus() uint32 {
 	if r != nil && r.ItemStatus != nil {
 		return *r.ItemStatus
+	}
+	return 0
+}
+
+func (r *Listing) GetItemPrice() uint32 {
+	if r != nil && r.ItemPrice != nil {
+		return *r.ItemPrice
 	}
 	return 0
 }
@@ -477,4 +491,45 @@ func (r *AddListingCommentsRequest) GetComment() string {
 		return *r.Comment
 	}
 	return ""
+}
+
+type PurchaseSingleItemRequest struct {
+	ItemID           *uint32 `json:"item_id" binding:"required"`
+	UserID           *uint32 `json:"user_id" binding:"required"`
+	PurchaseQuantity *uint32 `json:"purchase_quantity" binding:"required"`
+}
+
+func (r *PurchaseSingleItemRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+func (r *PurchaseSingleItemRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *PurchaseSingleItemRequest) GetPurchaseQuantity() uint32 {
+	if r != nil && r.PurchaseQuantity != nil {
+		return *r.PurchaseQuantity
+	}
+	return 0
+}
+
+type PurchaseSingleItemResponse struct {
+	WalletBalance *uint32 `json:"wallet_balance"`
+}
+
+type ListingTransaction struct {
+	LtTransactionID     *uint32 `json:"lt_transaction_id" gorm:"primary_key"`
+	LtItemID            *uint32 `json:"lt_item_id"`
+	LtUserID            *uint32 `json:"lt_user_id"`
+	TransactionCtime    *int64  `json:"transaction_ctime"`
+	TransactionQuantity *uint32 `json:"transaction_quantity"`
+	TransactionAmount   *uint32 `json:"transaction_amount"`
+	TransactionStatus   *uint32 `json:"transaction_status"`
 }

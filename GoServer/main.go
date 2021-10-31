@@ -71,7 +71,7 @@ func main() {
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
 	r.POST("/add_listing_likes", listings.AddListingLikes)
 	r.POST("/add_listing_comments", listings.AddListingComments)
-	//purchase_single_item
+	r.POST("/purchase_single_item", listings.PurchaseSingleItem)
 
 	//***************** Profile Page *****************
 	//returns based on user_id, sorted by listing_ctime DESC
