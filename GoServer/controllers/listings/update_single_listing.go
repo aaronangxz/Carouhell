@@ -201,8 +201,8 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//If all good, proceed to update
 	query = fmt.Sprintf("UPDATE listing_tab SET "+
-		"item_name = '%v', item_price = %v, item_quantity = %v,"+
-		"item_description = '%v', item_location = %v, item_category = %v, item_image = '%v', listing_mtime = %v WHERE l_item_id = %v",
+		"item_name = \"%v\", item_price = %v, item_quantity = %v,"+
+		"item_description = \"%v\", item_location = %v, item_category = %v, item_image = '%v', listing_mtime = %v WHERE l_item_id = %v",
 		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
 		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetLItemID())
 	log.Println(query)
