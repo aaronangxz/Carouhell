@@ -87,8 +87,13 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New("user_name cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		errormsg := fmt.Sprintf("item_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserName()))
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		errormsg := fmt.Sprintf("user_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserName()))
+		return errors.New(errormsg)
+	}
+	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name can only contains alphanumeric characters")})
+		errormsg := fmt.Sprintf("user_name can only contains alphanumeric characters. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
 	if input.GetUserEmail() == "" {
@@ -98,6 +103,11 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 	if !utils.ValidateMaxStringLength(input.GetUserEmail()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("user_email length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserEmail()))
+		return errors.New(errormsg)
+	}
+	if !utils.IsContainsAtSign(input.GetUserEmail()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email format is invalid")})
+		errormsg := fmt.Sprintf("user_email format is invalid. input :%v", input.GetUserEmail())
 		return errors.New(errormsg)
 	}
 	if input.GetUserPassword() == "" {
