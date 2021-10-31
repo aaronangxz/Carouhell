@@ -434,6 +434,7 @@ func (r *AddListingLikeRequest) GetUserID() uint32 {
 }
 
 type AddListingLikeResponse struct {
+	IsLiked    bool   `json:"is_liked"`
 	LikesCount uint32 `json:"latest_likes_count"`
 }
 

@@ -96,6 +96,7 @@ func AddListingLikes(c *gin.Context) {
 		}
 
 		//return updated count
+		updatedLikes.IsLiked = false
 		updatedLikes.LikesCount = count
 		log.Println("Successful: AddListingLikes.")
 		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully decreased 1 like from listing %v", input.GetItemID())), "Data": updatedLikes})
@@ -118,6 +119,7 @@ func AddListingLikes(c *gin.Context) {
 		return
 	}
 
+	updatedLikes.IsLiked = true
 	updatedLikes.LikesCount = count
 
 	log.Println("Successful: AddListingLikes.")
