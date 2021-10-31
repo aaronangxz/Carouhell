@@ -77,6 +77,7 @@ func TopUpUserWallet(c *gin.Context) {
 
 	updatedWalletBalance, err := utils.StartWalletTopUpTx(input)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during wallet top up.")})
 		log.Printf("Error during StartWalletTopUpTx: %v", err.Error())
 		return
 	}
