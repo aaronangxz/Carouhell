@@ -1,7 +1,6 @@
 package wallet
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -35,7 +34,9 @@ func ValidateGetUserWalletDetailsRequest(c *gin.Context, input *models.GetUserWa
 func GetUserWalletDetails(c *gin.Context) {
 	var (
 		input         models.GetUserWalletDetailsRequest
-		walletDetails models.GetUserWalletDetailsResponse
+		transactions  []models.WalletTransactionsWithListing
+		walletDetails models.Wallet
+		resp          models.GetUserWalletDetailsResponse
 	)
 
 	if err := ValidateGetUserWalletDetailsRequest(c, &input); err != nil {
@@ -51,15 +52,21 @@ func GetUserWalletDetails(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during GetUserWalletDetails DB query: %v", err.Error())
+		log.Printf("Error during GetUserWalletDetails DB - get wallet info query: %v", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details."), "Data": walletDetails})
-
-	data, err := json.Marshal(walletDetails)
-	if err != nil {
-		log.Printf("Failed to marshal JSON results: %v", err.Error())
+	if err := models.DB.Raw(utils.GetWalletTransactionQuery(), input.GetUserID(), input.GetUserID()).Scan(&transactions).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetUserWalletDetails - get wallet transactions DB query: %v", err.Error())
+		return
 	}
-	log.Printf("Successful: GetUserWalletDetails. Data: %s", data)
+
+	resp.WalletInfo = walletDetails
+	resp.TransactionsCount = utils.Uint32(uint32(len(transactions)))
+	resp.Transactions = transactions
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details and transactions."), "Data": resp})
+
+	log.Println("Successful: GetUserWalletDetails.")
 }

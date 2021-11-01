@@ -11,7 +11,16 @@ import (
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func CheckPasswordHash(password, hash string) (bool, error) {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
 
 func ValidateAuthenticateUser(c *gin.Context, input *models.AuthenticateUser) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -107,11 +116,13 @@ func AuthenticateUser(c *gin.Context) {
 	}
 
 	//check password matches input
-	if input.GetUserPassword() != holdCredentials.GetUserPassword() {
+	isMatch, err := CheckPasswordHash(input.GetUserPassword(), holdCredentials.GetUserPassword())
+	if !isMatch || err != nil {
 		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewParamErrorsResponse("Incorrect password.")})
 		log.Println("Incorrect password.")
 		return
 	}
+	log.Println("Password match.")
 
 	updateLastLoginQuery := fmt.Sprintf("UPDATE acc_tab SET user_last_login = %v WHERE a_user_id = %v", time.Now().Unix(), hold.GetUserID())
 	updateLastLoginresult := models.DB.Exec(updateLastLoginQuery)

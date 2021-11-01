@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"reflect"
+	"unicode"
 
 	"github.com/aaronangxz/TIC2601/models"
 )
@@ -30,4 +31,35 @@ func ValidateUint(a *uint32) bool {
 
 func ValidateString(a *string) bool {
 	return fmt.Sprint(reflect.TypeOf(a)) == "*string"
+}
+
+func IsContainsSpecialChar(a string) bool {
+	for _, char := range a {
+		if unicode.IsSymbol(char) {
+			return true
+		}
+	}
+	return false
+}
+
+func IsContainsSpace(a string) bool {
+	for _, char := range a {
+		if unicode.IsSpace(char) {
+			return true
+		}
+	}
+	return false
+}
+
+func IsContainsAtSign(a string) bool {
+	match := "@"
+
+	for _, char := range a {
+		for _, key := range match {
+			if char == key {
+				return true
+			}
+		}
+	}
+	return false
 }

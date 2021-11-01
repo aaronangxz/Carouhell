@@ -13,7 +13,19 @@ import (
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func HashSecret(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+
+	if err != nil {
+		return "", err
+	}
+
+	log.Println("Successfully hashed secret")
+	return string(bytes), nil
+}
 
 func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -75,8 +87,13 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New("user_name cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		errormsg := fmt.Sprintf("item_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserName()))
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		errormsg := fmt.Sprintf("user_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserName()))
+		return errors.New(errormsg)
+	}
+	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name can only contains alphanumeric characters")})
+		errormsg := fmt.Sprintf("user_name can only contains alphanumeric characters. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
 	if input.GetUserEmail() == "" {
@@ -86,6 +103,11 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 	if !utils.ValidateMaxStringLength(input.GetUserEmail()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("user_email length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserEmail()))
+		return errors.New(errormsg)
+	}
+	if !utils.IsContainsAtSign(input.GetUserEmail()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email format is invalid")})
+		errormsg := fmt.Sprintf("user_email format is invalid. input :%v", input.GetUserEmail())
 		return errors.New(errormsg)
 	}
 	if input.GetUserPassword() == "" {
@@ -163,11 +185,27 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	//hash password
+	hashedPassword, err := HashSecret(input.GetUserPassword())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
+		log.Printf("Error during HashSecret - password: %v", err)
+		return
+	}
+
+	//hash password
+	hashedSecurityAnswer, err := HashSecret(input.GetUserSecurityAnswer())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
+		log.Printf("Error during HashSecret - security question: %v", err)
+		return
+	}
+
 	credentials := models.AccountCredentials{
 		CUserID:              account.AUserID,
-		UserPassword:         input.UserPassword,
+		UserPassword:         utils.String(hashedPassword),
 		UserSecurityQuestion: input.UserSecurityQuestion,
-		UserSecurityAnswer:   input.UserSecurityAnswer,
+		UserSecurityAnswer:   utils.String(hashedSecurityAnswer),
 	}
 
 	//write to acc_credentials_tab
