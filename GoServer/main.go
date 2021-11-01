@@ -19,6 +19,7 @@ func main() {
 	models.LoadEnv() //loading env
 	models.NewMySQL()
 	models.NewAWSInstance()
+	models.NewRedis()
 
 	//Allow all CORS
 	r.Use(cors.Default())
