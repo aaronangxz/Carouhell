@@ -12,26 +12,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-<<<<<<< HEAD
-	"github.com/gomodule/redigo/redis"
-=======
 	"github.com/go-redis/redis/v8"
->>>>>>> origin/XuanZe/BUG#22/Fix_GetUserWalletDetails
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 var (
-<<<<<<< HEAD
-	DB       *gorm.DB
-	S3Client *session.Session
-	Redis    redis.Conn
-=======
 	DB          *gorm.DB
 	S3Client    *session.Session
 	RedisClient *redis.Client
 	Ctx         = context.TODO()
->>>>>>> origin/XuanZe/BUG#22/Fix_GetUserWalletDetails
 )
 
 func LoadEnv() {
@@ -82,13 +72,6 @@ func NewAWSInstance() {
 }
 
 func NewRedis() {
-<<<<<<< HEAD
-	c, err := redis.DialURL(os.Getenv("REDIS_URL"), redis.DialTLSSkipVerify(true))
-	if err != nil {
-		log.Printf("Error while establishing Redis: %v", err)
-	}
-	Redis = c
-=======
 
 	redisAddress := fmt.Sprintf("%v:%v", os.Getenv("REDIS_URL"), os.Getenv("REDIS_PORT"))
 	redisPassword := os.Getenv("REDIS_PASSWORD")
@@ -104,5 +87,4 @@ func NewRedis() {
 	}
 	log.Println("NewRedisClient: Redis connection established")
 	RedisClient = rdb
->>>>>>> origin/XuanZe/BUG#22/Fix_GetUserWalletDetails
 }

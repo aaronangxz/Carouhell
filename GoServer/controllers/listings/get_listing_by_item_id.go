@@ -39,14 +39,6 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	//check Redis
-	val, err := models.Redis.Do("GET", fmt.Sprintf("GetListingByItemID:%", input.GetItemID()))
-	if err != nil {
-
-	}
-
-=======
 	//Redis key
 	key := fmt.Sprint("get_single_listing_by_itemid:", input.GetItemID())
 	//check redis
@@ -70,7 +62,6 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	//Read from DB
->>>>>>> origin/XuanZe/BUG#22/Fix_GetUserWalletDetails
 	//also return deleted and sold items
 	query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
