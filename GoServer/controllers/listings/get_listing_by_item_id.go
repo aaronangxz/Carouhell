@@ -56,7 +56,7 @@ func GetListingByItemID(c *gin.Context) {
 			log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
 		}
 		c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDResult(redisResp), "Data": redisResp})
-		log.Printf("Successful: GetListingByItemID - cached")
+		log.Printf("Successful: GetListingByItemID: %v - Cached", input.GetItemID())
 		log.Printf("Result: %v\n", redisResp)
 		return
 	}
@@ -108,6 +108,6 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDResult(resp), "Data": resp})
-	log.Printf("Successful: GetListingByItemID - DB")
+	log.Printf("Successful: GetListingByItemID: %v - DB", input.GetItemID())
 	log.Printf("Result: %s\n", data)
 }

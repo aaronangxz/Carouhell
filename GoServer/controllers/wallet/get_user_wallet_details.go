@@ -64,7 +64,7 @@ func GetUserWalletDetails(c *gin.Context) {
 			log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
 		}
 		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details and transactions."), "Data": redisResp})
-		log.Printf("Successful: GetUserWalletDetails - cached")
+		log.Printf("Successful: GetUserWalletDetails: %v - Cached", input.GetUserID())
 		return
 	}
 
@@ -104,6 +104,5 @@ func GetUserWalletDetails(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details and transactions."), "Data": resp})
-
-	log.Printf("Successful: GetUserWalletDetails: %v", input.GetUserID())
+	log.Printf("Successful: GetUserWalletDetails: %v - DB", input.GetUserID())
 }
