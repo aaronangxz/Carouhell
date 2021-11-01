@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
+	"github.com/go-redis/redis/v8"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,13 +39,34 @@ func GetListingByItemID(c *gin.Context) {
 		return
 	}
 
+	//Redis key
+	key := fmt.Sprint("get_single_listing_by_itemid:", input.GetItemID())
+	//check redis
+	val, err := models.RedisClient.Get(models.Ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			log.Printf("No result of %v in Redis, reading from DB", key)
+		} else {
+			log.Printf("Error while reading from redis: %v", err.Error())
+		}
+	} else {
+		redisResp := models.GetSingleListingResponse{}
+		err := json.Unmarshal([]byte(val), &redisResp)
+		if err != nil {
+			log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDResult(redisResp), "Data": redisResp})
+		log.Printf("Successful: GetListingByItemID: %v - Cached", input.GetItemID())
+		log.Printf("Result: %v\n", redisResp)
+		return
+	}
+
+	//Read from DB
 	//also return deleted and sold items
 	query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingQueryWithCustomCondition(), input.GetItemID())
 	log.Println(query)
 	result := models.DB.Raw(query).Scan(&resp)
-	err := result.Error
-
-	if err != nil {
+	if err := result.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetListingByItemID - listing DB query: %v\n", err.Error())
 		return
@@ -76,7 +99,15 @@ func GetListingByItemID(c *gin.Context) {
 		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
 	}
 
+	//Retrieved new data, set to Redis
+	expiry := 60 * time.Second
+	if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
+		log.Printf("Error while writing to redis: %v", err.Error())
+	} else {
+		log.Printf("Written %v to redis", key)
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDResult(resp), "Data": resp})
-	log.Printf("Successful: GetListingByItemID. rows: %v\n", result.RowsAffected)
+	log.Printf("Successful: GetListingByItemID: %v - DB", input.GetItemID())
 	log.Printf("Result: %s\n", data)
 }

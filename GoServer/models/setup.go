@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -11,13 +12,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 var (
-	DB       *gorm.DB
-	S3Client *session.Session
+	DB          *gorm.DB
+	S3Client    *session.Session
+	RedisClient *redis.Client
+	Ctx         = context.TODO()
 )
 
 func LoadEnv() {
@@ -65,4 +69,22 @@ func NewAWSInstance() {
 	}
 	log.Println("NewAWSInstance: S3 connection established")
 	S3Client = s3Connection
+}
+
+func NewRedis() {
+
+	redisAddress := fmt.Sprintf("%v:%v", os.Getenv("REDIS_URL"), os.Getenv("REDIS_PORT"))
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     redisAddress,
+		Password: redisPassword,
+		DB:       0, // use default DB
+	})
+
+	if err := rdb.Ping(Ctx).Err(); err != nil {
+		log.Printf("Error while establishing Redis Client: %v", err)
+	}
+	log.Println("NewRedisClient: Redis connection established")
+	RedisClient = rdb
 }

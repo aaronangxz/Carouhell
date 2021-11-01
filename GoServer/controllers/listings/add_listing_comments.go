@@ -111,6 +111,11 @@ func AddListingComments(c *gin.Context) {
 		return
 	}
 
+	//invalidate redis
+	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
+		log.Printf("Error during InvalidateCache: %v", err.Error())
+	}
+
 	log.Println("Successful: AddListingComments.")
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully added comment to listing %v", input.GetItemID()))})
 }
