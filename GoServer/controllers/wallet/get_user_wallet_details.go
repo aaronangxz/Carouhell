@@ -1,14 +1,17 @@
 package wallet
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 )
 
 func ValidateGetUserWalletDetailsRequest(c *gin.Context, input *models.GetUserWalletDetailsRequest) error {
@@ -44,6 +47,27 @@ func GetUserWalletDetails(c *gin.Context) {
 		return
 	}
 
+	//Redis key
+	key := fmt.Sprint("get_user_wallet_details:", input.GetUserID())
+	//check redis
+	val, err := models.RedisClient.Get(models.Ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			log.Printf("No result of %v in Redis, reading from DB", key)
+		} else {
+			log.Printf("Error while reading from redis: %v", err.Error())
+		}
+	} else {
+		redisResp := models.GetUserWalletDetailsResponse{}
+		err := json.Unmarshal([]byte(val), &redisResp)
+		if err != nil {
+			log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details and transactions."), "Data": redisResp})
+		log.Printf("Successful: GetUserWalletDetails - cached")
+		return
+	}
+
 	if err := models.DB.Raw("SELECT * FROM wallet_tab WHERE wallet_id = ?", input.UserID).Scan(&walletDetails).Error; err != nil {
 		//check if user exists
 		if walletDetails.WalletID == nil {
@@ -66,7 +90,20 @@ func GetUserWalletDetails(c *gin.Context) {
 	resp.TransactionsCount = utils.Uint32(uint32(len(transactions)))
 	resp.Transactions = transactions
 
+	data, err := json.Marshal(resp)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
+	}
+
+	//Retrieved new data, set to Redis
+	expiry := 60 * time.Second
+	if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
+		log.Printf("Error while writing to redis: %v", err.Error())
+	} else {
+		log.Printf("Written %v to redis", key)
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user wallet details and transactions."), "Data": resp})
 
-	log.Println("Successful: GetUserWalletDetails.")
+	log.Printf("Successful: GetUserWalletDetails: %v", input.GetUserID())
 }
