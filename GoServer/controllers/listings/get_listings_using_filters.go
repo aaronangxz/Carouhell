@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
@@ -75,7 +76,7 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 		return errors.New(errormsg)
 	}
 	//check location
-	if input.CategoryFilter.ItemCategory != nil && !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION_DIRECTION, input.GetLocation())) {
+	if input.LocationFilter.Location != nil && !(constant.CheckListingConstant(constant.LISTING_CONSTANT_TYPE_LOCATION_DIRECTION, input.GetLocation())) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_location")})
 		errormsg := fmt.Sprintf("unknown item_location. input: %v", input.GetLocation())
 		return errors.New(errormsg)
@@ -94,7 +95,7 @@ func GetListingsUsingFilters(c *gin.Context) {
 	var (
 		listings          []models.GetListingsUsingFiltersResponse
 		input             models.GetListingsUsingFiltersRequest
-		nameCondition     = ""
+		query             = ""
 		categoryCondition = ""
 		locationCondition = ""
 		priceCondition    = ""
@@ -110,12 +111,6 @@ func GetListingsUsingFilters(c *gin.Context) {
 	if err := ValidateGetListingsUsingFiltersInput(c, &input); err != nil {
 		log.Printf("Error during ValidateGetListingsUsingFiltersInput: %v", err.Error())
 		return
-	}
-
-	//build keyword SQL query
-	if input.SearchKeyword != nil {
-		key := "'%" + input.GetSearchKeyword() + "%'"
-		nameCondition += fmt.Sprintf(" AND item_name LIKE %v", key)
 	}
 
 	//category filter
@@ -166,8 +161,13 @@ func GetListingsUsingFilters(c *gin.Context) {
 		orderCondition += " listing_likes DESC, listing_ctime DESC"
 	}
 
-	query := utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
-		nameCondition + categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
+	if input.SearchKeyword != nil {
+		query = utils.GetFullTextSearchQuery(input.GetSearchKeyword()) + categoryCondition + locationCondition + priceCondition + groupCondition +
+			" ORDER BY relevance DESC" + strings.ReplaceAll(orderCondition, " ORDER BY", " ,")
+	} else {
+		query = utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
+			categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
+	}
 
 	log.Printf("Executing DB query: %v\n", query)
 
