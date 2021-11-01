@@ -73,10 +73,13 @@ func NewAWSInstance() {
 
 func NewRedis() {
 
+	redisAddress := fmt.Sprintf("%v:%v", os.Getenv("REDIS_URL"), os.Getenv("REDIS_PORT"))
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis-16881.c74.us-east-1-4.ec2.cloud.redislabs.com:16881",
-		Password: "wr2PToMVbwaGmo1gd0b9ky4hlNbnwpZz", // no password set
-		DB:       0,                                  // use default DB
+		Addr:     redisAddress,
+		Password: redisPassword,
+		DB:       0, // use default DB
 	})
 
 	if err := rdb.Ping(Ctx).Err(); err != nil {

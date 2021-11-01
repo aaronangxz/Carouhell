@@ -216,6 +216,11 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//will replace existing image in S3, hence we dont remove image even if PATCH failed
 
+	//invalidate redis
+	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetLItemID()); err != nil {
+		log.Printf("Error during InvalidateCache: %v", err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully updated listing details.")})
 	log.Printf("Successful: UpdateSingleListing.")
 }
