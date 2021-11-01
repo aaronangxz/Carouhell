@@ -122,6 +122,11 @@ func AddListingLikes(c *gin.Context) {
 	updatedLikes.IsLiked = true
 	updatedLikes.LikesCount = count
 
+	//invalidate redis
+	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
+		log.Printf("Error during InvalidateCache: %v", err.Error())
+	}
+
 	log.Println("Successful: AddListingLikes.")
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse(fmt.Sprintf("Successfully added 1 like to listing %v", input.GetItemID())), "Data": updatedLikes})
 }
