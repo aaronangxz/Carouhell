@@ -56,7 +56,7 @@ func GetUserWalletDetails(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Raw(utils.GetWalletTransactionQuery(), input.GetUserID(), input.GetUserID()).Scan(&transactions).Error; err != nil {
+	if err := models.DB.Raw(utils.GetWalletTransactionQuery(), input.GetUserID(), input.GetUserID(), input.GetUserID()).Scan(&transactions).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetUserWalletDetails - get wallet transactions DB query: %v", err.Error())
 		return
