@@ -53,6 +53,16 @@ func GetListingFixedQuery() string {
 	return ListingFixedQuery
 }
 
+func GetListingLoggedInQuery(user_id uint64) string {
+	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
+		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes, (CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked"+
+		" FROM acc_tab a, listing_tab l"+
+		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
+		" WHERE l.l_seller_id = a.a_user_id AND l.item_status = %v"+
+		" GROUP BY l.l_item_id ORDER BY listing_ctime DESC", user_id, constant.LISTING_REACTION_TYPE_LIKE, constant.ITEM_STATUS_NORMAL)
+}
+
 //Query without GROUP BY,ORDER BY; must append it after WHERE clauses
 func GetListingQueryWithCustomCondition() string {
 	return ListingQueryWithCustomCondition

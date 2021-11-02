@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
@@ -110,6 +111,21 @@ func CreateListing(c *gin.Context) {
 		input models.CreateListingRequest
 		resp  models.CreateListingResponse
 	)
+
+	tokenAuth, err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		log.Printf("Error during ExtractTokenMetadata: %v", err)
+		return
+	}
+	userId, err := auth.FetchAuth(tokenAuth)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		log.Printf("Error during FetchAuth: %v", err)
+		return
+	}
+
+	fmt.Println(userId)
 
 	if err := ValidateCreateListingRequest(c, &input); err != nil {
 		log.Printf("Error during ValidateCreateListingRequest: %v", err.Error())

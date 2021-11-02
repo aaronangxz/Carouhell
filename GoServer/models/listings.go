@@ -317,6 +317,25 @@ func (r GetLatestListingsRequest) GetLimit() uint32 {
 	return *r.Limit
 }
 
+type GetLatestListingsLoggedInResponse struct {
+	LItemID               uint32 `json:"item_id"`
+	ItemName              string `json:"item_name"`
+	ItemPrice             uint32 `json:"item_price"`
+	ItemQuantity          uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
+	ItemDescription       string `json:"item_description"`
+	ItemLocation          uint32 `json:"item_location"`
+	ItemStatus            uint32 `json:"item_status"`
+	ItemCategory          uint32 `json:"item_category"`
+	ItemImage             string `json:"item_image"`
+	LSellerID             uint32 `json:"seller_id"`
+	SellerName            string `json:"seller_name"`
+	ListingCtime          int64  `json:"listing_ctime"`
+	ListingMtime          int64  `json:"listing_mtime"`
+	ListingLikes          uint32 `json:"listing_likes"`
+	IsLiked               bool   `json:"is_liked"`
+}
+
 type CategoryFilter struct {
 	ItemCategory *uint32 `json:"item_category"`
 }

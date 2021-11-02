@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
@@ -134,6 +135,24 @@ func AuthenticateUser(c *gin.Context) {
 
 	resp.UserID = hold.GetUserID()
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully authenticated user."), "Data": resp})
+	token, err := auth.CreateToken(hold.GetUserID())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Fail to generate token.")})
+		log.Printf("Fail to generate token: %v\n", err)
+		return
+	}
+
+	saveErr := auth.CreateAuth(hold.GetUserID(), token)
+	if saveErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Fail to generate auth.")})
+		log.Printf("Fail to generate auth: %v\n", err)
+	}
+
+	tokens := map[string]string{
+		"access_token":  token.AccessToken,
+		"refresh_token": token.RefreshToken,
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully authenticated user."), "Data": resp, "Token": tokens})
 	log.Printf("Successful: AuthenticateUser. user_id: %v", hold.GetUserID())
 }
