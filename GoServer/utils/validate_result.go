@@ -34,6 +34,13 @@ func ValidateGetListingsUsingFiltersResult(results []models.GetListingsUsingFilt
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetListingsUsingFilters success. results: %v", len(results)))
 }
 
+func ValidateGetListingsUsingFiltersLoggedInResult(results []models.GetListingsUsingFiltersLoggedInResponse) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetListingsUsingFilters success. results: %v", len(results)))
+}
+
 func ValidateGetUserListingsResult(results []models.GetUserListingsResponse) models.ResponseMeta {
 	if len(results) == 0 {
 		return models.NewNotFoundResponse()

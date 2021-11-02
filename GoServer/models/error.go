@@ -1,15 +1,16 @@
 package models
 
 const (
-	CONSTANT_SUCCESS         = 0 //query ok
-	CONSTANT_ERROR_PARAMS    = 1 //query parameters not valid
-	CONSTANT_ERROR_JSON      = 2 //query parameters does not match JSON
-	CONSTANT_ERROR_NOT_FOUND = 3 //no result found
-	CONSTANT_ERROR_DUPLICATE = 4 //for POST/PATCH/PUT apis, already exists
-	CONSTANT_ERROR_OVERSIZE  = 5 //response exceeds max size
-	CONSTANT_ERROR_TIMEOUT   = 6 //server timeout
-	CONSTANT_ERROR_UNKNOWN   = 7 //etc
-	CONSTANT_ERROR_DATABASE  = 8 //database error
+	CONSTANT_SUCCESS             = 0 //query ok
+	CONSTANT_ERROR_PARAMS        = 1 //query parameters not valid
+	CONSTANT_ERROR_JSON          = 2 //query parameters does not match JSON
+	CONSTANT_ERROR_NOT_FOUND     = 3 //no result found
+	CONSTANT_ERROR_DUPLICATE     = 4 //for POST/PATCH/PUT apis, already exists
+	CONSTANT_ERROR_OVERSIZE      = 5 //response exceeds max size
+	CONSTANT_ERROR_TIMEOUT       = 6 //server timeout
+	CONSTANT_ERROR_UNKNOWN       = 7 //etc
+	CONSTANT_ERROR_DATABASE      = 8 //database error
+	CONSTANT_ERROR_AUTHORIZATION = 9 //auth error
 )
 
 func NewSuccessResponse() ResponseMeta {
@@ -107,5 +108,12 @@ func NewDBErrorMessageResponse(message string) ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "Database Error: " + message,
 		ErrorCode: CONSTANT_ERROR_DATABASE,
+	}
+}
+
+func NewAuthFailedResponse(err error) ResponseMeta {
+	return ResponseMeta{
+		DebugMsg:  "Authentication Failed: " + err.Error(),
+		ErrorCode: CONSTANT_ERROR_AUTHORIZATION,
 	}
 }

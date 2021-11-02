@@ -19,7 +19,8 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		err := TokenValid(c.Request)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, err.Error())
+			c.JSON(http.StatusUnauthorized, gin.H{"Respmeta": models.NewAuthFailedResponse(err)})
+			log.Printf("Error during TokenAuthMiddleware: %v", err)
 			c.Abort()
 			return
 		}
