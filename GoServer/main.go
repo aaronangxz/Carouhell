@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
@@ -52,7 +53,7 @@ func main() {
 	// r.POST("/upload_image", utils.UploadImage)
 
 	//***************** Home Page *****************
-	r.POST("/create_listing", listings.CreateListing)
+	r.POST("/create_listing", auth.TokenAuthMiddleware(), listings.CreateListing)
 	r.POST("/create_account", account.CreateAccount)
 	r.POST("/authenticate_user", account.AuthenticateUser)
 
@@ -67,28 +68,28 @@ func main() {
 	//returns based on item_id
 	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
 
-	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
-	r.DELETE("/delete_single_listing", listings.DeleteListing)
+	r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
+	r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
-	r.POST("/add_listing_likes", listings.AddListingLikes)
-	r.POST("/add_listing_comments", listings.AddListingComments)
-	r.POST("/purchase_single_item", listings.PurchaseSingleItem)
+	r.POST("/add_listing_likes", auth.TokenAuthMiddleware(), listings.AddListingLikes)
+	r.POST("/add_listing_comments", auth.TokenAuthMiddleware(), listings.AddListingComments)
+	r.POST("/purchase_single_item", auth.TokenAuthMiddleware(), listings.PurchaseSingleItem)
 
 	//***************** Profile Page *****************
 	//returns based on user_id, sorted by listing_ctime DESC
 	r.POST("/get_user_listings", listings.GetUserListings)
-	r.POST("/add_user_review", account.AddUserReview)
+	r.POST("/add_user_review", auth.TokenAuthMiddleware(), account.AddUserReview)
 
 	//get_user_reviews
 	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
-	r.POST("/get_user_liked_listings", listings.GetUserLikedListings)
+	r.POST("/get_user_liked_listings", auth.TokenAuthMiddleware(), listings.GetUserLikedListings)
 
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
-	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
-	r.POST("/top_up_user_wallet", wallet.TopUpUserWallet)
+	r.POST("/get_user_wallet_details", auth.TokenAuthMiddleware(), wallet.GetUserWalletDetails)
+	r.POST("/top_up_user_wallet", auth.TokenAuthMiddleware(), wallet.TopUpUserWallet)
 
 	r.Run()
 }

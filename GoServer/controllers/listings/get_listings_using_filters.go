@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
@@ -94,6 +95,7 @@ func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListi
 func GetListingsUsingFilters(c *gin.Context) {
 	var (
 		listings          []models.GetListingsUsingFiltersResponse
+		listingsWithLikes []models.GetListingsUsingFiltersLoggedInResponse
 		input             models.GetListingsUsingFiltersRequest
 		query             = ""
 		categoryCondition = ""
@@ -101,6 +103,8 @@ func GetListingsUsingFilters(c *gin.Context) {
 		priceCondition    = ""
 		groupCondition    = " GROUP BY l.l_item_id"
 		orderCondition    = " ORDER BY"
+		userId            uint64
+		loggedIn          bool
 	)
 
 	if err := ValidateGetListingsUsingFiltersRequest(c, &input); err != nil {
@@ -111,6 +115,19 @@ func GetListingsUsingFilters(c *gin.Context) {
 	if err := ValidateGetListingsUsingFiltersInput(c, &input); err != nil {
 		log.Printf("Error during ValidateGetListingsUsingFiltersInput: %v", err.Error())
 		return
+	}
+
+	tokenAuth, err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		//not logged in
+		log.Printf("Error during ExtractTokenMetadata: %v", err)
+	} else {
+		//logged in
+		userId, err = auth.FetchAuth(tokenAuth)
+		if err != nil {
+			log.Printf("Error during FetchAuth: %v, user is not logged in.\n", err)
+		}
+		loggedIn = true
 	}
 
 	//category filter
@@ -162,24 +179,43 @@ func GetListingsUsingFilters(c *gin.Context) {
 	}
 
 	if input.SearchKeyword != nil {
-		query = utils.GetFullTextSearchQuery(input.GetSearchKeyword()) + categoryCondition + locationCondition + priceCondition + groupCondition +
-			" ORDER BY relevance DESC" + strings.ReplaceAll(orderCondition, " ORDER BY", " ,")
+		if loggedIn {
+			query = utils.GetFullTextSearchLoggedInQuery(input.GetSearchKeyword(), userId) + categoryCondition + locationCondition + priceCondition + groupCondition +
+				" ORDER BY relevance DESC" + strings.ReplaceAll(orderCondition, " ORDER BY", " ,")
+		} else {
+			query = utils.GetFullTextSearchQuery(input.GetSearchKeyword()) + categoryCondition + locationCondition + priceCondition + groupCondition +
+				" ORDER BY relevance DESC" + strings.ReplaceAll(orderCondition, " ORDER BY", " ,")
+		}
 	} else {
-		query = utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
-			categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
+		if loggedIn {
+			query = utils.GetListingLoggedInQueryWithCustomCondition(userId) + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
+				categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
+		} else {
+			query = utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v", constant.ITEM_STATUS_NORMAL) +
+				categoryCondition + locationCondition + priceCondition + groupCondition + orderCondition
+		}
 	}
 
 	log.Printf("Executing DB query: %v\n", query)
 
-	result := models.DB.Raw(query).Scan(&listings)
-	err := result.Error
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during GetListingsUsingFilters DB query: %v\n", err.Error())
-		return
+	if loggedIn {
+		result := models.DB.Raw(query).Scan(&listingsWithLikes)
+		if err := result.Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during GetListingsUsingFilters - logged in DB query: %v\n", err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingsUsingFiltersLoggedInResult(listingsWithLikes), "Data": listingsWithLikes})
+		log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
+	} else {
+		result := models.DB.Raw(query).Scan(&listings)
+		if err := result.Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during GetListingsUsingFilters DB query: %v\n", err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingsUsingFiltersResult(listings), "Data": listings})
+		log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingsUsingFiltersResult(listings), "Data": listings})
-	log.Printf("Successful: GetListingsUsingFilters. rows: %v\n", result.RowsAffected)
 }
