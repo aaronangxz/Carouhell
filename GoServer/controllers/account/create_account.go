@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/aaronangxz/TIC2601/constant"
@@ -138,8 +139,9 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 
 func CreateAccount(c *gin.Context) {
 	var (
-		input models.CreateAccountRequest
-		hold  models.Account
+		input  models.CreateAccountRequest
+		spResp models.CreateAccountSPResponse
+		hold   models.Account
 	)
 
 	if err := ValidateCreateAccountRequest(c, &input); err != nil {
@@ -149,39 +151,6 @@ func CreateAccount(c *gin.Context) {
 
 	if err := ValidateCreateAccountInput(c, &input); err != nil {
 		log.Printf("Error during ValidateCreateAccountInput: %v", err.Error())
-		return
-	}
-
-	//check if user name / user email exists
-	result := models.DB.Raw("SELECT * FROM acc_tab WHERE user_name = ? OR user_email = ?", input.UserName, input.UserEmail).Scan(&hold)
-
-	if result.Error != nil {
-		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
-			log.Printf("Error during DB query: %v", result.Error.Error())
-			return
-		}
-	}
-
-	if result.RowsAffected > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
-		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
-		return
-	}
-
-	account := models.Account{
-		UserName:      input.UserName,
-		UserEmail:     input.UserEmail,
-		UserCtime:     utils.Int64(time.Now().Unix()),
-		UserStatus:    utils.Uint32(constant.ACC_STATUS_ACTIVE),
-		UserImage:     nil,
-		UserLastLogin: utils.Int64(time.Now().Unix()),
-	}
-
-	//write to acc_tab
-	if err := models.DB.Table("acc_tab").Create(&account).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during CreateAccount - acc_tab DB query: %v", err.Error())
 		return
 	}
 
@@ -198,6 +167,84 @@ func CreateAccount(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
 		log.Printf("Error during HashSecret - security question: %v", err)
+		return
+	}
+
+	//toggle to use stored procedures
+	if os.Getenv("USE_STORED_PROCEDURE") == "TRUE" {
+		query := fmt.Sprintf("CALL heroku_bdc39d4687a85d4.create_user('%v', '%v', NULL, '%v', %v, '%v',@status);",
+			input.GetUserName(), input.GetUserEmail(), hashedPassword, input.GetUserSecurityQuestion(), hashedSecurityAnswer)
+		log.Printf("Executing SP: %v\n", query)
+		result := models.DB.Exec(query)
+		if result.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
+			log.Printf("Error during CreateAccount - create_user SP DB query: %v", result.Error.Error())
+			return
+		}
+
+		//check SP run status
+		spResult := models.DB.Raw("SELECT @status AS status").Scan(&spResp)
+		if spResult.Error != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(spResult.Error)})
+			log.Printf("Error during CreateAccount - check_sp_status DB query: %v", result.Error.Error())
+			return
+		}
+
+		spData, err := json.Marshal(spResp)
+		if err != nil {
+			log.Printf("Failed to marshal JSON results: %v", err.Error())
+		}
+		log.Printf("check_sp_status. Data: %s\n", spData)
+
+		if spResp.Status == nil {
+			c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewUnknownErrorResponse()})
+			log.Printf("Response from SP status is nil. Check if SP ran successfully\n")
+			return
+		} else {
+			if spResp.GetStatus() == -1 {
+				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
+				log.Printf("user already exists: %v / %v\n", input.GetUserName(), input.GetUserEmail())
+				return
+			}
+			if spResp.GetStatus() == 0 {
+				c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully created account and wallet.")})
+				log.Printf("Successful: CreateAccount - via SP\n")
+				return
+			}
+		}
+	}
+
+	//normal queries
+	//check if user name / user email exists
+	result := models.DB.Raw("SELECT * FROM acc_tab WHERE user_name = ? OR user_email = ?", input.UserName, input.UserEmail).Scan(&hold)
+
+	if result.Error != nil {
+		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
+			log.Printf("Error during DB query: %v", result.Error.Error())
+			return
+		}
+
+		if result.RowsAffected > 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
+			log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
+			return
+		}
+	}
+
+	account := models.Account{
+		UserName:      input.UserName,
+		UserEmail:     input.UserEmail,
+		UserCtime:     utils.Int64(time.Now().Unix()),
+		UserStatus:    utils.Uint32(constant.ACC_STATUS_ACTIVE),
+		UserImage:     nil,
+		UserLastLogin: utils.Int64(time.Now().Unix()),
+	}
+
+	//write to acc_tab
+	if err := models.DB.Table("acc_tab").Create(&account).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during CreateAccount - acc_tab DB query: %v", err.Error())
 		return
 	}
 
@@ -238,7 +285,7 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully create account and wallet.")})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully created account and wallet.")})
 
 	data, err := json.Marshal(account)
 	if err != nil {
