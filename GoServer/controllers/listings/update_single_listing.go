@@ -194,19 +194,14 @@ func UpdateSingleListing(c *gin.Context) {
 		}
 	}
 
-	//if none, use the original image
-	if input.ItemImage == nil {
-		input.ItemImage = originalListing.ItemImage
-	}
-
 	//If all good, proceed to update
 	query = fmt.Sprintf("UPDATE listing_tab SET"+
 		" item_name = \"%v\", item_price = %v, item_quantity = %v,"+
-		" item_description = \"%v\", item_location = %v, item_category = %v, item_image = '%v', listing_mtime = %v,"+
+		" item_description = \"%v\", item_location = %v, item_category = %v, listing_mtime = %v,"+
 		" item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END,"+
 		" item_status = CASE WHEN item_quantity > 0 THEN 1 ELSE item_status END WHERE l_item_id = %v",
 		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
-		input.GetItemLocation(), input.GetItemCategory(), input.GetItemImage(), time.Now().Unix(), input.GetLItemID())
+		input.GetItemLocation(), input.GetItemCategory(), time.Now().Unix(), input.GetLItemID())
 	log.Println(query)
 	if err := models.DB.Exec(query).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
@@ -215,7 +210,6 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 
 	//will replace existing image in S3, hence we dont remove image even if PATCH failed
-
 	//invalidate redis
 	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetLItemID()); err != nil {
 		log.Printf("Error during InvalidateCache: %v", err.Error())

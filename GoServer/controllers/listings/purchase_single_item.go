@@ -107,7 +107,7 @@ func PurchaseSingleItem(c *gin.Context) {
 	}
 
 	//retrieve wallet details
-	walletQuery := fmt.Sprintf("SELECT * FROM wallet_tab WHERE wallet_id = %v", input.GetUserID())
+	walletQuery := fmt.Sprintf("SELECT * FROM wallet_tab WHERE w_user_id = %v", input.GetUserID())
 	log.Println(walletQuery)
 	wallet := models.DB.Raw(walletQuery).Scan(&walletHold)
 	if err := wallet.Error; err != nil {

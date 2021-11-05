@@ -6,7 +6,6 @@ type Account struct {
 	UserEmail     *string `json:"user_email"`
 	UserCtime     *int64  `json:"user_ctime"`
 	UserStatus    *uint32 `json:"user_status"`
-	UserImage     *string `json:"user_image"`
 	UserLastLogin *int64  `json:"user_last_login"`
 }
 
@@ -172,4 +171,15 @@ func (r *AddUserReviewRequest) GetReviewText() string {
 
 type AddUserReviewResponse struct {
 	Ratings float32 `json:"latest_ratings"`
+}
+
+type CreateAccountSPResponse struct {
+	Status *int
+}
+
+func (r *CreateAccountSPResponse) GetStatus() int {
+	if r != nil && r.Status != nil {
+		return *r.Status
+	}
+	return -1
 }

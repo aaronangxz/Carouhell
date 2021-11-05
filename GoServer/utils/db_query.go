@@ -12,7 +12,7 @@ import (
 var (
 	ListingFixedQuery = fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id AND l.item_status = %v"+
@@ -20,7 +20,7 @@ var (
 
 	ListingQueryWithCustomCondition = fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", constant.LISTING_REACTION_TYPE_LIKE)
@@ -28,8 +28,8 @@ var (
 	WalletTransactionQuery = fmt.Sprintf("SELECT transaction_history.lt_item_id AS item_id,"+
 		" transaction_history.transaction_amount, "+
 		" transaction_history.transaction_type, "+
-		" transaction_history.transaction_ctime, "+
-		" item_info.item_name,item_info.item_image FROM("+
+		" transaction_history.transaction_ctime, item_info.item_name"+
+		" FROM("+
 		" SELECT lt_item_id , transaction_amount, transaction_type, transaction_ctime FROM("+
 		" SELECT lt_item_id, transaction_amount, 2 AS transaction_type, transaction_ctime FROM listing_transactions_tab "+
 		" WHERE lt_item_id IN"+
@@ -42,7 +42,7 @@ var (
 		" SELECT NULL AS lt_item_id, transaction_amount, transaction_type, transaction_ctime FROM wallet_transactions_tab"+
 		" WHERE wt_wallet_id = ? AND transaction_type = %v) AS transactions) AS transaction_history"+
 		" LEFT JOIN"+
-		" (SELECT l_item_id, item_name, item_image FROM listing_tab) "+
+		" (SELECT l_item_id, item_name FROM listing_tab) "+
 		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id"+
 		" ORDER BY transaction_ctime DESC", constant.TRANSACTION_TYPE_TOPUP)
 )
@@ -56,7 +56,7 @@ func GetListingFixedQuery() string {
 func GetListingLoggedInQuery(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes, (CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes, (CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id AND l.item_status = %v"+
@@ -71,7 +71,7 @@ func GetListingQueryWithCustomCondition() string {
 func GetListingLoggedInQueryWithCustomCondition(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes, (CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes, (CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", user_id, constant.LISTING_REACTION_TYPE_LIKE)
@@ -106,7 +106,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 		return 0, err
 	}
 
-	updateWalletBalance := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance + %v, last_top_up = %v WHERE wallet_id = %v",
+	updateWalletBalance := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance + %v, last_top_up = %v WHERE w_user_id = %v",
 		input.GetAmount(), time.Now().Unix(), input.GetUserID())
 	if err := tx.Exec(updateWalletBalance).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:updateWalletBalance: %v", err.Error())
@@ -115,7 +115,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 		return 0, err
 	}
 
-	returnWalletBalance := fmt.Sprintf("SELECT wallet_balance FROM wallet_tab WHERE wallet_id = %v", input.GetUserID())
+	returnWalletBalance := fmt.Sprintf("SELECT wallet_balance FROM wallet_tab WHERE w_user_id = %v", input.GetUserID())
 	if err := tx.Raw(returnWalletBalance).Scan(&resp).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:returnWalletBalance: %v", err.Error())
 		log.Println("rolling back returnWalletBalance")
@@ -152,7 +152,6 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		TransactionCtime:    Int64(time.Now().Unix()),
 		TransactionQuantity: input.PurchaseQuantity,
 		TransactionAmount:   Uint32(totalPrice),
-		TransactionStatus:   Uint32(constant.LISTING_TRANSACTION_STATUS_SUCCESS),
 	}
 	if err := tx.Table("listing_transactions_tab").Create(&listingTransaction).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:insertListingTransaction: %v", err.Error())
@@ -184,7 +183,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE wallet_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
+	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE w_user_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
 	log.Println(updateWalletQuery)
 	if err := tx.Exec(updateWalletQuery).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:updateWalletBalance: %v", err.Error())
@@ -203,7 +202,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 func GetFullTextSearchQuery(keyword string) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -214,7 +213,7 @@ func GetFullTextSearchQuery(keyword string) string {
 func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.item_image, l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		"(CASE WHEN listing_reactions_tab.rt_user_id = %v THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+

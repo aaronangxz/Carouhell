@@ -1,7 +1,7 @@
 package models
 
 type Wallet struct {
-	WalletID      *uint32 `json:"wallet_id" gorm:"primary_key"`
+	WUserID       *uint32 `json:"user_id" gorm:"primary_key"`
 	WalletBalance *uint32 `json:"wallet_balance"`
 	WalletStatus  *uint32 `json:"wallet_status"`
 	LastTopUp     *int64  `json:"last_top_up"`
@@ -52,9 +52,8 @@ type WalletTransactionBasic struct {
 	TransactionType   *uint32 `json:"transaction_type"`
 }
 type WalletTransactionListingDetails struct {
-	ItemID    *uint32 `json:"item_id"`
-	ItemName  *string `json:"item_name"`
-	ItemImage *string `json:"item_image"`
+	ItemID   *uint32 `json:"item_id"`
+	ItemName *string `json:"item_name"`
 }
 type WalletTransactionsWithListing struct {
 	//TransactionInfo WalletTransactionBasic `json:"transactions_info"`
@@ -63,9 +62,8 @@ type WalletTransactionsWithListing struct {
 	TransactionType   *uint32 `json:"transaction_type"`
 	//if is listing purchase, not NULL else NULL
 	//TransactionListingDetails WalletTransactionListingDetails `json:"transaction_listing_details"`
-	ItemID    *uint32 `json:"item_id"`
-	ItemName  *string `json:"item_name"`
-	ItemImage *string `json:"item_image"`
+	ItemID   *uint32 `json:"item_id"`
+	ItemName *string `json:"item_name"`
 }
 
 type GetUserWalletDetailsResponse struct {
