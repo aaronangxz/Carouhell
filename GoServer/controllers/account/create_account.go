@@ -271,7 +271,7 @@ func CreateAccount(c *gin.Context) {
 
 	//create wallet
 	wallet := models.Wallet{
-		WalletID:      account.AUserID,
+		WUserID:       account.AUserID,
 		WalletBalance: utils.Uint32(0),
 		WalletStatus:  utils.Uint32(constant.WALLET_STATUS_ACTIVE),
 		LastTopUp:     nil,
