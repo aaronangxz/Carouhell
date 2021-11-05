@@ -180,7 +180,6 @@ func CreateListing(c *gin.Context) {
 		ItemLocation:          input.ItemLocation,
 		ItemStatus:            utils.Uint32(constant.ITEM_STATUS_NORMAL),
 		ItemCategory:          input.ItemCategory,
-		ItemImage:             nil,
 		LSellerID:             input.SellerID,
 		ListingCtime:          utils.Int64(time.Now().Unix()),
 		ListingMtime:          utils.Int64(time.Now().Unix()),
@@ -194,7 +193,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	//upload image
-	imageUrl, err := utils.UploadBase64Image(listings.GetLItemID(), input.GetItemImage())
+	_, err := utils.UploadBase64Image(listings.GetLItemID(), input.GetItemImage())
 	if err != nil {
 		//roll back listing create
 		if errRollback := models.DB.Table("listing_tab").Delete(&listings).Error; errRollback != nil {
@@ -207,12 +206,13 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	//Deprecated
 	//write image URL to DB
-	if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetLItemID()).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during image write: %v", err.Error())
-		return
-	}
+	// if err := models.DB.Exec("UPDATE listing_tab SET item_image = ? WHERE l_item_id = ?", imageUrl, listings.GetLItemID()).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+	// 	log.Printf("Error during image write: %v", err.Error())
+	// 	return
+	// }
 
 	resp.LItemID = listings.GetLItemID()
 

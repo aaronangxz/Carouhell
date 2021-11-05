@@ -6,7 +6,6 @@ type Account struct {
 	UserEmail     *string `json:"user_email"`
 	UserCtime     *int64  `json:"user_ctime"`
 	UserStatus    *uint32 `json:"user_status"`
-	UserImage     *string `json:"user_image"`
 	UserLastLogin *int64  `json:"user_last_login"`
 }
 
