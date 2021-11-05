@@ -152,7 +152,6 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		TransactionCtime:    Int64(time.Now().Unix()),
 		TransactionQuantity: input.PurchaseQuantity,
 		TransactionAmount:   Uint32(totalPrice),
-		TransactionStatus:   Uint32(constant.LISTING_TRANSACTION_STATUS_SUCCESS),
 	}
 	if err := tx.Table("listing_transactions_tab").Create(&listingTransaction).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:insertListingTransaction: %v", err.Error())

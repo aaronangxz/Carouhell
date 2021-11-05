@@ -172,7 +172,7 @@ func CreateAccount(c *gin.Context) {
 
 	//toggle to use stored procedures
 	if os.Getenv("USE_STORED_PROCEDURE") == "TRUE" {
-		query := fmt.Sprintf("CALL heroku_bdc39d4687a85d4.create_user('%v', '%v', NULL, '%v', %v, '%v',@status);",
+		query := fmt.Sprintf("CALL heroku_bdc39d4687a85d4.create_user('%v', '%v', '%v', %v, '%v',@status);",
 			input.GetUserName(), input.GetUserEmail(), hashedPassword, input.GetUserSecurityQuestion(), hashedSecurityAnswer)
 		log.Printf("Executing SP: %v\n", query)
 		result := models.DB.Exec(query)
@@ -237,7 +237,6 @@ func CreateAccount(c *gin.Context) {
 		UserEmail:     input.UserEmail,
 		UserCtime:     utils.Int64(time.Now().Unix()),
 		UserStatus:    utils.Uint32(constant.ACC_STATUS_ACTIVE),
-		UserImage:     nil,
 		UserLastLogin: utils.Int64(time.Now().Unix()),
 	}
 

@@ -23,7 +23,6 @@ type Listing struct {
 	ItemLocation          *uint32 `json:"item_location"`
 	ItemStatus            *uint32 `json:"item_status"`
 	ItemCategory          *uint32 `json:"item_category"`
-	ItemImage             *string `json:"item_image"`
 	LSellerID             *uint32 `json:"seller_id"`
 	ListingCtime          *int64  `json:"listing_ctime"`
 	ListingMtime          *int64  `json:"listing_mtime"`
@@ -570,5 +569,4 @@ type ListingTransaction struct {
 	TransactionCtime    *int64  `json:"transaction_ctime"`
 	TransactionQuantity *uint32 `json:"transaction_quantity"`
 	TransactionAmount   *uint32 `json:"transaction_amount"`
-	TransactionStatus   *uint32 `json:"transaction_status"`
 }
