@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TIC2601</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="index.js"></script>
+  <script src="listing.js"></script>
+  <script> 
+    $(function(){
+      $("#header").load("navbar.html");
+    });
+    </script> 
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Create New Listing</h1>
+        <form id="createNewListing" method="post">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" class="form-control" id="itemName" placeholder="Enter item name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemPrice">Item Price</label>
+                        <input type="number" class="form-control" id="itemPrice" placeholder="Enter item price">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemQty">Item Quantity</label>
+                        <input type="number" class="form-control" id="itemQty" placeholder="Enter item quantity">
+                    </div>
+                </div>
+                <!-- <div class="col">
+                    <div class="form-group">
+                        <label for="itemStatus">Item Status</label>
+                        <select class="form-control" id="itemStatus">
+                          <option value="2">Available</option>
+                          <option value="3">Sold</option>
+                        </select>
+                    </div>
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemDesc">Item Description</label>
+                        <textarea class="form-control" id="itemDesc" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemCat">Select Category</label>
+                        <select class="form-control" id="itemCat">
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemLocation">Mailing Location</label>
+                        <select class="form-control" id="itemLocation">                         
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="img"><b>Add Images</b></label>
+                          <br><img id="myImg" src="#">
+                        <input name="img" type="file" class="form-control-file" id="img">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="collection">Collection/Shipping</label>
+                        <select class="form-control" id="collection">
+                          <option value="1">Meet Up</option>
+                          <option value="2">Delivery</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div> -->
+            <div class="row">
+                <div class="col text-center">
+                    <input type="button" class="btn btn-primary" onclick="createListing(getCurrentUserID())" value="Create Listing"/>
+                </div>
+            </div>
+            
+    </form>
+    </div>
+    <script>
+        window.addEventListener('load', function() 
+        {
+            document.querySelector('input[type="file"]').addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    var img = document.querySelector('img');
+                    img.onload = () => {
+                        URL.revokeObjectURL(img.src);  // no longer needed, free memory
+                    }
+
+                    img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                }
+            });
+        });
+
+        var loadCategoryContent = "";
+        for(var i = 0; i <categories_Arr.length; i++)
+        {
+            loadCategoryContent += '<option value="'+i+'">'+categories_Arr[i]+'</option>';
+        }
+        document.getElementById("itemCat").innerHTML = loadCategoryContent; 
+
+        var loadLocationContent = "";
+        for(var i = 0; i <location_Arr.length; i++)
+        {
+            loadLocationContent += '<option value="'+i+'">'+location_Arr[i]+'</option>';
+        }
+        document.getElementById("itemLocation").innerHTML = loadLocationContent; 
+    </script>
+  </body>
+</html>
