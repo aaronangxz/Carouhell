@@ -27,6 +27,13 @@ func ValidateGetLatestListingsResult(results []models.GetLatestListingsResponse)
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetLatestListings success. results: %v", len(results)))
 }
 
+func ValidateGetLatestListingsLoggedInResult(results []models.GetLatestListingsLoggedInResponse) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetLatestListings success. results: %v", len(results)))
+}
+
 func ValidateGetListingsUsingFiltersResult(results []models.GetListingsUsingFiltersResponse) models.ResponseMeta {
 	if len(results) == 0 {
 		return models.NewNotFoundResponse()
