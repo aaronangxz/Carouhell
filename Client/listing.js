@@ -50,7 +50,10 @@ function createListing(userID)
 
         fetch('https://tic2601-t11.herokuapp.com/create_listing', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'}, 
+            headers:{
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }, 
             body: JSON.stringify({
                 "item_name": itemName,
                 "item_price": parseInt(itemPrice),
@@ -92,7 +95,10 @@ function deleteListing(itemID)
 {
     fetch('https://tic2601-t11.herokuapp.com/delete_single_listing', {
         method: 'DELETE',
-        // headers: {'Content-Type': 'application/json'}, 
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify({
             "item_id": itemID
         })
@@ -111,7 +117,7 @@ function deleteListing(itemID)
             {
                 if(confirm("Listing Deleted!"))
                 {
-                    window.location.href = "profile.html";
+                    window.location.href = "viewProfile.html";
                 }
             }
     })
@@ -124,7 +130,10 @@ function addListingComment(userID, itemID)
     console.log("comment:" + comment);
     fetch('https://tic2601-t11.herokuapp.com/add_listing_comments', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'}, 
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify({
             "item_id": parseInt(itemID),
             "user_id":parseInt(userID),
@@ -155,27 +164,23 @@ function addListingComment(userID, itemID)
 
 function viewListingByItemId(itemID)
 {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var requestionOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: JSON.stringify({
-            "item_id": parseInt(itemID)
-        }),
-        redirect: 'follow'
-    };
-
-    fetch("https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid", requestionOptions)
-    .then(response => response.json())
-    // .then(result => console.log(result))
-    .then(data => {
-        console.log(data);
-        displayItemContent(data.Data);
-        displayItemComments(data.Data.listing_comments, data.Data.item_id);
-    })
-    .catch(error => console.log('error', error)); 
+    fetch('https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid', {
+            method: 'POST',
+            headers:{
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({
+                "item_id": parseInt(itemID)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            displayItemContent(data.Data);
+            displayItemComments(data.Data.listing_comments, data.Data.item_id);
+        })
+        .catch(error => console.log(error)); 
 }
 
 
@@ -255,7 +260,7 @@ function displayItemContent(data)
                         '<h5>Quantity Available: '+ data.item_quantity + '</h5>' +
                     '</div>'+
                     '<div class="col-1">'+
-                        '<input type="button" onclick="buyNow('+data.item_id+')" class="btn btn-primary" value="Buy Now"/>'+
+                        '<input type="button" onclick="buyNow('+data.item_id+','+data.seller_id+')" class="btn btn-primary" value="Buy Now"/>'+
                         // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
                     '</div>'+
                     '<div class="col-4"></div>'+
@@ -330,7 +335,10 @@ function addListingLikes(itemID)
 
         fetch('https://tic2601-t11.herokuapp.com/add_listing_likes', {
             method: 'POST',
-            // headers: {'Content-Type': 'application/json'}, 
+            headers:{
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }, 
             body: JSON.stringify({
                 "item_id": itemID,
                 "user_id": parseInt(getCurrentUserID())
@@ -339,16 +347,15 @@ function addListingLikes(itemID)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            //alert("Added listing to your favourites!");
-            //location.reload();
+            location.reload();
         })
         .catch(error => console.log(error)); 
     }
 }
 
-function checkIfUserLikedListing(liked)
+function checkIfUserLikedListing(is_liked)
 {
-    if(liked)
+    if(is_liked)
         return '<span><i class="fas fa-heart"></i></span>';
     else
         return '<span><i class="far fa-heart"></i></span>';
@@ -397,7 +404,7 @@ function displayListing(d)
             '<div class="row">'+
                 '<div class="col">'+
                     '<h5 class="card-title">'+
-                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');"><span><i class="far fa-heart"></i></span></a> ' + d.listing_likes + 
+                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');">'+checkIfUserLikedListing(d.is_liked)+'</a> ' + d.listing_likes + 
                     '</h5>'+
                 '</div>'+
             '</div>'+
@@ -423,7 +430,10 @@ function getSearchItem()
     console.log(searchItem + "- searchItem" );
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'}, 
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify({
             "search_keyword": searchItem,
         })
@@ -499,7 +509,10 @@ function getFilterResults()
 
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'}, 
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify({
             "category_filter": {
                 "item_category": selectedCategory
@@ -540,7 +553,7 @@ function getFilterResults()
     .catch(error => console.log(error)); 
 }
 
-function buyNow(itemID)
+function buyNow(itemID, sellerID)
 {
     console.log("buy now ", itemID);
     var qtyToPurchase = document.getElementById("qtyToPurchase").value;
@@ -554,7 +567,10 @@ function buyNow(itemID)
 
             fetch('https://tic2601-t11.herokuapp.com/purchase_single_item', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'}, 
+                headers:{
+                    'Authorization': getToken(),
+                    'Content-Type': 'application/json'
+                }, 
                 body: JSON.stringify({
                     "item_id": parseInt(itemID),
                     "user_id": parseInt(getCurrentUserID()),
@@ -575,7 +591,8 @@ function buyNow(itemID)
                     {
                         if(confirm("Successfully Purchased!"))
                         {
-                            window.location.href = "wallet.html";
+                            console.log("seller ID" + sellerID);
+                            window.location.href = "review.html?sellerID="+sellerID;
                         }
                     }
             })
@@ -591,8 +608,11 @@ function buyNow(itemID)
 
 function getUserLikedListing() {
     fetch('https://tic2601-t11.herokuapp.com/get_user_liked_listings', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'}, 
+        method: 'POST',                
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        },  
         body: JSON.stringify({
             "user_id": parseInt(getCurrentUserID())
         })
@@ -634,7 +654,10 @@ function viewProfileByUserID(profileID)
 
     fetch('https://tic2601-t11.herokuapp.com/get_user_details', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'}, 
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify({
             "user_id": parseInt(profileID)
         })
@@ -652,7 +675,7 @@ function viewProfileByUserID(profileID)
         else // successful
         {
             document.getElementById("cards").innerHTML = "";
-            document.getElementById("title").innerHTML = "<h3>Listings</h3>";
+            document.getElementById("title").innerHTML = "<h3>Listings ("+data.Data.user_listings.length+" listings)</h3>";
             for(const d of data.Data.user_listings){
                 displayListing(d);
             }
@@ -683,11 +706,11 @@ function getAllListing() {
 
 function getLatestListing() {
     fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
-      method: 'GET'
-    //   headers:{
-    //     'Authorization': getToken(),
-    //     'Content-Type': 'application/json'
-    //     }, 
+      method: 'GET',
+      headers:{
+        'Authorization': getToken(),
+        'Content-Type': 'application/json'
+    }
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
@@ -720,40 +743,38 @@ function displayUserReviews(data)
         '</div>';
     }
 
-    if(data.account_info.user_id != getCurrentUserID()) // view other ppl profile
-    {
-        reviews += 
-        '<form id="userReview" method="post">'+
-            '<div class="row mt-3">' +
-                '<div class="col-2">'+
-                    '<div class="form-group">'+
-                        '<input type="number" class="form-control" id="rating" placeholder="/5 star">'+
-                    '</div>'+
-                '</div>'+
-                '<div class="col-8">'+
-                    '<div class="form-group">'+
-                        '<input type="text" class="form-control" id="review" placeholder="Add a review...">'+
-                    '</div>'+
-                '</div>'+
-                '<div class="col-2">'+
-                    '<input type="button" class="btn btn-primary" onclick="addUserReview('+data.account_info.user_id+')" value="Submit"/>'+
-                '</div>'+
-            '</div>'+
-        '</form>';
-    }
+    // if(data.account_info.user_id != getCurrentUserID()) // view other ppl profile
+    // {
+    //     reviews += 
+    //     '<form id="userReview" method="post">'+
+    //         '<div class="row mt-3">' +
+    //             '<div class="col-2">'+
+    //                 '<div class="form-group">'+
+    //                     '<input type="number" class="form-control" id="rating" placeholder="/5 star">'+
+    //                 '</div>'+
+    //             '</div>'+
+    //             '<div class="col-8">'+
+    //                 '<div class="form-group">'+
+    //                     '<input type="text" class="form-control" id="review" placeholder="Add a review...">'+
+    //                 '</div>'+
+    //             '</div>'+
+    //             '<div class="col-2">'+
+    //                 '<input type="button" class="btn btn-primary" onclick="addUserReview('+data.account_info.user_id+')" value="Submit"/>'+
+    //             '</div>'+
+    //         '</div>'+
+    //     '</form>';
+    // }
     
     document.getElementById("reviewSection").innerHTML = reviews;
 }
 
 function addUserReview(sellerID)
 {
+    var rating = document.getElementById("rating");
+    var ratingValue = rating.options[rating.selectedIndex].value;
     var review = document.getElementById('review').value;
-    var rating = document.getElementById('rating').value;
 
-    console.log("review: " + review);
-    console.log("rating: " + rating);
-
-    if(!review || !rating || review == "")
+    if(!review || !ratingValue || review == "")
     {
         alert("Review incomplete, please try again");
         location.reload();
@@ -768,7 +789,7 @@ function addUserReview(sellerID)
         body: JSON.stringify({
             "user_id": parseInt(getCurrentUserID()),
             "seller_id": parseInt(sellerID),
-            "ratings": parseInt(rating),
+            "ratings": parseInt(ratingValue),
             "review_text": review
         })
     })
@@ -786,7 +807,7 @@ function addUserReview(sellerID)
             {
                 if(confirm("Successfully added review"))
                 {
-                   location.reload();
+                   window.location.href="viewProfile.html?profileID="+sellerID;
                 }
             }
     })
@@ -866,12 +887,13 @@ function editListing(itemID)
                 body: JSON.stringify({
                     "item_id": parseInt(itemID),
                     "item_name": itemName,
-                    "item_price": itemPrice,
+                    "item_price": itemPrice*100,
                     "item_quantity":itemQty,
                     "item_description":itemDesc,
                     "item_location": locationValue,
                     "item_category": itemCatValue,
-                    "item_image": base64String
+                    "item_image": base64String,
+                    "seller_id": parseInt(getCurrentUserID())
                 })
             })
             .then(response => response.json())
@@ -888,7 +910,7 @@ function editListing(itemID)
                     {
                         if(confirm("Listing Updated!"))
                         {
-                            window.location.href = "profile.html";
+                            window.location.href = "viewListing.html?itemID="+itemID;
                         }
                     }
             })
@@ -907,12 +929,13 @@ function editListing(itemID)
                 body: JSON.stringify({
                     "item_id": parseInt(itemID),
                     "item_name": itemName,
-                    "item_price": itemPrice,
+                    "item_price": itemPrice*100,
                     "item_quantity":itemQty,
                     "item_description":itemDesc,
                     "item_location": locationValue,
                     "item_category": itemCatValue,
-                    "item_image": null
+                    "item_image": null,
+                    "seller_id": parseInt(getCurrentUserID())
                 })
             })
             .then(response => response.json())
@@ -929,13 +952,10 @@ function editListing(itemID)
                     {
                         if(confirm("Listing Updated!"))
                         {
-                            window.location.href = "profile.html";
+                            window.location.href = "viewListing.html?itemID="+itemID;
                         }
                     }
             })
             .catch(error => console.log(error));
     }
-
-    
-
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TIC2601</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="index.js"></script>
+  <script src="listing.js"></script>
+  <script> 
+    $(function(){
+      $("#header").load("navbar.html");
+    });
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const sellerID = urlParams.get('sellerID')
+    console.log("rating on: " + sellerID);
+    </script> 
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Rate your seller</h1>
+        <form id="userReview" method="post">
+            <div class="row mt-3">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="rating">Select Ratings ( /5 stars)</label>
+                        <select class="form-control" id="rating">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="form-group">
+                        <label for="review">Review:</label>
+                        <input type="text" class="form-control" id="review" placeholder="Add a review...">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <input type="button" class="btn btn-primary" onclick="addUserReview(sellerID)" value="Submit"/>
+                </div>
+            </div>
+        </form>
+    </div>
+  </body>
+</html>
+
