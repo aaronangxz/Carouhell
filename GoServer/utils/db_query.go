@@ -174,7 +174,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - 1, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetItemID())
+	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - %v, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetPurchaseQuantity(), input.GetItemID())
 	log.Println(updateListingQuery)
 	if err := tx.Exec(updateListingQuery).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:updateListing: %v", err.Error())
