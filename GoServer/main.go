@@ -24,6 +24,7 @@ func main() {
 
 	//Allow all CORS
 	r.Use(cors.Default())
+	r.Use(models.CORSMiddleware())
 
 	//Load HTML files for / endpoint
 	r.LoadHTMLGlob("./elate/*.html")
