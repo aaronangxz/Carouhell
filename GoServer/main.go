@@ -72,25 +72,25 @@ func main() {
 	r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
-	r.POST("/add_listing_likes", auth.TokenAuthMiddleware(), listings.AddListingLikes)
-	r.POST("/add_listing_comments", auth.TokenAuthMiddleware(), listings.AddListingComments)
-	r.POST("/purchase_single_item", auth.TokenAuthMiddleware(), listings.PurchaseSingleItem)
+	r.POST("/add_listing_likes", listings.AddListingLikes)
+	r.POST("/add_listing_comments", listings.AddListingComments)
+	r.POST("/purchase_single_item", listings.PurchaseSingleItem)
 
 	//***************** Profile Page *****************
 	//returns based on user_id, sorted by listing_ctime DESC
 	r.POST("/get_user_listings", listings.GetUserListings)
-	r.POST("/add_user_review", auth.TokenAuthMiddleware(), account.AddUserReview)
+	r.POST("/add_user_review", account.AddUserReview)
 
 	//get_user_reviews
 	r.POST("/get_user_details", account.GetUserDetails)
 
 	//***************** Like Page *****************
-	r.POST("/get_user_liked_listings", auth.TokenAuthMiddleware(), listings.GetUserLikedListings)
+	r.POST("/get_user_liked_listings", listings.GetUserLikedListings)
 
 	//***************** Wallet Page *****************
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
-	r.POST("/get_user_wallet_details", auth.TokenAuthMiddleware(), wallet.GetUserWalletDetails)
-	r.POST("/top_up_user_wallet", auth.TokenAuthMiddleware(), wallet.TopUpUserWallet)
+	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
+	r.POST("/top_up_user_wallet", wallet.TopUpUserWallet)
 
 	r.Run()
 }
