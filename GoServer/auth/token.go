@@ -89,8 +89,10 @@ func ExtractToken(r *http.Request) string {
 	//normally Authorization the_token_xxx
 	strArr := strings.Split(bearToken, " ")
 	if len(strArr) == 2 {
+		log.Printf("Extracted token:%v", strArr[1])
 		return strArr[1]
 	}
+	log.Printf("Extracted token: empty")
 	return ""
 }
 
@@ -104,6 +106,7 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 		return []byte(os.Getenv("ACCESS_SECRET")), nil
 	})
 	if err != nil {
+		log.Printf("Error during VerifyToken: %v", err)
 		return nil, err
 	}
 	return token, nil
@@ -112,13 +115,16 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 func TokenValid(r *http.Request) error {
 	token, err := VerifyToken(r)
 	if err != nil {
+		log.Printf("Error during TokenValid: %v", err)
 		return err
 	}
 	if !token.Valid {
+		log.Printf("Error during TokenValid: token is invalid")
 		return err
 	}
 	_, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
+		log.Printf("Error during TokenValid: token claim is invalid")
 		return err
 	}
 
