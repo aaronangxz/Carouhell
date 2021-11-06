@@ -10,7 +10,6 @@ import (
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
 
 	"github.com/aaronangxz/TIC2601/models"
-	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +22,7 @@ func main() {
 	models.NewRedis()
 
 	//Allow all CORS
-	r.Use(cors.Default())
+	//r.Use(cors.Default())
 	r.Use(models.CORSMiddleware())
 
 	//Load HTML files for / endpoint
