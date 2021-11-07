@@ -75,3 +75,10 @@ func ValidateGetListingByItemIDResult(results models.GetSingleListingResponse) m
 	}
 	return models.NewSuccessMessageResponse("GetListingByItemID success.")
 }
+
+func ValidateGetListingByItemIDLoggedInResult(results models.GetSingleListingLoggedInResponse) models.ResponseMeta {
+	if results.LItemID == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse("GetListingByItemID success.")
+}
