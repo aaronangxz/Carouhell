@@ -56,7 +56,7 @@ function createListing(userID)
             }, 
             body: JSON.stringify({
                 "item_name": itemName,
-                "item_price": parseInt(itemPrice),
+                "item_price": parseFloat(itemPrice)*100,
                 "item_quantity":parseInt(itemQty),
                 "item_description":itemDesc,
                 "item_location": parseInt(locationValue),
@@ -79,7 +79,7 @@ function createListing(userID)
             {
                 if(confirm("Listing Created!"))
                 {
-                    //window.location.href = "viewListing.html?itemID=" + data.item_id;
+                    window.location.href = "viewListing.html?itemID=" + data.Data.item_id;
                 }
             }
         })
@@ -325,9 +325,12 @@ function displayItemComments(data, itemID)
 
 function addListingLikes(itemID)
 {
-    if(!getCurrentUserID) //not logged in
+    if (getCurrentUserID() < 0)
     {
-        window.location.href = "index.html";
+       if(confirm("Please Log In first"))
+       {
+        window.location.href = 'loginForm.html';
+       }
     }
     else // is logged in
     {
@@ -493,12 +496,12 @@ function getFilterResults()
         selectedLocation = parseInt(selectedLocation);
     
     if(minPrice || minPrice != "")
-        minPrice = parseInt(minPrice);
+        minPrice = parseFloat(minPrice)*100;
     else
         minPrice = null;
         
     if(maxPrice || maxPrice != "")
-        maxPrice = parseInt(maxPrice);
+        maxPrice = parseFloat(maxPrice)*100;
     else
         maxPrice = null;
         
@@ -518,7 +521,7 @@ function getFilterResults()
                 "item_category": selectedCategory
             },
             "location_filter": {
-                "location": selectedCategory
+                "location": selectedLocation
             },
             "price_filter": {
                 "min_price": minPrice,
@@ -620,17 +623,18 @@ function getUserLikedListing() {
     .then(response => response.json())
     .then(data => {
         console.log(data);
+        document.getElementById("title").innerHTML = '<h1>Your Favourite Listings ('+data.Data.length+' listings)</h1>';
         if(data.Respmeta.ErrorCode != 0)
         {
             if(confirm("Unable to get user liked listings due to the following reason: " + data.Respmeta.DebugMsg))
             {
-                location.reload();
+                //location.reload();
             }
         }
         else // successful
         {
             document.getElementById("cards").innerHTML = "";
-            document.getElementById("title").innerHTML = "<h1>Your Favourite Listings</h1>";
+            // document.getElementById("title").innerHTML = "<h1>Your Favourite Listings</h1>";
             for(const d of data.Data){
                 displayListing(d);
             }
@@ -807,7 +811,7 @@ function addUserReview(sellerID)
             {
                 if(confirm("Successfully added review"))
                 {
-                   window.location.href="viewProfile.html?profileID="+sellerID;
+                   window.location.href="wallet.html";
                 }
             }
     })
@@ -839,8 +843,10 @@ function editListing(itemID)
     var location = document.getElementById("itemLocation");
     var locationValue = location.options[location.selectedIndex].value;
 
+    console.log("Price: " + itemPrice);
+
     if(itemPrice || itemPrice != "")
-        itemPrice = parseInt(itemPrice);
+        itemPrice = parseFloat(itemPrice);
     else
         itemPrice = null;
 
@@ -863,9 +869,11 @@ function editListing(itemID)
 
 
     var base64String = "";
-    const file = document.getElementById("img").files[0];
-    console.log("file: " + file);
-    if(file)
+    const file1 = document.getElementById("img").files[0];
+    const file2 = document.getElementById("img").files[1];
+    console.log("file1: " + file1);
+    console.log("file2: " + file2);
+    if(file1)
     {
         var reader = new FileReader();
       
@@ -875,7 +883,7 @@ function editListing(itemID)
       
             imageBase64Stringsep = base64String;
         }
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file1);
         reader.addEventListener('load', (event) => {
             console.log('load finish: ' + base64String ); // base 64  
             fetch('https://tic2601-t11.herokuapp.com/update_single_listing', {

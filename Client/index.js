@@ -48,11 +48,11 @@ function registerUser()
      var email = document.getElementById("email").value;
      var password = document.getElementById("password").value;
      var cfmPassword = document.getElementById("cfmPassword").value;
-     var securityQn = document.getElementById("securityQn");
-     var selectedQn = securityQn.options[securityQn.selectedIndex].value;
-     var securityAns = document.getElementById("securityAns").value;
+    //  var securityQn = document.getElementById("securityQn");
+    //  var selectedQn = securityQn.options[securityQn.selectedIndex].value;
+    //  var securityAns = document.getElementById("securityAns").value;
 
-     if(!username | !email | !password | !cfmPassword | !securityAns)
+     if(!username | !email | !password | !cfmPassword)
      {
         alert("Please fill in the blanks.");
      }
@@ -72,8 +72,8 @@ function registerUser()
                 "user_name": username,
                 "user_email": email,
                 "user_password": password,
-                "user_security_question": parseInt(selectedQn),
-                "user_security_answer": securityAns
+                "user_security_question": 1,
+                "user_security_answer": "x"
             })
         })
         .then(response => response.json())
