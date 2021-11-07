@@ -573,7 +573,8 @@ func (r *PurchaseSingleItemRequest) GetPurchaseQuantity() uint32 {
 }
 
 type PurchaseSingleItemResponse struct {
-	WalletBalance *uint32 `json:"wallet_balance"`
+	WalletBalance uint32 `json:"wallet_balance"`
+	IsReviewed    bool   `json:"is_reviewed"`
 }
 
 type ListingTransaction struct {
