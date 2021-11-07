@@ -65,22 +65,13 @@ func GetListingQueryWithCustomCondition() string {
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", constant.LISTING_REACTION_TYPE_LIKE)
-
-	//logged in
-	// return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-	// 	" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
-	// 	" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
-	// " (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
-	// 	" FROM acc_tab a, listing_tab l"+
-	// 	" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
-	// 	" WHERE l.l_seller_id = a.a_user_id", constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE)
 }
 
 func GetListingLoggedInQueryWithCustomCondition(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
-		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id) AS is_liked"+
+		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", user_id, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE)
@@ -223,7 +214,7 @@ func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
-		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
+		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+

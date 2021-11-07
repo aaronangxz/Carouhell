@@ -37,7 +37,7 @@ func GetUserLikedListings(c *gin.Context) {
 	}
 
 	//also return deleted and sold items
-	query := fmt.Sprintf(utils.GetListingQueryWithCustomCondition()+" AND l.l_item_id IN"+
+	query := fmt.Sprintf(utils.GetListingLoggedInQueryWithCustomCondition(uint64(input.GetUserID()))+" AND l.l_item_id IN"+
 		" (SELECT r.rt_item_id FROM listing_reactions_tab r"+
 		" WHERE r.rt_user_id = %v AND r.reaction_type = %v)"+
 		" GROUP BY l.l_item_id ORDER BY listing_reactions_tab.ctime DESC", input.GetUserID(), constant.LISTING_REACTION_TYPE_LIKE)
