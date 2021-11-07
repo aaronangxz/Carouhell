@@ -140,6 +140,26 @@ func (r GetSingleListingRequest) GetItemID() uint32 {
 }
 
 type GetSingleListingResponse struct {
+	LItemID               uint32 `json:"item_id"`
+	ItemName              string `json:"item_name"`
+	ItemPrice             uint32 `json:"item_price"`
+	ItemQuantity          uint32 `json:"item_quantity"`
+	ItemPurchasedQuantity uint32 `json:"item_purchasedquantity"`
+	ItemDescription       string `json:"item_description"`
+	ItemLocation          uint32 `json:"item_location"`
+	ItemStatus            uint32 `json:"item_status"`
+	ItemCategory          uint32 `json:"item_category"`
+	LSellerID             uint32 `json:"seller_id"`
+	SellerName            string `json:"seller_name"`
+	ListingCtime          int64  `json:"listing_ctime"`
+	ListingMtime          int64  `json:"listing_mtime"`
+	ListingLikes          uint32 `json:"listing_likes"`
+	// IsLiked               bool                       `json:"is_liked"`
+	CommentCount uint32                     `json:"listing_comment_count"`
+	Comments     []ListingReactionsComments `json:"listing_comments"`
+}
+
+type GetSingleListingLoggedInResponse struct {
 	LItemID               uint32                     `json:"item_id"`
 	ItemName              string                     `json:"item_name"`
 	ItemPrice             uint32                     `json:"item_price"`
@@ -154,6 +174,7 @@ type GetSingleListingResponse struct {
 	ListingCtime          int64                      `json:"listing_ctime"`
 	ListingMtime          int64                      `json:"listing_mtime"`
 	ListingLikes          uint32                     `json:"listing_likes"`
+	IsLiked               bool                       `json:"is_liked"`
 	CommentCount          uint32                     `json:"listing_comment_count"`
 	Comments              []ListingReactionsComments `json:"listing_comments"`
 }
@@ -494,6 +515,7 @@ type GetUserLikedListingsResponse struct {
 	ListingCtime          int64  `json:"listing_ctime"`
 	ListingMtime          int64  `json:"listing_mtime"`
 	ListingLikes          uint32 `json:"listing_likes"`
+	IsLiked               bool   `json:"is_liked"`
 }
 
 type AddListingCommentsRequest struct {
