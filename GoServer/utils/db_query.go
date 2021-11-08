@@ -161,7 +161,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 	}
 
 	walletTransaction := models.WalletTransaction{
-		WtWalletID:        input.UserID,
+		WtUserID:          input.UserID,
 		TransactionCtime:  Int64(time.Now().Unix()),
 		TransactionAmount: Uint32(totalPrice),
 		TransactionType:   Uint32(constant.TRANSACTION_TYPE_PURCHASE),
