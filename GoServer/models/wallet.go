@@ -17,7 +17,7 @@ func (r *Wallet) GetWalletBalance() uint32 {
 
 type WalletTransaction struct {
 	WtTransactionID   *uint32 `json:"transaction_id"`
-	WtWalletID        *uint32 `json:"wallet_id" gorm:"primary_key"`
+	WtUserID          *uint32 `json:"user_id" gorm:"primary_key"`
 	TransactionAmount *uint32 `json:"transaction_amount"`
 	TransactionCtime  *int64  `json:"transaction_ctime"`
 	TransactionType   *uint32 `json:"transaction_type"`

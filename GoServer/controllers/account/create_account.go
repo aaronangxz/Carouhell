@@ -55,26 +55,6 @@ func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountReq
 			errormsg := "user_password cannot be empty"
 			return errors.New(errormsg)
 		}
-		if input.UserSecurityQuestion == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price cannot be empty.")})
-			errormsg := "user_security_question cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateUint(input.UserSecurityQuestion) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_price must be uint type.")})
-			errormsg := fmt.Sprintf("user_security_question must be uint type. input: %v", input.GetUserSecurityQuestion())
-			return errors.New(errormsg)
-		}
-		if input.UserSecurityAnswer == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_security_answer cannot be empty.")})
-			errormsg := "user_security_answer cannot be empty"
-			return errors.New(errormsg)
-		}
-		if !utils.ValidateString(input.UserSecurityAnswer) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_security_answer must be string type.")})
-			errormsg := fmt.Sprintf("user_security_answer must be string type. input: %v", input.GetUserSecurityAnswer())
-			return errors.New(errormsg)
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		errormsg := fmt.Sprint("JSON error: &v", err.Error())
 		return errors.New(errormsg)
@@ -119,21 +99,6 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be shorter than 6 chars.")})
 		return errors.New("user_password cannot be shorter than 6 chars")
 	}
-	//check if exists
-	if input.UserSecurityQuestion != nil && !constant.CheckAccConstant(constant.ACC_CREATION_SECURITY_QUESTION, input.GetUserSecurityQuestion()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown item_category.")})
-		errormsg := fmt.Sprintf("unknown user_security_question. input: %v", input.GetUserSecurityQuestion())
-		return errors.New(errormsg)
-	}
-	if input.GetUserSecurityAnswer() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_security_answer cannot be empty.")})
-		return errors.New("user_email cannot be empty")
-	}
-	if !utils.ValidateMaxStringLength(input.GetUserSecurityAnswer()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_security_answer cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		errormsg := fmt.Sprintf("user_security_answer length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserEmail()))
-		return errors.New(errormsg)
-	}
 	return nil
 }
 
@@ -162,18 +127,10 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	//hash password
-	hashedSecurityAnswer, err := HashSecret(input.GetUserSecurityAnswer())
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Error during account creation. Please try again.")})
-		log.Printf("Error during HashSecret - security question: %v", err)
-		return
-	}
-
 	//toggle to use stored procedures
 	if os.Getenv("USE_STORED_PROCEDURE") == "TRUE" {
-		query := fmt.Sprintf("CALL heroku_bdc39d4687a85d4.create_user('%v', '%v', '%v', %v, '%v',@status);",
-			input.GetUserName(), input.GetUserEmail(), hashedPassword, input.GetUserSecurityQuestion(), hashedSecurityAnswer)
+		query := fmt.Sprintf("CALL heroku_bdc39d4687a85d4.create_user('%v', '%v', '%v',@status);",
+			input.GetUserName(), input.GetUserEmail(), hashedPassword)
 		log.Printf("Executing SP: %v\n", query)
 		result := models.DB.Exec(query)
 		if result.Error != nil {
@@ -248,10 +205,8 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	credentials := models.AccountCredentials{
-		CUserID:              account.AUserID,
-		UserPassword:         utils.String(hashedPassword),
-		UserSecurityQuestion: input.UserSecurityQuestion,
-		UserSecurityAnswer:   utils.String(hashedSecurityAnswer),
+		CUserID:      account.AUserID,
+		UserPassword: utils.String(hashedPassword),
 	}
 
 	//write to acc_credentials_tab

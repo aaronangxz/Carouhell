@@ -17,10 +17,8 @@ func (r *Account) GetUserID() uint32 {
 }
 
 type AccountCredentials struct {
-	CUserID              *uint32 `json:"user_id" gorm:"primary_key"`
-	UserPassword         *string `json:"user_password"`
-	UserSecurityQuestion *uint32 `json:"user_security_question"`
-	UserSecurityAnswer   *string `json:"user_security_answer"`
+	CUserID      *uint32 `json:"user_id" gorm:"primary_key"`
+	UserPassword *string `json:"user_password"`
 }
 
 func (r *AccountCredentials) GetUserPassword() string {
@@ -47,11 +45,9 @@ type UserReviewWithNames struct {
 	Ctime      *int64  `json:"ctime"`
 }
 type CreateAccountRequest struct {
-	UserName             *string `json:"user_name" binding:"required"`
-	UserEmail            *string `json:"user_email" binding:"required"`
-	UserPassword         *string `json:"user_password" binding:"required"`
-	UserSecurityQuestion *uint32 `json:"user_security_question" binding:"required"`
-	UserSecurityAnswer   *string `json:"user_security_answer" binding:"required"`
+	UserName     *string `json:"user_name" binding:"required"`
+	UserEmail    *string `json:"user_email" binding:"required"`
+	UserPassword *string `json:"user_password" binding:"required"`
 }
 
 func (r *CreateAccountRequest) GetUserName() string {
@@ -71,20 +67,6 @@ func (r *CreateAccountRequest) GetUserEmail() string {
 func (r *CreateAccountRequest) GetUserPassword() string {
 	if r != nil && r.UserPassword != nil {
 		return *r.UserPassword
-	}
-	return ""
-}
-
-func (r *CreateAccountRequest) GetUserSecurityQuestion() uint32 {
-	if r != nil && r.UserSecurityQuestion != nil {
-		return *r.UserSecurityQuestion
-	}
-	return 0
-}
-
-func (r *CreateAccountRequest) GetUserSecurityAnswer() string {
-	if r != nil && r.UserSecurityAnswer != nil {
-		return *r.UserSecurityAnswer
 	}
 	return ""
 }

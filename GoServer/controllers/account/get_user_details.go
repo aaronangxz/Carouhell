@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,8 @@ func GetUserDetails(c *gin.Context) {
 		mainstart    = time.Now().Unix()
 		start        = int64(0)
 		end          = int64(0)
+		userId       uint64
+		isLoggedIn   bool
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -33,6 +36,20 @@ func GetUserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewJSONErrorResponse(err)})
 		log.Printf("JSON error: %v\n", err.Error())
 		return
+	}
+
+	tokenAuth, err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		//not logged in
+		log.Printf("Error during ExtractTokenMetadata: %v", err)
+		isLoggedIn = false
+	} else {
+		//logged in
+		userId, err = auth.FetchAuth(tokenAuth)
+		if err != nil {
+			log.Printf("Error during FetchAuth: %v, user is not logged in.\n", err)
+		}
+		isLoggedIn = true
 	}
 
 	//retrieve acc info
@@ -63,21 +80,38 @@ func GetUserDetails(c *gin.Context) {
 	end = time.Now().Unix()
 	log.Printf("Success: GetUserDetails after %vs - retrieve reviews info DB query", end-start)
 
-	//retrieve listings
-	whereCondition := fmt.Sprintf(" AND l.l_seller_id = %v", input.GetUserID())
-	orderCondition := " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
-	listingQuery := utils.GetListingQueryWithCustomCondition() + whereCondition + orderCondition
-	log.Println(listingQuery)
-	start = time.Now().Unix()
-	result = models.DB.Raw(listingQuery).Scan(&listingsResp)
-	if err := result.Error; err != nil {
+	if !isLoggedIn {
+		//retrieve listings
+		whereCondition := fmt.Sprintf(" AND l.l_seller_id = %v", input.GetUserID())
+		orderCondition := " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
+		listingQuery := utils.GetListingQueryWithCustomCondition() + whereCondition + orderCondition
+		log.Println(listingQuery)
+		start = time.Now().Unix()
+		result = models.DB.Raw(listingQuery).Scan(&listingsResp)
+		if err := result.Error; err != nil {
+			end = time.Now().Unix()
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during GetUserDetails after %vs- retrieve listings DB query: %v\n", end-start, err.Error())
+			return
+		}
 		end = time.Now().Unix()
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-		log.Printf("Error during GetUserDetails after %vs- retrieve listings DB query: %v\n", end-start, err.Error())
-		return
+		log.Printf("Success: GetUserDetails after %vs - retrieve listings info DB query", end-start)
+	} else {
+		whereCondition := fmt.Sprintf(" AND l.l_seller_id = %v", input.GetUserID())
+		orderCondition := " GROUP BY l.l_item_id ORDER BY listing_ctime DESC"
+		listingQuery := utils.GetListingLoggedInQueryWithCustomCondition(userId) + whereCondition + orderCondition
+		log.Println(listingQuery)
+		start = time.Now().Unix()
+		result = models.DB.Raw(listingQuery).Scan(&listingsResp)
+		if err := result.Error; err != nil {
+			end = time.Now().Unix()
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+			log.Printf("Error during GetUserDetails after %vs- retrieve listings DB - logged in query: %v\n", end-start, err.Error())
+			return
+		}
+		end = time.Now().Unix()
+		log.Printf("Success: GetUserDetails after %vs - retrieve listings info DB - logged in query", end-start)
 	}
-	end = time.Now().Unix()
-	log.Printf("Success: GetUserDetails after %vs - retrieve listings info DB query", end-start)
 
 	//get latest ratings
 	ratingsQuery := fmt.Sprintf("SELECT ROUND((SUM(ratings)/ COUNT(ratings)) ,1) AS ratings FROM user_review_tab WHERE rv_seller_id = %v", input.GetUserID())
