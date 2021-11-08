@@ -97,7 +97,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 	if err := tx.Error; err != nil {
 		return 0, err
 	}
-	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wt_wallet_id,transaction_ctime,transaction_amount,transaction_type)"+
+	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wt_user_id,transaction_ctime,transaction_amount,transaction_type)"+
 		"VALUES (%v,%v,%v,%v)", input.GetUserID(), time.Now().Unix(), input.GetAmount(), constant.TRANSACTION_TYPE_TOPUP)
 	if err := tx.Exec(updateWalletTransaction).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:updateWalletTransaction: %v", err.Error())
