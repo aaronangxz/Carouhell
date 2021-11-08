@@ -195,7 +195,8 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-clock"></i></span> Posted on '+convertUnixToTimeStamp(data.listing_ctime)+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');"></a> ' + data.listing_likes+'</div>'+
+                '<div class="col"><a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');">'+checkIfUserLikedListing(data.is_liked)+'</a> ' + data.listing_likes +
+                '</div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col">Category: '+categories_Arr[data.item_category]+'</div>'+
@@ -378,7 +379,6 @@ function toViewListing(itemID)
         window.location.href = 'ViewListing.html?itemID='+ itemID;
     }
 }
-
 
 function displayListing(d)
 {
