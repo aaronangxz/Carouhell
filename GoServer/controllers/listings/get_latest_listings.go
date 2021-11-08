@@ -57,5 +57,5 @@ func GetLatestListings(c *gin.Context) {
 	}
 
 	log.Printf("Successful: GetLatestListings. rows: %v\n", result.RowsAffected)
-	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetLatestListingsResult(listings), "Data": listingsWithLikes})
+	c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetLatestListingsLoggedInResult(listingsWithLikes), "Data": listingsWithLikes})
 }

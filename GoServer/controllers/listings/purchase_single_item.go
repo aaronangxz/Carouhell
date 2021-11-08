@@ -12,6 +12,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func isReviewed(c *gin.Context, input models.PurchaseSingleItemRequest) bool {
+	var (
+		count uint32
+	)
+
+	result := models.DB.Table("user_review_tab").
+		Where("rv_user_id = ? AND rv_seller_id IN (SELECT l_seller_id FROM listing_tab WHERE l_item_id = ?)",
+			input.GetUserID(), input.GetItemID()).Count(&count)
+	log.Printf("Checking if user_id:%v reviewed seller of item_id:%v before\n", input.GetUserID(), input.GetUserID())
+
+	if err := result.Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during PurchaseSingleItem - isReviewed DB query: %v\n", err.Error())
+		return true
+	}
+
+	if count > 0 {
+		return true
+	}
+	return false
+}
+
 func ValidatePurchaseSingleItemRequest(c *gin.Context, input *models.PurchaseSingleItemRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserID == nil {
@@ -188,7 +210,10 @@ func PurchaseSingleItem(c *gin.Context) {
 	}
 
 	newBalance := walletHold.GetWalletBalance() - totalPrice
-	resp.WalletBalance = utils.Uint32(newBalance)
+	resp.WalletBalance = newBalance
+
+	//check if reviewed before
+	resp.IsReviewed = isReviewed(c, input)
 
 	//invalidate redis
 	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
