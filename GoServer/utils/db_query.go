@@ -30,10 +30,10 @@ var (
 		" WHERE l_seller_id = ?)"+
 		" UNION ALL"+
 		" SELECT lt.lt_item_id, wt.transaction_amount, wt.transaction_type, wt.transaction_ctime FROM wallet_transactions_tab wt, listing_transactions_tab lt"+
-		" WHERE wt.wt_wallet_id = ? AND wt.transaction_ref = lt.lt_transaction_id"+
+		" WHERE wt.wt_user_id = ? AND wt.transaction_ref = lt.lt_transaction_id"+
 		" UNION ALL"+
 		" SELECT NULL AS lt_item_id, transaction_amount, transaction_type, transaction_ctime FROM wallet_transactions_tab"+
-		" WHERE wt_wallet_id = ? AND transaction_type = %v) AS transactions) AS transaction_history"+
+		" WHERE wt_user_id = ? AND transaction_type = %v) AS transactions) AS transaction_history"+
 		" LEFT JOIN"+
 		" (SELECT l_item_id, item_name FROM listing_tab) "+
 		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id"+
@@ -97,7 +97,7 @@ func StartWalletTopUpTx(input models.TopUpUserWalletRequest) (uint32, error) {
 	if err := tx.Error; err != nil {
 		return 0, err
 	}
-	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wt_wallet_id,transaction_ctime,transaction_amount,transaction_type)"+
+	updateWalletTransaction := fmt.Sprintf("INSERT INTO wallet_transactions_tab (wt_user_id,transaction_ctime,transaction_amount,transaction_type)"+
 		"VALUES (%v,%v,%v,%v)", input.GetUserID(), time.Now().Unix(), input.GetAmount(), constant.TRANSACTION_TYPE_TOPUP)
 	if err := tx.Exec(updateWalletTransaction).Error; err != nil {
 		log.Printf("Error during StartWalletTopUpTx:updateWalletTransaction: %v", err.Error())
