@@ -384,7 +384,7 @@ function displayListing(d)
 {
     console.log(d);
     document.getElementById("cards").innerHTML += 
-    '<div class="col-md-4 mt-5">'+
+    '<div class="col-md-4 mt-4">'+
     '<div class="card" id="'+d.item_id+'">'+
         '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
         '<div class="card-body pb-5">'+
@@ -594,8 +594,14 @@ function buyNow(itemID, sellerID)
                     {
                         if(confirm("Successfully Purchased!"))
                         {
-                            console.log("seller ID" + sellerID);
-                            window.location.href = "review.html?sellerID="+sellerID;
+                            if(data.Data.is_reviewed)
+                            {
+                                window.location.href = "wallet.html";
+                            }
+                            else
+                            {
+                                window.location.href = "review.html?sellerID="+sellerID;
+                            }                            
                         }
                     }
             })
