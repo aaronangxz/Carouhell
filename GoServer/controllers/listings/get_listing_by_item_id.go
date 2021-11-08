@@ -105,30 +105,6 @@ func GetListingByItemID(c *gin.Context) {
 		}
 	} else {
 		//logged in
-		//Redis key
-		key = fmt.Sprintf("get_single_listing_by_itemid:%v_user:%v", input.GetItemID(), userId)
-
-		//check redis
-		val, err := models.RedisClient.Get(models.Ctx, key).Result()
-		if err != nil {
-			if err == redis.Nil {
-				log.Printf("No result of %v in Redis, reading from DB", key)
-			} else {
-				log.Printf("Error while reading from redis: %v", err.Error())
-			}
-		} else {
-			redisResp := models.GetSingleListingLoggedInResponse{}
-			err := json.Unmarshal([]byte(val), &redisResp)
-			if err != nil {
-				log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
-			} else {
-				c.JSON(http.StatusOK, gin.H{"Respmeta": utils.ValidateGetListingByItemIDLoggedInResult(redisResp), "Data": redisResp})
-				log.Printf("Successful: GetListingByItemID: %v - Cached:user_id:%v", input.GetItemID(), userId)
-				log.Printf("Result: %v\n", redisResp)
-				return
-			}
-		}
-
 		//Read from DB
 		query := fmt.Sprintf("%v AND l.l_item_id = %v", utils.GetListingLoggedInQueryWithCustomCondition(userId), input.GetItemID())
 		log.Println(query)
