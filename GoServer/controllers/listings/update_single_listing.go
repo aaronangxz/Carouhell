@@ -122,6 +122,7 @@ func UpdateSingleListing(c *gin.Context) {
 	var (
 		originalListing models.Listing
 		input           models.UpdateListingRequest
+		stock           uint32
 	)
 
 	//Validate data type
@@ -171,6 +172,9 @@ func UpdateSingleListing(c *gin.Context) {
 	}
 	if input.ItemQuantity == nil {
 		input.ItemQuantity = originalListing.ItemQuantity
+		stock = originalListing.GetItemStock()
+	} else {
+		stock = originalListing.GetItemStock() + (input.GetItemQuantity() - originalListing.GetItemQuantity())
 	}
 	if input.ItemDescription == nil {
 		input.ItemDescription = originalListing.ItemDescription
@@ -196,11 +200,11 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//If all good, proceed to update
 	query = fmt.Sprintf("UPDATE listing_tab SET"+
-		" item_name = \"%v\", item_price = %v, item_quantity = %v,"+
+		" item_name = \"%v\", item_price = %v, item_quantity = %v, item_stock = %v"+
 		" item_description = \"%v\", item_location = %v, item_category = %v, listing_mtime = %v,"+
 		" item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END,"+
 		" item_status = CASE WHEN item_quantity > 0 THEN 1 ELSE item_status END WHERE l_item_id = %v",
-		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), input.GetItemDescription(),
+		input.GetItemName(), input.GetItemPrice(), input.GetItemQuantity(), stock, input.GetItemDescription(),
 		input.GetItemLocation(), input.GetItemCategory(), time.Now().Unix(), input.GetLItemID())
 	log.Println(query)
 	if err := models.DB.Exec(query).Error; err != nil {
