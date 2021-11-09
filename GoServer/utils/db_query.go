@@ -183,11 +183,20 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE w_user_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
-	log.Println(updateWalletQuery)
-	if err := tx.Exec(updateWalletQuery).Error; err != nil {
-		log.Printf("Error during StartItemPurchaseTx:updateWalletBalance: %v", err.Error())
-		log.Println("rolling back updateWalletBalance")
+	updateBuyerWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE w_user_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
+	log.Println(updateBuyerWalletQuery)
+	if err := tx.Exec(updateBuyerWalletQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateBuyerWalletBalance: %v", err.Error())
+		log.Println("rolling back updateBuyerWalletBalance")
+		tx.Rollback()
+		return err
+	}
+
+	updateSellerWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance + %v  WHERE w_user_id IN (SELECT l_seller_id FROM listing_tab WHERE l_item_id = %v )", totalPrice, input.GetItemID())
+	log.Println(updateSellerWalletQuery)
+	if err := tx.Exec(updateSellerWalletQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateSellerWalletBalance: %v", err.Error())
+		log.Println("rolling back updateSellerWalletBalance")
 		tx.Rollback()
 		return err
 	}
