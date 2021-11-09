@@ -476,6 +476,7 @@ func (r *GetListingReactionsRequest) GetItemID() uint32 {
 
 type ListingReactionsComments struct {
 	UserName string `json:"user_name"`
+	UserID   uint32 `json:"user_id"`
 	Comment  string `json:"comment"`
 	Ctime    int64  `json:"ctime"`
 }
