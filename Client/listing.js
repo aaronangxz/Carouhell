@@ -13,7 +13,6 @@ function encodeImageFileAsURL(inputFileToLoad) {
         newImage.src = srcData;
 
         document.getElementById("imgTest").innerHTML = newImage.outerHTML;
-        alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
         console.log("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
       }
       fileReader.readAsDataURL(fileToLoad);
@@ -28,9 +27,6 @@ function createListing(userID)
     var itemDesc = document.getElementById("itemDesc").value;
     var itemCat = document.getElementById("itemCat");
     var itemCatValue = itemCat.options[itemCat.selectedIndex].value;
-    // var itemImg = document.getElementById("img").value;
-    // var collection = document.getElementById("collection");
-    // var collectionValue = collection.options[collection.selectedIndex].value;
     var location = document.getElementById("itemLocation");
     var locationValue = location.options[location.selectedIndex].value;
 
@@ -117,7 +113,7 @@ function deleteListing(itemID)
             {
                 if(confirm("Listing Deleted!"))
                 {
-                    window.location.href = "viewProfile.html";
+                    window.location.href = "index.html";
                 }
             }
     })
@@ -152,10 +148,7 @@ function addListingComment(userID, itemID)
             }
             else // successful
             {
-                if(confirm("Successfully commented"))
-                {
-                   location.reload();
-                }
+                location.reload();
             }
     })
     .catch(error => console.log(error)); 
@@ -565,9 +558,6 @@ function buyNow(itemID, sellerID)
     {
         if(Number(qtyToPurchase) && Number(qtyToPurchase) != 0)
         {
-            alert("Proceeding Transactions");
-            //do whatever
-
             fetch('https://tic2601-t11.herokuapp.com/purchase_single_item', {
                 method: 'POST',
                 headers:{
@@ -657,10 +647,6 @@ function viewProfileByUserID(profileID)
         // viewing own listings
         profileID = currentUser;
     }
-    else
-    {
-        //view other seller's profile
-    }
 
     fetch('https://tic2601-t11.herokuapp.com/get_user_details', {
         method: 'POST',
@@ -690,11 +676,6 @@ function viewProfileByUserID(profileID)
                 displayListing(d);
             }
             displayUserReviews(data.Data);
-            // document.getElementById("cards").innerHTML = "";
-            // document.getElementById("title").innerHTML = "<h1>Your Listings</h1>";
-            // for(const d of data.Data){
-            //     displayListing(d);
-            // }
         }
     })
     .catch(error => console.log(error)); 
@@ -726,7 +707,6 @@ function getLatestListing() {
     .then(result => {/*result.Data*/  
         console.log(result);
         for(const d of result.Data){
-          //console.log(d);  
          displayListing(d);
       }
     })
@@ -752,28 +732,6 @@ function displayUserReviews(data)
             '<div class="col-7">'+data.user_reviews[i].review_text+'</div>'+
         '</div>';
     }
-
-    // if(data.account_info.user_id != getCurrentUserID()) // view other ppl profile
-    // {
-    //     reviews += 
-    //     '<form id="userReview" method="post">'+
-    //         '<div class="row mt-3">' +
-    //             '<div class="col-2">'+
-    //                 '<div class="form-group">'+
-    //                     '<input type="number" class="form-control" id="rating" placeholder="/5 star">'+
-    //                 '</div>'+
-    //             '</div>'+
-    //             '<div class="col-8">'+
-    //                 '<div class="form-group">'+
-    //                     '<input type="text" class="form-control" id="review" placeholder="Add a review...">'+
-    //                 '</div>'+
-    //             '</div>'+
-    //             '<div class="col-2">'+
-    //                 '<input type="button" class="btn btn-primary" onclick="addUserReview('+data.account_info.user_id+')" value="Submit"/>'+
-    //             '</div>'+
-    //         '</div>'+
-    //     '</form>';
-    // }
     
     document.getElementById("reviewSection").innerHTML = reviews;
 }
@@ -917,7 +875,7 @@ function editListing(itemID)
                     {
                         if(confirm("Failed updating listing"))
                         {
-                            //location.reload();
+                            location.reload();
                         }
                     }
                     else // successful
@@ -933,7 +891,6 @@ function editListing(itemID)
     }
     else
     {
-        alert("no photo");
         fetch('https://tic2601-t11.herokuapp.com/update_single_listing', {
                 method: 'PATCH',
                 headers:{
@@ -959,7 +916,7 @@ function editListing(itemID)
                     {
                         if(confirm("Failed updating listing"))
                         {
-                            //location.reload();
+                            location.reload();
                         }
                     }
                     else // successful
