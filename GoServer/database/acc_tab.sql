@@ -1,0 +1,65 @@
+/*
+-- Query: SELECT * FROM acc_tab
+LIMIT 0, 1000
+
+-- Date: 2021-11-10 22:32
+*/
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (5,'xuanze','e0649019@u.nus.edu',1636384442,1,1636554287);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (15,'TeslaSG','tes@la.com',1636385513,1,1636390617);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (25,'AppleSingapore','applesg@apple.com',1636385867,1,1636387252);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (35,'ASUSROG','rog@asus.com',1636389811,1,1636390037);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (45,'ChanelOfficial','sg@chanel.com',1636391329,1,1636392220);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (55,'HermanMillerSG','sg@hm.com',1636392859,1,1636392866);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (65,'Kerris','kerris@gmail.com',1636395011,1,1636479178);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (75,'brandyvealratfog','brandyvealratfog@gmail.com',1636545236,1,1636545236);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (85,'snowstormokranet','snowstormokranet@gmail.com',1636545248,1,1636545248);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (95,'flatspiritedaway','flatspiritedaway@gmail.com',1636545259,1,1636545259);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (105,'beforesunsetnix','beforesunsetnix@gmail.com',1636545268,1,1636545268);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (115,'oportunitypiefig','oportunitypiefig@gmail.com',1636545274,1,1636545274);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (125,'ostrichclimbing','ostrichclimbing@gmail.com',1636545282,1,1636545282);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (135,'beatblackeyepig','beatblackeyepig@gmail.com',1636545289,1,1636545289);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (145,'cometsbassorion','cometsbassorion@gmail.com',1636545297,1,1636545297);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (155,'capricorngandalf','capricorngandalf@gmail.com',1636545304,1,1636545304);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (165,'romanholidaynova','romanholidaynova@gmail.com',1636545311,1,1636545311);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (175,'marsnormanbates','marsnormanbates@gmail.com',1636545322,1,1636545322);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (185,'icethegraduate','icethegraduate@gmail.com',1636545330,1,1636545330);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (195,'tsunamispinach','tsunamispinach@gmail.com',1636545337,1,1636545337);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (205,'pumbaabootstoad','pumbaabootstoad@gmail.com',1636545344,1,1636545344);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (215,'applebrownbread','applebrownbread@gmail.com',1636545356,1,1636545356);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (225,'alienrockykale','alienrockykale@gmail.com',1636545363,1,1636545363);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (235,'vividmarsexpress','vividmarsexpress@gmail.com',1636545369,1,1636545369);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (245,'kumquattangerine','kumquattangerine@gmail.com',1636545376,1,1636545376);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (255,'doughnutshalobat','doughnutshalobat@gmail.com',1636545382,1,1636545382);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (265,'noteshighnoonnet','noteshighnoonnet@gmail.com',1636545414,1,1636545414);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (275,'earthpearpuckpie','earthpearpuckpie@gmail.com',1636545421,1,1636545421);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (285,'cookiesinsideout','cookiesinsideout@gmail.com',1636545427,1,1636545427);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (295,'pathsofgloryfox','pathsofgloryfox@gmail.com',1636545433,1,1636545433);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (305,'fogpulsarmoonnet','fogpulsarmoonnet@gmail.com',1636545440,1,1636545440);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (315,'droughtyipmandog','droughtyipmandog@gmail.com',1636545448,1,1636545448);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (325,'12angrymeniok-1','12angrymeniok-1@gmail.com',1636545456,1,1636545456);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (335,'thegreenmileveal-1','thegreenmileveal@gmail.com',1636545466,1,1636545466);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (345,'normanbatespie-1','normanbatespie@gmail.com',1636545473,1,1636545473);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (355,'strawberryantsea','strawberryantsea@gmail.com',1636545488,1,1636545488);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (365,'flatchickenleg','flatchickenleg@gmail.com',1636545500,1,1636545500);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (375,'jurassicparkred','jurassicparkred@gmail.com',1636545508,1,1636545508);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (385,'flyinginsectfig','flyinginsectfig@gmail.com',1636545516,1,1636545516);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (395,'thehustlerpiesun','thehustlerpiesun@gmail.com',1636545544,1,1636545544);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (405,'nixmilkapricot','nixmilkapricot@gmail.com',1636545550,1,1636545550);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (415,'yogamosscurling','yogamosscurling@gmail.com',1636545556,1,1636545556);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (425,'hydraduckboxing','hydraduckboxing@gmail.com',1636545563,1,1636545563);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (435,'crackersyogaice','crackersyogaice@gmail.com',1636545570,1,1636545570);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (445,'pieplanetarwine','pieplanetarwine@gmail.com',1636545576,1,1636545576);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (455,'marsexpressnix','marsexpressnix@gmail.com',1636545582,1,1636545582);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (465,'junowalrusbagel','junowalrusbagel@gmail.com',1636545655,1,1636545655);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (475,'wildflowerpotato','wildflowerpotato@gmail.com',1636545660,1,1636545660);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (485,'candywinterberry','candywinterberry@gmail.com',1636545667,1,1636545667);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (495,'birthdaycakeweb','birthdaycakeweb@gmail.com',1636545674,1,1636545674);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (505,'zebracranberry','zebracranberry@gmail.com',1636545681,1,1636545681);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (515,'lizardalivesnail','lizardalivesnail@gmail.com',1636545686,1,1636545686);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (525,'rataromaticaries','rataromaticaries@gmail.com',1636545693,1,1636545693);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (535,'squidcatplutobat','squidcatplutobat@gmail.com',1636545700,1,1636545700);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (545,'legolasclovernix','legolasclovernix@gmail.com',1636545705,1,1636545705);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (555,'chimpanzeearies','chimpanzeearies@gmail.com',1636545711,1,1636545711);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (565,'McDonaldsSG','mcd@mcdsg.com',1636546219,1,1636550068);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (575,'IKEAsg','sg@ikea.com',1636550139,1,1636550150);
+INSERT INTO `` (`a_user_id`,`user_name`,`user_email`,`user_ctime`,`user_status`,`user_last_login`) VALUES (585,'SamsungSG','sg@samsung.com',1636551286,1,1636551292);

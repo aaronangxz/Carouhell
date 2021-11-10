@@ -1,0 +1,61 @@
+/*
+-- Query: SELECT * FROM wallet_transactions_tab
+LIMIT 0, 1000
+
+-- Date: 2021-11-10 22:36
+*/
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (5,5,1636385385,500000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (15,5,1636386853,64900,1,15);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (25,5,1636389645,100000000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (35,5,1636389658,52200000,1,25);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (45,5,1636391811,1319000,1,35);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (55,5,1636391829,1319000,1,45);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (65,65,1636395036,10000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (75,65,1636395048,5600,1,55);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (85,65,1636395080,1200,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (95,65,1636395087,5600,1,65);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (105,5,1636459773,64900,1,75);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (115,65,1636480656,1100,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (125,125,1636545757,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (135,475,1636545763,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (145,555,1636545767,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (155,405,1636545774,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (165,515,1636545783,10000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (175,235,1636545792,1000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (185,415,1636545806,1000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (195,445,1636545814,5500,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (205,475,1636545822,6900,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (215,535,1636545828,6900,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (225,505,1636545833,6900,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (235,545,1636545842,4000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (245,525,1636545860,9000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (255,495,1636545868,10000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (265,485,1636545881,10000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (275,455,1636545889,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (285,465,1636545903,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (295,425,1636545907,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (305,435,1636545910,5000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (315,385,1636545918,7000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (325,345,1636545921,7000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (335,355,1636545946,3000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (345,325,1636545950,3000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (355,395,1636545957,10000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (365,375,1636545974,2000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (375,365,1636545981,35000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (385,315,1636545987,35000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (395,335,1636546001,35000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (405,305,1636546023,70000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (415,215,1636546031,6000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (425,145,1636546048,6000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (435,95,1636546055,6000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (445,205,1636546062,1000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (455,285,1636546068,1000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (465,285,1636546137,500000,0,NULL);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (475,285,1636546156,262900,1,85);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (485,555,1636546669,700,1,95);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (495,545,1636546676,700,1,105);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (505,535,1636546679,700,1,115);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (515,525,1636546681,700,1,125);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (525,515,1636546685,700,1,135);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (535,505,1636546688,700,1,145);
+INSERT INTO `` (`wt_transaction_id`,`wt_user_id`,`transaction_ctime`,`transaction_amount`,`transaction_type`,`transaction_ref`) VALUES (545,5,1636547496,5600,1,155);

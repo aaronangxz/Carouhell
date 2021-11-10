@@ -1,0 +1,65 @@
+/*
+-- Query: SELECT * FROM acc_credentials_tab
+LIMIT 0, 1000
+
+-- Date: 2021-11-10 22:33
+*/
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (335,'$2a$14$/Cx4/.ElAB0QOpiqtfIf0.N/thWXTialtZbK1jJ/8LXa8wcYd.Xaq');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (215,'$2a$14$0c6tCHQ1ktbRWhiLlWoyM.8qmVvmHOiVoUnTDG.qnj2GsTHxFgH3a');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (525,'$2a$14$14XYiRvkx6FPcY3JfllUceTS3EuGdgVrXs7ILo9IwBgNnthzECsve');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (305,'$2a$14$4li6IsSHs9Xaa5PrUDVFuuoXa1N5TCwtKr02eb00kOn9dq/0EMsje');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (535,'$2a$14$64bcK4DBfF5ngMZp4f0ViucQNuAsWMR9MPXX2EgL7d4nJlufOviY.');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (485,'$2a$14$6HeZfYQtB16eQ.I7ECgAdeNID6FIi4wKfrf01.kswNwLiCbzX39Ia');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (145,'$2a$14$6W6zdd1SQ.SY1d/QbECr3ObOGpNIEwWp6r4S6Oar5BmUXrNe8X.dC');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (405,'$2a$14$7IwQCFlF8CqDmyfShDV3iO3gUrDlP0G4d2XVfnIkL6maL.j9maukO');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (185,'$2a$14$7T4GOUWIDJjzqKSIXle6f.4QaoZkEPhoONS.OeoXBTPksvsQ8msUq');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (345,'$2a$14$8kirvHHobTr7y7Dn7vNfq.vxgxwIBgEYnUICe3vVCxGmF8xzKFDEO');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (15,'$2a$14$9o.P8hx.h.a1vvlHXUGLwuWObGWFEm5n7QbmIcu4TmXZr4d2nwEAy');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (105,'$2a$14$aC88Z5hbTLRHKclh5jdGpunUMTWCyFb9HVJlLRX8zutW0mGffzBI6');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (65,'$2a$14$bF3GnXzFwm63ZuffDr/ZO.ImgcY4JVlW2d85NcHLigDGveTCrTyuu');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (5,'$2a$14$BxKow/n4RMJcCfDN2kmvp.4yxW8g5LLCmGqhZulkoyIW6puwd4VrS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (465,'$2a$14$cHazrFF1UQXnPA0BgnA6GuLfELItoOwX9NHr4vGn4hTLj2YHkuEeG');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (85,'$2a$14$CoBCr5uOeAwsX4swzSNNEO8CfYy6yXsC6GGqSCAvZFAnAVFfGxAMm');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (585,'$2a$14$GXWeR86WoTwV5k05r0Azo.4B2gUlLIY2a5f5CTbtEQ9WrCyZrY/f2');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (315,'$2a$14$GYki3xGzSzSaG2Hx9qHDF.3G7WjiKIL68o2hLuUPe0vNK9gs3GV.O');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (155,'$2a$14$HmPpZXvIGnVKhrl1WB3ZdelNAF7137uQ3hJ8mrbpy0CEXJIgOElOW');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (555,'$2a$14$IMjCLIOUTRhA4M5KSZtwI.rbsuPl0NH1bzkmLbaxc//B/rZr60GMi');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (425,'$2a$14$IU11O.xUyYaTmtM8wx9D2eZ8UaRngYyAxi6uLWIP6.2CiVRr2teX2');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (265,'$2a$14$IxCcwbvs8kRtuHRtWWyrRePQHQ.ghfpeqlO3OalzAqaCURG7KOor.');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (505,'$2a$14$jKCcR6dwKR76W1yHo8JElOEb93qO9xHZSqQAF5hxQgoGCPSlkPsRS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (295,'$2a$14$jRdRwfR57lkxRzZfMQXIn.DUvxZyAkD6OMJBGyL/gXvs9foGz1tV.');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (45,'$2a$14$KMDOWcxzp27VxplKUYDlMeTu2/.kZuH76qopfg7CAOckHkoNVJEfS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (515,'$2a$14$LAcKKUnw.5ebSCNTJ4slJOOdZ5/yfrpBluie6vu0wk2nQf5yfdd5e');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (415,'$2a$14$ld.W.APz.fpEvdXdNEWVYOahYYafymt/Uxl/C5kZLObSE9n4qwEGS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (225,'$2a$14$lIOmqEszlRGZ/WcvgR.iTOw0rhf7tsh1.xqCCaAQZ4t4SlkMgWhvu');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (385,'$2a$14$M8bhBdrCBTngUk9jbOSOoOmLFMBG1n9q8W0GPqgOoRCUM6exF4eQu');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (255,'$2a$14$MhjJvGISOHXR3/r.ftbkauvPRF5utjToDwPVWeNAAgP6DelP7BFVm');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (205,'$2a$14$mNHbfrk/JCnAULXSLY25ueFmbnj.A72hA4qz7DvD.4gAYT.AS085a');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (285,'$2a$14$mNyow38z62dPfQzydt.FYOLbJolXUW85Ss9vX0TROlZQzN9ecz7YO');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (395,'$2a$14$MZvpH0TzyMNxKqay6y2VCObywuLL7CqKLabNrV07isGT9F4suAX8a');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (245,'$2a$14$nI2hLcjtGe4jQzdjpoQRy.T8VEOfpYbNRwyeTKTvw9GMY1hVPBePa');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (135,'$2a$14$nVjGSU2.m8Ws6k7akgcEx.0JeywkU1aVUEZJQj7B2fDs53vz2FFmm');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (445,'$2a$14$oAZxI52So9BYPENxG6qd3ukQRqhCc0eTsj.bKVaJbMSvol8JduLka');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (325,'$2a$14$pBf87I0ipRvwsD.tkSh1q.SBJV5GbgfJSo2i.3/WNoLuC0aPrLfwe');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (545,'$2a$14$Pw80phbKdqvjaZzfglWYfO0YLnXozl0D4WQyhA1.ntoF8EGB8stFS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (435,'$2a$14$PWlYsjNsKMNBS18313/fD.t3HzFyXyxp6vQ39/fWlNjzAqD7WcRZi');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (565,'$2a$14$qPrnqc03.rDdCoktcL2JNOCHphODc3WfIRGDXoFTZl9/yFwPM8912');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (75,'$2a$14$qVIiVTPVDTo5sXGIhiAwNOj/4I5y94AQk.ZNxq96.EScye6nL9bO.');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (125,'$2a$14$R7k9SY3NXIvOAES4J2oY4.mrIFActzB6PvlFVSbM.oxcfdZL5.TEa');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (95,'$2a$14$rhK97UInJRjfKNOE6BmE0O27Ua/xHPU5U.KZwJImlhY5qtFomq.ly');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (175,'$2a$14$SEHmc1D5mlBNT71L4N.aY.7D1IdhOl3XU8BkQmM37UMOpyII0mBR2');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (115,'$2a$14$Sf1x9Offte4R2.Bg1r0p/uk0E.ZGcdG5rcyjlxlzUcNEMENrLqDNS');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (195,'$2a$14$sgKKe9cZVZpmxzPmMEOnmewtYcqJcE4uNlcRxgc4AX9mCmPseWPEi');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (375,'$2a$14$ShJ5E6bCqsHuY90gialuVuIWfZW90x8oas0jwQNkxBRgGATz9kA0W');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (35,'$2a$14$sPlbhOVSGYSGp2OZ6Dkr6.ms4b/OFnfcRquVLnKOWEdjWaMgeba96');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (495,'$2a$14$TWiaLYbkpOxpZkb.5X/7Q.bIvDYFCacf1DTtvLnWpwgPRm9Jyxnym');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (365,'$2a$14$uRNmjfIrvUYObVpX6Tr.bOZDl3MGj1hEogCdXFaNuwjQwH4iG2FTy');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (455,'$2a$14$v1sKtkEpRQRzLW95eJ/Dx.7m2n4IqIHOfieTwkoJ2t4SDrOIfpmH6');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (275,'$2a$14$vlZyComVpDIhbQ.Zb8ZDJ.GEx.8fp9mN4G4fkmH39ObNX6oc6Tj2W');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (165,'$2a$14$w2ht2COCDuK7pX4yMmW67eDyv50.N4cRzEImcclNuaDeoEy4NmS4u');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (25,'$2a$14$wewqBYDb4ixBy/6kPvdkdeKSRj.Vwf9noN8bcP9yhm/rfQpABTjxy');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (235,'$2a$14$wKzesGUaI/keR6PiQvyIueDKGw0zz3hY6tsnuX/hK7twRyRZWaXsa');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (355,'$2a$14$xGliMjO1cpECAvto1jxase6o7939jTmaJ9l7.kZfxTVHCV5YPLp..');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (475,'$2a$14$yXW4iFnGxlmOl1rRvq0vvO2/YA8vO1Cx3S1VbHwZ8jt/SnSDKhfZe');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (55,'$2a$14$zMIXHaWEGErGhEtUHO1GCO/yuKLMnTAjofM6cLq/GSV8WZMwc8V4G');
+INSERT INTO `` (`c_user_id`,`user_password`) VALUES (575,'$2a$14$ZwgIUzXQplImfvRCsW1rpeIQ.ZXjVdwqX1UXaZR7/Ijv3IU3r7ApK');

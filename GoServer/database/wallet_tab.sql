@@ -1,0 +1,65 @@
+/*
+-- Query: SELECT * FROM wallet_tab
+LIMIT 0, 1000
+
+-- Date: 2021-11-10 22:35
+*/
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (5,45526600,0,1636389645,1636547496);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (15,500,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (25,327800,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (35,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (45,5600,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (55,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (65,1100,0,1636480657,1636395087);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (75,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (85,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (95,6000,0,1636546055,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (105,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (115,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (125,5000,0,1636545757,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (135,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (145,6000,0,1636546048,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (155,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (165,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (175,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (185,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (195,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (205,1000,0,1636546062,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (215,6000,0,1636546031,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (225,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (235,1000,0,1636545792,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (245,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (255,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (265,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (275,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (285,238100,0,1636546137,1636546156);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (295,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (305,70000,0,1636546023,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (315,35000,0,1636545987,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (325,3000,0,1636545950,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (335,35000,0,1636546001,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (345,7000,0,1636545921,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (355,3000,0,1636545946,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (365,35000,0,1636545981,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (375,2000,0,1636545974,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (385,7000,0,1636545918,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (395,10000,0,1636545957,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (405,5000,0,1636545774,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (415,1000,0,1636545806,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (425,5000,0,1636545907,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (435,5000,0,1636545910,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (445,5500,0,1636545814,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (455,5000,0,1636545889,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (465,5000,0,1636545903,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (475,11900,0,1636545822,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (485,10000,0,1636545881,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (495,10000,0,1636545868,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (505,6200,0,1636545833,1636546688);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (515,9300,0,1636545783,1636546685);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (525,8300,0,1636545860,1636546681);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (535,6200,0,1636545828,1636546679);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (545,3300,0,1636545842,1636546676);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (555,4300,0,1636545767,1636546669);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (565,4200,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (575,0,0,NULL,NULL);
+INSERT INTO `` (`w_user_id`,`wallet_balance`,`wallet_status`,`last_top_up`,`last_used`) VALUES (585,0,0,NULL,NULL);
