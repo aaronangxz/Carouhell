@@ -25,18 +25,6 @@ func main() {
 	//r.Use(cors.Default())
 	r.Use(models.CORSMiddleware())
 
-	//Load HTML files for / endpoint
-	r.LoadHTMLGlob("./elate/*.html")
-	r.Static("/css", "./elate/css")
-	r.Static("/fonts", "./elate/fonts")
-	r.Static("/images", "./elate/images")
-	r.Static("/js", "./elate/js")
-	r.Static("/sass", "./elate/sass")
-	r.Static("/syntax", "./elate/syntax")
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{"title": "Main website"})
-	})
-
 	//Version endpoint
 	r.GET("/version", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"Version": os.Getenv("CURRENT_VER"), "DockerImageID": os.Getenv("CURRENT_IMG_ID"), "LastUpdate": os.Getenv("LAST_UPDATE")})
@@ -48,10 +36,6 @@ func main() {
 	})
 
 	//Available endpoints
-	// r.POST("/get_notifications_by_user_id", notifications.GetNotificationsByUserID)
-	// r.POST("/create_mock_notifications", notifications.CreateMockNotifications)
-	// r.POST("/upload_image", utils.UploadImage)
-
 	//***************** Home Page *****************
 	r.POST("/create_listing", auth.TokenAuthMiddleware(), listings.CreateListing)
 	r.POST("/create_account", account.CreateAccount)
