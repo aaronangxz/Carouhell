@@ -1,0 +1,122 @@
+<html>
+<head>
+<title></title>
+<script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous">
+</script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="global.js"></script>
+<script src="index.js"></script>
+<script src="listing.js"></script>
+<script> 
+  $(function(){
+    $("#header").load("navbar.html");
+  });
+  </script> 
+  <style>
+    .card-body{
+      width:100%;
+      height:600px;
+    }
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    #imgContainer{
+      height: 320px;
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<div id="header"></div>
+
+<form id="filterOptions" method="post">
+<div class="container center">
+    <div class="row"> 
+        <div class="col mt-3">
+            <div class="form-group">
+                <select class="form-control" id="sortByCat">
+                    
+                </select> 
+            </div>
+        </div>
+        <div class="col mt-3">
+            <div class="form-group">
+                <select class="form-control" id="sortByLocation">
+                </select> 
+            </div>
+        </div>
+        <div class="col mt-3">
+            <div class="form-group">
+              <div class="row">
+                  <div class="col">
+                      <input type="number" class="form-control" id="minPrice" placeholder="$ Min">
+                  </div>
+                  -
+                  <div class="col">
+                      <input type="number" class="form-control" id="maxPrice" placeholder="$ Max">
+                  </div>
+              </div>
+            </div>
+        </div>
+        <div class="col mt-3">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-4 my-auto"> Sort:</div>
+                <div class="col-8"><select class="form-control" id="sortFlag"></select></div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="row"> 
+        <div class="col text-center">
+          <input type="button" class="btn btn-primary" onclick="getFilterResults()" value="Apply Filters"/>
+        </div>
+    </div>  
+</div>
+</form>
+
+<div class="container">
+  <div class="row" id="searchResultText"></div>
+  <div class="row" id="cards">
+  </div>
+</div>
+
+
+<!--Remaining section-->
+<div id="footer"></div>
+<script>
+getLatestListing();
+var loadSortByCategoryContent = '<option class="disabled" value="null">Select Category</option>';
+for(var i = 0; i <categories_Arr.length; i++)
+{
+  loadSortByCategoryContent += '<option value="'+i+'">'+categories_Arr[i]+'</option>';
+}
+document.getElementById("sortByCat").innerHTML = loadSortByCategoryContent;
+
+var loadSortList = "";
+for(var i = 0; i <sortFlag_Arr.length; i++)
+{
+  loadSortList += '<option value="'+i+'">'+sortFlag_Arr[i]+'</option>';
+}
+document.getElementById("sortFlag").innerHTML = loadSortList;
+
+var loadLocation = '<option class="disabled" value="null">Select Location</option>';
+for(var i = 0; i <location_direction_Arr.length; i++)
+{
+  loadLocation += '<option value="'+i+'">'+location_direction_Arr[i]+'</option>';
+}
+document.getElementById("sortByLocation").innerHTML = loadLocation;
+</script>
+
+</body>
+</html>
