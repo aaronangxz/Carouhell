@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/aaronangxz/TIC2601/auth"
+	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/go-redis/redis/v8"
@@ -123,8 +124,8 @@ func GetListingByItemID(c *gin.Context) {
 	}
 
 	//retrieve comments
-	queryComments := "SELECT a.user_name, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a " +
-		"WHERE l.rt_user_id = a.a_user_id AND l.rt_item_id = " + fmt.Sprint(input.GetItemID()) + " AND l.reaction_type = 1 ORDER BY l.ctime ASC"
+	queryComments := fmt.Sprintf("SELECT a.user_name, l.rt_user_id AS user_id, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a "+
+		"WHERE l.rt_user_id = a.a_user_id AND l.rt_item_id = %v AND l.reaction_type = %v ORDER BY l.ctime ASC", input.GetItemID(), constant.LISTING_REACTION_TYPE_COMMENT)
 	log.Println(queryComments)
 	resultComments := models.DB.Raw(queryComments).Scan(&comments)
 	errComments := resultComments.Error

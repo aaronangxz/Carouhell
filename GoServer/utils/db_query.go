@@ -11,7 +11,7 @@ import (
 
 var (
 	ListingFixedQuery = fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -48,7 +48,7 @@ func GetListingFixedQuery() string {
 
 func GetListingLoggedInQuery(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
@@ -60,7 +60,7 @@ func GetListingLoggedInQuery(user_id uint64) string {
 //Query without GROUP BY,ORDER BY; must append it after WHERE clauses
 func GetListingQueryWithCustomCondition() string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -69,7 +69,7 @@ func GetListingQueryWithCustomCondition() string {
 
 func GetListingLoggedInQueryWithCustomCondition(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
@@ -183,11 +183,20 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE w_user_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
-	log.Println(updateWalletQuery)
-	if err := tx.Exec(updateWalletQuery).Error; err != nil {
-		log.Printf("Error during StartItemPurchaseTx:updateWalletBalance: %v", err.Error())
-		log.Println("rolling back updateWalletBalance")
+	updateBuyerWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance - %v ,last_used = %v WHERE w_user_id = %v", totalPrice, time.Now().Unix(), input.GetUserID())
+	log.Println(updateBuyerWalletQuery)
+	if err := tx.Exec(updateBuyerWalletQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateBuyerWalletBalance: %v", err.Error())
+		log.Println("rolling back updateBuyerWalletBalance")
+		tx.Rollback()
+		return err
+	}
+
+	updateSellerWalletQuery := fmt.Sprintf("UPDATE wallet_tab SET wallet_balance = wallet_balance + %v  WHERE w_user_id IN (SELECT l_seller_id FROM listing_tab WHERE l_item_id = %v )", totalPrice, input.GetItemID())
+	log.Println(updateSellerWalletQuery)
+	if err := tx.Exec(updateSellerWalletQuery).Error; err != nil {
+		log.Printf("Error during StartItemPurchaseTx:updateSellerWalletBalance: %v", err.Error())
+		log.Println("rolling back updateSellerWalletBalance")
 		tx.Rollback()
 		return err
 	}
@@ -201,7 +210,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 
 func GetFullTextSearchQuery(keyword string) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+
@@ -212,7 +221,7 @@ func GetFullTextSearchQuery(keyword string) string {
 
 func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
-		" l.item_purchased_quantity, l.item_description, l.item_location, l.item_status, l.item_category,"+
+		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
 		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+

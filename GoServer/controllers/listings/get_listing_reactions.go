@@ -42,7 +42,7 @@ func GetListingReactions(c *gin.Context) {
 	}
 
 	//retrieve comments
-	queryComments := "SELECT a.user_name, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a " +
+	queryComments := "SELECT a.user_name, l.rt_user_id AS user_id, l.comment, l.ctime FROM listing_reactions_tab l, acc_tab a " +
 		"WHERE l.rt_user_id = a.a_user_id AND l.rt_item_id = " + fmt.Sprint(input.GetItemID()) + " AND l.reaction_type = 1 ORDER BY l.ctime ASC"
 	log.Println(queryComments)
 	resultComments := models.DB.Raw(queryComments).Scan(&comments)
