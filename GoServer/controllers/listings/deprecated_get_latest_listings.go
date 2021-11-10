@@ -73,12 +73,6 @@ func Deprecated_GetLatestListings(c *gin.Context) {
 		categoryCondition = ""
 	}
 
-	//process limit
-	//if nil, set to default value
-	if input.Limit == nil {
-		input.Limit = models.SetDefaultNotificationResponseLimit()
-	}
-
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size.")})
 		log.Printf("limit exceeds max listing response size. input: %v\n", input.GetLimit())

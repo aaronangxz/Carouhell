@@ -13,13 +13,6 @@ func ValidateGetAllListingsResult(results []models.GetAllListingsResponse) model
 	return models.NewSuccessMessageResponse(fmt.Sprintf("GetAllListings success. results: %v", len(results)))
 }
 
-func ValidateGetNotificationsByUserIDResult(results []models.GetNotificationsByUserIDResponse) models.ResponseMeta {
-	if len(results) == 0 {
-		return models.NewNotFoundResponse()
-	}
-	return models.NewSuccessResponse()
-}
-
 func ValidateGetLatestListingsResult(results []models.GetLatestListingsResponse) models.ResponseMeta {
 	if len(results) == 0 {
 		return models.NewNotFoundResponse()

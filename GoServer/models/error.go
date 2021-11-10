@@ -13,6 +13,11 @@ const (
 	CONSTANT_ERROR_AUTHORIZATION = 9 //auth error
 )
 
+type ResponseMeta struct {
+	DebugMsg  string
+	ErrorCode int32
+}
+
 func NewSuccessResponse() ResponseMeta {
 	return ResponseMeta{
 		DebugMsg:  "",

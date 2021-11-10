@@ -38,11 +38,6 @@ func GetUserListings(c *gin.Context) {
 		return
 	}
 
-	if input.Limit == nil {
-		input.Limit = models.SetDefaultNotificationResponseLimit()
-		log.Println("applied DefaultNotificationResponseLimit.")
-	}
-
 	if utils.ValidateLimitMax(input.GetLimit(), models.MaxListingsResponseSize) {
 		c.JSON(http.StatusBadRequest, gin.H{"RespMeta": models.NewParamErrorsResponse("limit exceeds max listing response size.")})
 		log.Printf("limit exceeds max listing response size: %v\n", input.GetLimit())
