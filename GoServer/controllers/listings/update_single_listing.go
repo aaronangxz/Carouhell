@@ -200,7 +200,7 @@ func UpdateSingleListing(c *gin.Context) {
 
 	//If all good, proceed to update
 	query = fmt.Sprintf("UPDATE listing_tab SET"+
-		" item_name = \"%v\", item_price = %v, item_quantity = %v, item_stock = %v"+
+		" item_name = \"%v\", item_price = %v, item_quantity = %v, item_stock = %v,"+
 		" item_description = \"%v\", item_location = %v, item_category = %v, listing_mtime = %v,"+
 		" item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END,"+
 		" item_status = CASE WHEN item_quantity > 0 THEN 1 ELSE item_status END WHERE l_item_id = %v",
