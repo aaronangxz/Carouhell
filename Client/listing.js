@@ -9,7 +9,7 @@ function encodeImageFileAsURL(inputFileToLoad) {
       fileReader.onload = function(fileLoadedEvent) {
         var srcData = fileLoadedEvent.target.result; // <--- data: base64
         console.log("srcData: " + srcData);
-        var newImage = document.createElement('img');
+        var newImage = document.createElement('image');
         newImage.src = srcData;
 
         document.getElementById("imgTest").innerHTML = newImage.outerHTML;
@@ -31,7 +31,7 @@ function createListing(userID)
     var locationValue = location.options[location.selectedIndex].value;
 
     var base64String = "";
-    const file = document.getElementById("img").files[0];
+    const file = document.getElementById("image").files[0];
     var reader = new FileReader();
       
     reader.onload = function () {
@@ -179,20 +179,53 @@ function viewListingByItemId(itemID)
 
 function displayItemContent(data)
 {
+    
+    var status = ""
+    if (data.item_quantity <= 5){
+        status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
+    }else if (data.item_status == 1){
+        status +='<span class="badge badge-pill badge-success">Available</span>'
+    }else if (data.item_status == 2){
+        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
+    }
+
+    var date = ""
+    if (Date.now()/1000 - data.listing_ctime < 300){
+        date = "moments ago"
+    }else if (Date.now()/1000  - data.listing_ctime < 300){
+        date = "5 minutes ago"
+    }else if (Date.now()/1000  - data.listing_ctime < 600){
+        date = "10 minutes ago"
+    }else if (Date.now()/1000  - data.listing_ctime < 6000){
+        date = "an hour ago"
+    }else{
+        date = 'on '+ convertUnixToTimeStamp(data.listing_ctime) +', '+ convertUnixToTimeStampDetailTime(data.listing_ctime)
+    }
+    console.log(Date.now())
+
     var content = "";
     content += '<div class="row">' +
         '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" /></div>'+
         '<div class="col-8">'+
-            '<div class="row"><h1>'+data.item_name+' - $'+parseInt(data.item_price)/100+' ['+itemStatus_Arr[data.item_status]+'] </h1></div>'+
+            '<div class="row"><div class="col"><h1>'+data.item_name+' </h1></div></div>'+
+              '<div class="row">' +
+                '<div class="col"><h2>'+ '  ' +(parseInt(data.item_price)/100).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })+'</h2></div>'+
+            '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted on '+convertUnixToTimeStamp(data.listing_ctime)+'</div>'+
+                '<div class="col"><h3>'+status+'</h3></div>'+
+            '</div>'+
+            '<div class="row">' +
+                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+date+'</div>'+
             '</div>'+
             '<div class="row">' +
                 '<div class="col"><a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');">'+checkIfUserLikedListing(data.is_liked)+'</a> ' + data.listing_likes +
                 '</div>'+
             '</div>'+
             '<div class="row mt-3">' +
-                '<div class="col">Category: '+categories_Arr[data.item_category]+'</div>'+
+                '<div class="col"><span><i class="fas fa-layer-group"></i></span> '+categories_Arr[data.item_category]+'</div>'+
             '</div>'+
             '<div class="row">' +
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
@@ -212,13 +245,13 @@ function displayItemContent(data)
     {
         // display seller's option
         content += 
-        '<div class="row mt-3" id="sellerBtns">'+
-            '<div class="col">'+
+        '<div class="row mt-5" id="sellerBtns">'+
+            '<div class="col-2">'+
                 // '<input type="button" id="btnEdit" class="btn btn-primary" value="Edit Listing"/>'+
-                 '<a href="editListing.html?itemID='+data.item_id+'" id="btnEdit" class="btn btn-primary">Edit Listing</a> '+
+                 '<a href="editListing.html?itemID='+data.item_id+'" id="btnEdit" class="btn btn-secondary">Edit Listing</a> '+
             '</div>'+
-            '<div class="col">'+
-                '<a href="javascript:void(0);" onclick="deleteListing('+data.item_id+')" id="deleteBtn" class="btn btn-primary">Delete Listing</a>'+
+            '<div class="col-1">'+
+                '<a href="javascript:void(0);" onclick="deleteListing('+data.item_id+')" id="deleteBtn" class="btn btn-danger">Delete Listing</a>'+
             '</div>'+
         '</div>';
     }
@@ -247,15 +280,14 @@ function displayItemContent(data)
             '<form id="purchaseForm" method="post">'+
                 '<div class="row mt-3" id="buyerBtns">'+
                     '<div class="col-4"></div>'+
-                    '<div class="col-3 text-center">'+
-                        '<div class="form-group">'+
+                        '<div class="col-3">'+
+                            '<div class="form-group">'+
                             '<input type="number" class="form-control" id="qtyToPurchase" placeholder="Enter Quantity">'+
-                        '</div>'+
-                        '<h5>Quantity Available: '+ data.item_quantity + '</h5>' +
+                            '<p>Quantity Available: '+ data.item_quantity + '</p>'+
+                            '</div>'+
                     '</div>'+
                     '<div class="col-1">'+
-                        '<input type="button" onclick="buyNow('+data.item_id+','+data.seller_id+')" class="btn btn-primary" value="Buy Now"/>'+
-                        // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
+                        '<input type="button" onclick="buyNow('+data.item_id+','+data.seller_id+')" class="btn btn-primary" background-color value="Buy Now"/>'+
                     '</div>'+
                     '<div class="col-4"></div>'+
                 '</div>'+
@@ -309,7 +341,7 @@ function displayItemComments(data, itemID)
                 '</div>'+
             '</div>'+
             '<div class="col-2">'+
-                '<input type="button" class="btn btn-primary" onclick="addListingComment(getCurrentUserID(),'+itemID+')" value="Submit"/>'+
+                '<input type="button" class="btn btn-secondary" onclick="addListingComment(getCurrentUserID(),'+itemID+')" value="Submit"/>'+
             '</div>'+
         '</div>'+
     '</form>';
@@ -344,7 +376,7 @@ function addListingLikes(itemID)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            location.reload();
+            document.location.reload();
         })
         .catch(error => console.log(error)); 
     }
@@ -353,9 +385,9 @@ function addListingLikes(itemID)
 function checkIfUserLikedListing(is_liked)
 {
     if(is_liked)
-        return '<span><i class="fas fa-heart"></i></span>';
+        return '<span><i class="fas fa-heart" style="color:red"> </i></span>';
     else
-        return '<span><i class="far fa-heart"></i></span>';
+        return '<span><i class="far fa-heart" style="color:black"></i></span>';
 }
 
 function toViewListing(itemID)
@@ -369,13 +401,28 @@ function toViewListing(itemID)
     }
     else
     {
-        window.location.href = 'ViewListing.html?itemID='+ itemID;
+        window.location.href = 'viewListing.html?itemID='+ itemID;
     }
 }
 
 function displayListing(d)
 {
     console.log(d);
+
+    var status = ""
+    if (d.item_quantity <= 5){
+        status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
+    }else if (d.item_status == 1){
+        status +='<span class="badge badge-pill badge-success">Available</span>'
+    }else if (d.item_status == 2){
+        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
+    }
+
+    var likes = ""
+    if (d.listing_likes >= 10){
+        likes += '<span class="badge badge-pill badge-danger">Trending</span>'
+    }
+
     document.getElementById("cards").innerHTML += 
     '<div class="col-md-4 mt-4">'+
     '<div class="card" id="'+d.item_id+'">'+
@@ -384,7 +431,7 @@ function displayListing(d)
         '<div class="container">'+
             '<div class="row">'+
                 '<div class="col text-center" id="imgContainer">'+
-                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" />'+
+                    '<img class="img-fluid" src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" />'+
                 '</div>'+
             '</div>'+
             '<div class="row">'+
@@ -394,7 +441,10 @@ function displayListing(d)
             '</div>'+ 
             '<div class="row">'+
                 '<div class="col">'+
-                    '<h5 class="card-title">$'+ parseInt(d.item_price)/100 +'</h5>'+
+                    '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }) +'</h5>'+
                 '</div>'+                       
             '</div>'+
             '<div class="row">'+
@@ -406,16 +456,16 @@ function displayListing(d)
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
-                    '<h5 class="card-title">'+ itemStatus_Arr[d.item_status] +'</h5>'+
+                    '<h5 class="card-title">'+ status + ' ' + likes +'</h5>'+
                 '</div>'+
             '</div>'+
-            '<div class="row mt-3">'+
+        '</div>'+
+        '</div>'+
+        '<div class="card-footer">'+
                 '<div class="col text-center">'+
-                    '<a href="javascript:void(0);" onclick="toViewListing('+d.item_id+');" class="btn btn-primary">View Listing</a> '+
+                    '<a href="javascript:void(0);" onclick="toViewListing('+d.item_id+');" class="btn btn-secondary" >View Listing</a> '+
                 '</div>'+
             '</div>'+ 
-        '</div>'+
-        '</div>'+
     '</div>'+
     '</div>'; 
 }
@@ -720,15 +770,28 @@ function displayUserReviews(data)
         '<div class="col"><h3>@'+data.account_info.user_name+'\'s Profile </h3></div>'+
     '</div>' +
     '<div class="row mt-3">' +
-        '<div class="col"><h3>Ratings: '+data.ratings.user_ratings+' out of 5<span><i class="fas fa-star"></i></span> (Total of '+data.review_count+' Reviews)</h3></div>'+
+        '<div class="col"><h3>Ratings: '+data.ratings.user_ratings+' out of 5<span><i class="fas fa-star" style="color:gold"></i></span> (Total of '+data.review_count+' Reviews)</h3></div>'+
     '</div>';
     
     for(var i = 0; i < data.user_reviews.length; i++)
     {
+        rate = ""
+        if (data.user_reviews[i].ratings == 1){
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
+        }else if (data.user_reviews[i].ratings == 2){
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
+        }else if (data.user_reviews[i].ratings == 3){
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
+        }else if (data.user_reviews[i].ratings == 4){
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span>'
+        }else if (data.user_reviews[i].ratings == 5){
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span>'
+        }
+
         reviews +=
         '<div class="row text-wrap">' +
             '<div class="col-3">'+convertUnixToTimeStamp(data.user_reviews[i].ctime)+' ∙ <a href="viewProfile.html?profileID='+data.user_reviews[i].user_id+'">'+data.user_reviews[i].user_name+'</a></div>'+
-            '<div class="col-2">'+data.user_reviews[i].ratings +'/5 <span><i class="far fa-star"></i></span></div>'+
+            '<div class="col-2">'+data.user_reviews[i].ratings +'/5'+rate+'</div>'+
             '<div class="col-7">'+data.user_reviews[i].review_text+'</div>'+
         '</div>';
     }
@@ -833,8 +896,8 @@ function editListing(itemID)
 
 
     var base64String = "";
-    const file1 = document.getElementById("img").files[0];
-    const file2 = document.getElementById("img").files[1];
+    const file1 = document.getElementById("image").files[0];
+    const file2 = document.getElementById("image").files[1];
     console.log("file1: " + file1);
     console.log("file2: " + file2);
     if(file1)

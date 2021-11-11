@@ -1,7 +1,8 @@
    <!DOCTYPE html>
    <html lang="en">
    <head>
-     <title>TIC2601</title>
+     <title>Edit Listing</title>
+     <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
@@ -32,6 +33,7 @@
    </head>
    <body>
        <div id="header"></div>
+       <p></p>
        <div class="container">
            <h1>Edit Listing</h1>
            <form id="createNewListing" method="post">
@@ -84,15 +86,15 @@
                <div class="row">
                    <div class="col">
                        <div class="form-group">
-                           <label for="img"><b>Images</b></label>
-                             <br><img id="myImg" src="#">
-                           <input name="img" type="file" class="form-control-file" id="img">
+                           <label for="image"><b>Images</b></label>
+                             <br><img id="myImg" width="30%" src="#">
+                           <input name="image" type="file" class="form-control-file" id="image">
                        </div>
                    </div>
                </div>
                <div class="row">
                    <div class="col text-center">
-                       <input type="button" class="btn btn-primary" onclick="editListing(itemID)" value="Save"/>
+                       <input type="button" class="btn btn-secondary" onclick="editListing(itemID)" value="Save"/>
                    </div>
                </div>
                
@@ -103,7 +105,7 @@
            {
                document.querySelector('input[type="file"]').addEventListener('change', function() {
                    if (this.files && this.files[0]) {
-                       var img = document.querySelector('img');
+                       var img = document.querySelector('image');
                        img.onload = () => {
                            URL.revokeObjectURL(img.src);  // no longer needed, free memory
                        }

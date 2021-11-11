@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TIC2601</title>
+  <title>Start Selling!</title>
+  <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
@@ -19,8 +20,9 @@
 </head>
 <body>
     <div id="header"></div>
+    <p></p>
     <div class="container">
-        <h1>Create New Listing</h1>
+        <h1>Start Selling!</h1>
         <form id="createNewListing" method="post">
             <div class="row">
                 <div class="col">
@@ -80,9 +82,9 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <label for="img"><b>Add Images</b></label>
-                          <br><img id="myImg" src="#">
-                        <input name="img" type="file" class="form-control-file" id="img">
+                        <label for="image"><b>Add Images</b></label>
+                          <br><img id="myImg" width="30%" src="#">
+                        <input name="image" type="file" class="form-control-file" id="image" >
                     </div>
                 </div>
             </div>
@@ -100,7 +102,7 @@
             </div> -->
             <div class="row">
                 <div class="col text-center">
-                    <input type="button" class="btn btn-primary" onclick="createListing(getCurrentUserID())" value="Create Listing"/>
+                    <input type="button" class="btn btn-secondary" onclick="createListing(getCurrentUserID())" value="Create Listing"/>
                 </div>
             </div>
             
@@ -111,12 +113,12 @@
         {
             document.querySelector('input[type="file"]').addEventListener('change', function() {
                 if (this.files && this.files[0]) {
-                    var img = document.querySelector('img');
-                    img.onload = () => {
-                        URL.revokeObjectURL(img.src);  // no longer needed, free memory
+                    var image = document.querySelector('image');
+                    image.onload = () => {
+                        URL.revokeObjectURL(image.src);  // no longer needed, free memory
                     }
 
-                    img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                    image.src = URL.createObjectURL(this.files[0]); // set src to blob url
                 }
             });
         });

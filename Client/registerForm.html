@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TIC601</title>
+  <title>Register</title>
+  <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
@@ -16,25 +17,43 @@
 </head>
 <body>
     <div id="header"></div>
-    <div class="container">
-        <h1>Registration Form</h1>
+    <br>
+    <div class="container text-center">
+    <img src = "headerimg.png" width = "40%">
+        <h1>Hello there.</h1>
+        <h2>We don't do annoying songs and ads here. Join us now.</h2>
+        <br>
         <form id= "registerForm">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username">
+              <div class="row d-flex justify-content-center">
+                <input type="text" class="form-control col-3" id="username" placeholder="Enter username">
+               </div>
             </div>
             <div class="form-group">
               <label for="email">Email address</label>
-              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                            <div class="row d-flex justify-content-center">
+
+              <input type="email" class="form-control col-3" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                             </div>
+
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password">
+                            <div class="row d-flex justify-content-center">
+
+              <input type="password" class="form-control col-3" id="password" placeholder="Password">
+                             </div>
+
             </div>
             <div class="form-group">
                 <label for="cfmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="cfmPassword" placeholder="Password">
+                              <div class="row d-flex justify-content-center">
+
+                <input type="password" class="form-control col-3" id="cfmPassword" placeholder="Password">
+                               </div>
+
               </div>
             <!-- <div class="form-group">
                 <label for="securityQn">Select Security Question</label>
@@ -51,6 +70,8 @@
                 <input type="text" class="form-control" id="securityAns" placeholder="Answer for Security Question">
             </div> -->
             <input type="button" class="btn btn-primary" onclick="registerUser()" value="Register"/>
+            <br>
+            <br>
             <a href="loginForm.html">Already have an account? Log In here!</a>
           </form>
         </div>

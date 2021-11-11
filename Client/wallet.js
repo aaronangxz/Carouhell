@@ -16,7 +16,7 @@ function getWalletDetails()
         }
         else // successful
         {
-            document.getElementById("walletBalance").innerHTML = "SGD $" +parseInt(data.Data.wallet_info.wallet_balance)/100;
+            document.getElementById("walletBalance").innerHTML = "SGD $" + (parseInt(data.Data.wallet_info.wallet_balance)/100).toLocaleString() ;
             displayWalletTransactions(data.Data.transactions);
         }
     })
@@ -26,7 +26,7 @@ function getWalletDetails()
 function displayWalletTransactions(transactions)
 {
     console.log(transactions);
-    var html = '<h3>Transactions</h3>';
+    var html = '<h3>Recent Transactions</h3>';
     for(var i = 0 ; i<transactions.length; i++)
     {
         html += '<div class="row p-3 align-items-center h-100">';
@@ -34,29 +34,38 @@ function displayWalletTransactions(transactions)
         {
             //top up
             case 0: 
-                html += '<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'</div>'+
-                '<div class="col-3 text-center"><span><i class="fas fa-arrow-right fa-2x"></i></span> <span><i class="fas fa-wallet fa-2x"></i></span></div>'+
+            html +='<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'<br>'+convertUnixToTimeStampDetailTime(transactions[i].transaction_ctime)+'</div>'+
+            '<div class="col-3 text-center"><span><i class="fas fa-arrow-right fa-2x"></i></span> <span><i class="fas fa-wallet fa-2x"></i></span></div>'+
                 '<div class="col-5">Top up Wallet </div>'+
-                '<div class="col-2 text-center"><h4> + $' +parseInt(transactions[i].transaction_amount)/100+'</h4></div>';
+                '<div class="col-2 text-center"><h4> + ' +(parseInt(transactions[i].transaction_amount)/100).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })+'</h4></div>';
                 break;
             //purchase
             case 1:
-                html +='<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'</div>'+
+                html +='<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'<br>'+convertUnixToTimeStampDetailTime(transactions[i].transaction_ctime)+'</div>'+
                 '<div class="col-3 text-center" id="imgContainer">'+
                     '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+transactions[i].item_id+'.jpg">'+
                     // '<img src="'+transactions[i].item_image+'" />'+
                 '</div>'+
                 '<div class="col-5"><a href="viewListing.html?itemID='+transactions[i].item_id+'">BOUGHT: '+transactions[i].item_name+'</a></div>'+
-                '<div class="col-2 text-center"><h4> - $' +parseInt(transactions[i].transaction_amount)/100+'</h4></div>';
+                '<div class="col-2 text-center"><h4> - ' + (parseInt(transactions[i].transaction_amount)/100).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }) +'</h4></div>';
                 break;
             //sales
             case 2:
-                html +='<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'</div>'+
+                html +='<div class="col-2">'+convertUnixToTimeStamp(transactions[i].transaction_ctime)+'<br>'+convertUnixToTimeStampDetailTime(transactions[i].transaction_ctime)+'</div>'+
                 '<div class="col-3 text-center" id="imgContainer">'+
                     '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+transactions[i].item_id+'.jpg">'+
                 '</div>'+
                 '<div class="col-5"><a href="viewListing.html?itemID='+transactions[i].item_id+'">SOLD: '+transactions[i].item_name+'</a></div>'+
-                '<div class="col-2 text-center"><h4> + $' +parseInt(transactions[i].transaction_amount)/100+'</h4></div>';
+                '<div class="col-2 text-center"><h4> + ' + (parseInt(transactions[i].transaction_amount)/100).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }) +'</h4></div>';
                 break;
         }
         html += '</div>';
