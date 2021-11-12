@@ -95,6 +95,10 @@ func AddListingLikes(c *gin.Context) {
 			return
 		}
 
+		if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during GetUserLikedListings InvalidateCache: %v", err.Error())
+		}
+
 		//return updated count
 		updatedLikes.IsLiked = false
 		updatedLikes.LikesCount = count
