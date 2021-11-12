@@ -1,21 +1,16 @@
-<h1 align = "center"> TIC 2601 </h1>
+<h1 align = "center"> TIC2601 x Carouhell </h1>
+<img src = "header.png">
 
+![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/aaronangxz/Carouhell?filename=GoServer%2Fgo.mod)
 [![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) 
+![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell) ![GitHub repo size](https://img.shields.io/github/repo-size/aaronangxz/Carouhell) 
 
-<!-- <p align="center">
-<!-- <img src = https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg> -->
-<!-- <img alt="GitHub go.mod Go version (subdirectory of monorepo)" src="https://img.shields.io/github/go-mod/go-version/aaronangxz/TIC2601?filename=GoServer%2Fgo.mod&style=plastic">
-<img alt="npm" src="https://img.shields.io/npm/v/npm">
-<img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/aaronangxz/TIC2601">
-<br>
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaronangxz/TIC2601">
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaronangxz/TIC2601">
-<img alt="GitHub issues" src="https://img.shields.io/github/issues/aaronangxz/TIC2601"> -->
 
 <h2>Master Branch (Live)</h2>
 
-- This branch is deployed on https://tic2601-t11.herokuapp.com, all features are stable
-- Do not merge WIP features here
+- API endpoints are deployed on https://tic2601-t11.herokuapp.com
+- Client is deployed on https://carouhell-tic2601.herokuapp.com/index.html
+- Do not merge WIP features here, merge to test branch instead
 
 <h2>Work Flow</h2>
 
@@ -33,7 +28,7 @@
 <h1>Architecture</h1>
 
 <p align="center">
-<img src="tic2601-architecture.png" width="1000">
+<img src="architecture.png" width="1000">
 </p>
 
 <h1>Local Testing</h1>
