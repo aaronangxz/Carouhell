@@ -81,18 +81,6 @@
     - `GRANT ALL PRIVILEGES ON <Table Name> .* TO 'username'@'%'`
 4. Check create query:
     - `SHOW CREATE TABLE <db name>.<table name>`
-5. Access remotely:
-    - CLEARDB_DATABASE_URL: `mysql://b0bc6fadb8432d:f25c7f6b@us-cdbr-east-04.cleardb.com/heroku_bdc39d4687a85d4?reconnect=true`
-    - Set up in MySQL Workbench
-    
-    <img src="tic2601-db.png">
-
-    - Credentials:
-        - Hostname:`us-cdbr-east-04.cleardb.com`
-        - Port:`3306`
-        - Username:`b0bc6fadb8432d`
-        - Password:`f25c7f6b`
-        - Default Schema:`heroku_bdc39d4687a85d4`
 
 <h1>Test API endpoints</h1>
 
