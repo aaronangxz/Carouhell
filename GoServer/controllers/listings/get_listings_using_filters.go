@@ -58,6 +58,12 @@ func ValidateGetListingsUsingFiltersRequest(c *gin.Context, input *models.GetLis
 
 func ValidateGetListingsUsingFiltersInput(c *gin.Context, input *models.GetListingsUsingFiltersRequest) error {
 
+	if input.SearchKeyword != nil && (utils.IsContainsSpecialChar(input.GetSearchKeyword())) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Kindly search with a proper keyword :')")})
+		errormsg := fmt.Sprintf("search keyword invalid. input :%v", input.GetSearchKeyword())
+		return errors.New(errormsg)
+	}
+
 	if input.SearchKeyword != nil && !utils.ValidateMaxStringLength(input.GetSearchKeyword()) {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("search_keyword cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("search_keyword exceeded max length. input: %v chars", len(input.GetSearchKeyword()))

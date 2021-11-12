@@ -95,6 +95,10 @@ func AddListingLikes(c *gin.Context) {
 			return
 		}
 
+		if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during GetUserLikedListings InvalidateCache: %v", err.Error())
+		}
+
 		//return updated count
 		updatedLikes.IsLiked = false
 		updatedLikes.LikesCount = count
@@ -124,7 +128,11 @@ func AddListingLikes(c *gin.Context) {
 
 	//invalidate redis
 	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
-		log.Printf("Error during InvalidateCache: %v", err.Error())
+		log.Printf("Error during GetSingleListingByUserID InvalidateCache: %v", err.Error())
+	}
+
+	if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
+		log.Printf("Error during GetUserLikedListings InvalidateCache: %v", err.Error())
 	}
 
 	log.Println("Successful: AddListingLikes.")
