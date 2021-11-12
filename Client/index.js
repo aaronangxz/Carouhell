@@ -237,3 +237,21 @@ function convertUnixToTimeStampDetailTime(unix)
     var formattedDate = hours + ':'+ minutes + ' ' +ampm;
     return formattedDate;
 }
+
+function getLastSeen(unix)
+{
+    if (Date.now()/1000 - unix < 300){
+        date = "moments ago"
+    }else if (Date.now()/1000  - unix < 300){
+        date = "5 minutes ago"
+    }else if (Date.now()/1000  - unix < 600){
+        date = "10 minutes ago"
+    }else if (Date.now()/1000  - unix < 6000){
+        date = "an hour ago"
+    }else if (Date.now()/1000  - unix < 86400){
+        date = "a day ago"
+    }else{
+        date = 'on '+ convertUnixToTimeStamp(unix) +', '+ convertUnixToTimeStampDetailTime(unix)
+    }
+    return date
+}

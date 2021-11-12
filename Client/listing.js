@@ -172,6 +172,7 @@ function viewListingByItemId(itemID)
             console.log(data);
             displayItemContent(data.Data);
             displayItemComments(data.Data.listing_comments, data.Data.item_id);
+            document.title = 'Carouhell - '+data.Data.item_name;
         })
         .catch(error => console.log(error)); 
 }
@@ -181,12 +182,16 @@ function displayItemContent(data)
 {
     
     var status = ""
-    if (data.item_quantity <= 5){
+    if (data.item_status == 2){
+        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
+    }else if (data.item_stock - data.item_quantity == 0){
+        status +='<span class="badge badge-pill badge-success">Available</span>'
+    }else if (((data.item_quantity/data.item_stock) * 100) <= 10){
+        status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
+    }else if (((data.item_quantity/data.item_stock) * 100) <= 25  || data.item_stock - data.item_quantity <= 5){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (data.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
-    }else if (data.item_status == 2){
-        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
     }
 
     var date = ""
@@ -201,7 +206,17 @@ function displayItemContent(data)
     }else{
         date = 'on '+ convertUnixToTimeStamp(data.listing_ctime) +', '+ convertUnixToTimeStampDetailTime(data.listing_ctime)
     }
-    console.log(Date.now())
+
+    var progress = ""
+    if (((data.item_quantity/data.item_stock) * 100) <= 10 && ((data.item_quantity/data.item_stock) * 100) != 0){
+        progress += '<div class="progress" style="width: 20%;">'+
+        '<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">'+ (data.item_stock-data.item_quantity) + ' Bought</div>'+
+      '</div>'
+    }else if (((data.item_quantity/data.item_stock) * 100) <= 25 && ((data.item_quantity/data.item_stock) * 100) != 0){
+        progress += '<div class="progress" style="width: 20%;">'+
+        '<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">'+ (data.item_stock-data.item_quantity) + ' Bought</div>'+
+      '</div>'
+    }
 
     var content = "";
     content += '<div class="row">' +
@@ -217,6 +232,8 @@ function displayItemContent(data)
             '<div class="row">' +
                 '<div class="col"><h3>'+status+'</h3></div>'+
             '</div>'+
+            progress+
+
             '<div class="row">' +
                 '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+date+'</div>'+
             '</div>'+
@@ -263,13 +280,13 @@ function displayItemContent(data)
             '<form id="purchaseForm" method="post">'+
                 '<div class="row mt-3" id="buyerBtns">'+
                     '<div class="col-4"></div>'+
-                    '<div class="col-3 text-center">'+
-                        '<h5> Quantity Available: '+ data.item_quantity + '</h5>' +
-                    '</div>'+
-                    '<div class="col-1">'+
-                        '<input type="button" class="btn btn-secondary disabled" value="Sold Out"/>'+
-                        // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
-                    '</div>'+
+                    // '<div class="col-3 text-center">'+
+                    //     '<h5> Quantity Available: '+ data.item_quantity + '</h5>' +
+                    // '</div>'+
+                    // '<div class="col-1">'+
+                    //     '<input type="button" class="btn btn-secondary disabled" value="Sold Out"/>'+
+                    //     // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
+                    // '</div>'+
                     '<div class="col-4"></div>'+
                 '</div>'+
             '</form>';
@@ -328,7 +345,7 @@ function displayItemComments(data, itemID)
         console.log("comments: " + data[i]);
         comments +=
         '<div class="row text-wrap" >' +
-            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> ∙ '+convertUnixToTimeStamp(data[i].ctime)+'</div>'+
+            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> | '+convertUnixToTimeStamp(data[i].ctime)+ '</div>'+
             '<div class="col-9">'+data[i].comment+'</div>'+
         '</div>';
     }
@@ -410,17 +427,21 @@ function displayListing(d)
     console.log(d);
 
     var status = ""
-    if (d.item_quantity <= 5){
+    if (d.item_status == 2){
+        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
+    }else if (d.item_stock - d.item_quantity == 0){
+        status +='<span class="badge badge-pill badge-success">Available</span>'
+    }else if (((d.item_quantity/d.item_stock) * 100) <= 10){
+        status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
+    }else if (((d.item_quantity/d.item_stock) * 100) <= 25  || d.item_stock - d.item_quantity <= 5){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (d.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
-    }else if (d.item_status == 2){
-        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
     }
 
     var likes = ""
     if (d.listing_likes >= 10){
-        likes += '<span class="badge badge-pill badge-danger">Trending</span>'
+        likes += '<span class="badge badge-pill badge-light">Trending</span>'
     }
 
     document.getElementById("cards").innerHTML += 
@@ -669,7 +690,7 @@ function getUserLikedListing() {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        document.getElementById("title").innerHTML = '<h1>Your Favourite Listings ('+data.Data.length+' listings)</h1>';
+        document.getElementById("title").innerHTML = '<h1>Your Favourite Listings ('+data.Data.length+')</h1>';
         if(data.Respmeta.ErrorCode != 0)
         {
             if(confirm("Unable to get user liked listings due to the following reason: " + data.Respmeta.DebugMsg))
@@ -721,11 +742,13 @@ function viewProfileByUserID(profileID)
         else // successful
         {
             document.getElementById("cards").innerHTML = "";
-            document.getElementById("title").innerHTML = "<h3>Listings ("+data.Data.user_listings.length+" listings)</h3>";
+            document.getElementById("title").innerHTML = "<h2>"+data.Data.user_listings.length+" listings</h2>";
+
             for(const d of data.Data.user_listings){
                 displayListing(d);
             }
             displayUserReviews(data.Data);
+            document.title = 'Carouhell - @'+data.Data.account_info.user_name + "'s profile";
         }
     })
     .catch(error => console.log(error)); 
@@ -767,14 +790,21 @@ function displayUserReviews(data)
 {
     var reviews =
     '<div class="row mt-3">' +
-        '<div class="col"><h3>@'+data.account_info.user_name+'\'s Profile </h3></div>'+
+        '<div class="col"><h1>@'+data.account_info.user_name+'\'s Profile </h1></div>'+
     '</div>' +
+    '<div class="row mt-1">' +
+        '<div class="col"><small style="color:grey;">Last seen '+ getLastSeen(data.account_info.user_last_login) +'</small></div>'+
+    '</div>'+
     '<div class="row mt-3">' +
-        '<div class="col"><h3>Ratings: '+data.ratings.user_ratings+' out of 5<span><i class="fas fa-star" style="color:gold"></i></span> (Total of '+data.review_count+' Reviews)</h3></div>'+
+        '<div class="col"><h2>'+data.ratings.user_ratings+'<span><i class="fas fa-star" style="color:gold"></i></span> ('+data.review_count+' Reviews)</h2></div>'+
     '</div>';
     
     for(var i = 0; i < data.user_reviews.length; i++)
     {
+        if (i == 10){
+            break
+        }
+
         rate = ""
         if (data.user_reviews[i].ratings == 1){
             rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
@@ -790,12 +820,13 @@ function displayUserReviews(data)
 
         reviews +=
         '<div class="row text-wrap">' +
-            '<div class="col-3">'+convertUnixToTimeStamp(data.user_reviews[i].ctime)+' ∙ <a href="viewProfile.html?profileID='+data.user_reviews[i].user_id+'">'+data.user_reviews[i].user_name+'</a></div>'+
+            '<div class="col-3">'+convertUnixToTimeStamp(data.user_reviews[i].ctime)+' | <a href="viewProfile.html?profileID='+data.user_reviews[i].user_id+'">'+data.user_reviews[i].user_name+'</a></div>'+
             '<div class="col-2">'+data.user_reviews[i].ratings +'/5'+rate+'</div>'+
             '<div class="col-7">'+data.user_reviews[i].review_text+'</div>'+
         '</div>';
     }
     
+    reviews += '<div class="mb-4"><hr class="solid"></div>'
     document.getElementById("reviewSection").innerHTML = reviews;
 }
 
