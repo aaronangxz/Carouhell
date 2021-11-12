@@ -47,6 +47,49 @@
 2. To build: `docker-compsoe build`
 3. To run `docker-compose up`
 
+<h1>Credentials</h1>
+
+Credentials are not pushed in the repo for obvious reasons. To properly run the server, prepare:
+
+1. Heroku account with heroku registry activated
+2. Install [ClearDB MySQL](https://elements.heroku.com/addons/cleardb) and [Redis Enterprise Cloud](https://elements.heroku.com/addons/rediscloud) add-ons and get the credentials in `ConfigVars`
+3. Retrieve your AWS API KEY (For S3), bucket name, region
+3. Create your own `.env` file in the `/GoServer` root
+4. Save all credentials inside
+5. All `os.GetEnv()` calls should work properly and all dependencies should work.
+
+Template:
+```go
+//* = your values
+//S3
+AWS_ACCESS_KEY = *
+AWS_SECRET_KEY = *
+AWS_S3_REGION = *
+S3_BUCKET = *
+
+//MySQL
+DB_NAME = *
+DB_PASSWORD = *
+DB_USERNAME = *
+DB_URL = *
+
+//Redis
+REDIS_URL = *
+REDIS_PORT = *
+REDIS_PASSWORD = *
+
+//Toggle CreateAccount to use Stored Procedure
+USE_STORED_PROCEDURE = TRUE
+
+//Toggle AddListingComment to check spam
+CONFIG_ANTISPAM = TRUE
+
+//Set in Heroku ConfigVars, change logging time zone
+TZ = Asia/Singapore
+```
+
+
+
 <h1>Deployment</h1>
 
 <h2>CI/CD</h2>
