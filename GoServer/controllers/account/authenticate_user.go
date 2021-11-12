@@ -48,13 +48,18 @@ func ValidateAuthenticateUser(c *gin.Context, input *models.AuthenticateUser) er
 }
 
 func ValidateAuthenticateUserInput(c *gin.Context, input *models.AuthenticateUser) error {
+	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name format is invalid.")})
+		errormsg := fmt.Sprintf("user_name format is invalid. input :%v", input.GetUserName())
+		return errors.New(errormsg)
+	}
 	if input.GetUserName() == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot be empty.")})
 		return errors.New("user_name cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
-		errormsg := fmt.Sprintf("item_name length cannot exceed %v. input :%v\n", models.MaxStringLength, len(input.GetUserName()))
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		errormsg := fmt.Sprintf("user_name length cannot exceed %v. input :%v\n", models.MaxStringLength, len(input.GetUserName()))
 		return errors.New(errormsg)
 	}
 	if input.GetUserPassword() == "" {
