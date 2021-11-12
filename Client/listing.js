@@ -9,7 +9,7 @@ function encodeImageFileAsURL(inputFileToLoad) {
       fileReader.onload = function(fileLoadedEvent) {
         var srcData = fileLoadedEvent.target.result; // <--- data: base64
         console.log("srcData: " + srcData);
-        var newImage = document.createElement('image');
+        var newImage = document.createElement('img');
         newImage.src = srcData;
 
         document.getElementById("imgTest").innerHTML = newImage.outerHTML;
@@ -31,7 +31,7 @@ function createListing(userID)
     var locationValue = location.options[location.selectedIndex].value;
 
     var base64String = "";
-    const file = document.getElementById("image").files[0];
+    const file = document.getElementById("img").files[0];
     var reader = new FileReader();
       
     reader.onload = function () {
@@ -927,8 +927,8 @@ function editListing(itemID)
 
 
     var base64String = "";
-    const file1 = document.getElementById("image").files[0];
-    const file2 = document.getElementById("image").files[1];
+    const file1 = document.getElementById("img").files[0];
+    const file2 = document.getElementById("img").files[1];
     console.log("file1: " + file1);
     console.log("file2: " + file2);
     if(file1)
