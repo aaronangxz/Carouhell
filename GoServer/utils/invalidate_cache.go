@@ -11,6 +11,7 @@ import (
 var (
 	GetSingleListingByUserIDCacheKey = "get_single_listing_by_itemid:"
 	GetUserWalletDetailsCacheKey     = "get_user_wallet_details:"
+	GetUserLikedListingsCacheKey     = "get_user_liked_listings:"
 )
 
 func InvalidateCache(service string, ID uint32) error {
