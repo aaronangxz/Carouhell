@@ -183,12 +183,12 @@ func CreateAccount(c *gin.Context) {
 			log.Printf("Error during DB query: %v", result.Error.Error())
 			return
 		}
+	}
 
-		if result.RowsAffected > 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
-			log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
-			return
-		}
+	if result.RowsAffected > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("User name or User email already exists. Log in instead.")})
+		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
+		return
 	}
 
 	account := models.Account{
