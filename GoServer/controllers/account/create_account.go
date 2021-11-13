@@ -173,7 +173,9 @@ func CreateAccount(c *gin.Context) {
 
 	//normal queries
 	//check if user name / user email exists
-	result := models.DB.Raw("SELECT * FROM acc_tab WHERE user_name = ? OR user_email = ?", input.UserName, input.UserEmail).Scan(&hold)
+	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE user_name = '%v' OR user_email = '%v'", input.GetUserName(), input.GetUserEmail())
+	result := models.DB.Raw(query).Scan(&hold)
+	log.Println(query)
 
 	if result.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -181,12 +183,12 @@ func CreateAccount(c *gin.Context) {
 			log.Printf("Error during DB query: %v", result.Error.Error())
 			return
 		}
+	}
 
-		if result.RowsAffected > 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
-			log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
-			return
-		}
+	if result.RowsAffected > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("User name or User email already exists. Log in instead.")})
+		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
+		return
 	}
 
 	account := models.Account{
