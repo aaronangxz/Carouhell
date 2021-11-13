@@ -173,7 +173,9 @@ func CreateAccount(c *gin.Context) {
 
 	//normal queries
 	//check if user name / user email exists
-	result := models.DB.Raw("SELECT * FROM acc_tab WHERE user_name = ? OR user_email = ?", input.UserName, input.UserEmail).Scan(&hold)
+	query := fmt.Sprintf("SELECT * FROM acc_tab WHERE user_name = %v OR user_email = %v", input.GetUserName(), input.GetUserEmail())
+	result := models.DB.Raw(query).Scan(&hold)
+	log.Println(query)
 
 	if result.Error != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
