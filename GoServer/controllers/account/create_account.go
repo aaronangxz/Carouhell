@@ -13,7 +13,6 @@ import (
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -178,11 +177,10 @@ func CreateAccount(c *gin.Context) {
 	log.Println(query)
 
 	if result.Error != nil {
-		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
-			log.Printf("Error during DB query: %v", result.Error.Error())
-			return
-		}
+		// if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(result.Error)})
+		log.Printf("Error during DB query: %v", result.Error.Error())
+		return
 	}
 
 	if result.RowsAffected > 0 {
