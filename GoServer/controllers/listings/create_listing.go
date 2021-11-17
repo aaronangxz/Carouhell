@@ -223,5 +223,9 @@ func CreateListing(c *gin.Context) {
 		log.Printf("Failed to marshal JSON results: %v", err.Error())
 	}
 
+	if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetSellerID()); err != nil {
+		log.Printf("Error during CreateListing InvalidateCache: %v", err.Error())
+	}
+
 	log.Printf("Successful: CreateListing. Data: %s", data)
 }

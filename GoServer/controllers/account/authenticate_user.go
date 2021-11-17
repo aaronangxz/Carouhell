@@ -158,6 +158,11 @@ func AuthenticateUser(c *gin.Context) {
 		"refresh_token": token.RefreshToken,
 	}
 
+	//invalidate cache of seller profile
+	if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, hold.GetUserID()); err != nil {
+		log.Printf("Error during AuthenticateUser InvalidateCache: %v", err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully authenticated user."), "Data": resp, "Token": tokens})
 	log.Printf("Successful: AuthenticateUser. user_id: %v", hold.GetUserID())
 }
