@@ -16,7 +16,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	models.LoadEnv() //loading env
+	//models.LoadEnv() //loading env
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
