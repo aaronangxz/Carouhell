@@ -157,6 +157,10 @@ func AddUserReview(c *gin.Context) {
 
 	updatedRatings.Ratings = count
 
+	if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetSellerID()); err != nil {
+		log.Printf("Error during AddUserReview InvalidateCache: %v", err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully added review."), "Data": updatedRatings})
 	log.Println("Successful: AddUserReview.")
 }
