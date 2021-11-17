@@ -43,5 +43,6 @@ func InvalidateSellerCacheUsingItemID(service string, itemID uint32) error {
 	if err := InvalidateCache(GetUserDetailsCacheKey, hold.GetLSellerID()); err != nil {
 		log.Printf("Error during invalidateSellerCacheUsingItemID: %v", err.Error())
 	}
+	log.Println("Successfull: InvalidateSellerCacheUsingItemID")
 	return nil
 }
