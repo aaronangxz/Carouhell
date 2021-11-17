@@ -1,6 +1,7 @@
 package account
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 )
 
 func GetUserDetails(c *gin.Context) {
@@ -50,6 +52,28 @@ func GetUserDetails(c *gin.Context) {
 			log.Printf("Error during FetchAuth: %v, user is not logged in.\n", err)
 		}
 		isLoggedIn = true
+	}
+
+	//Redis key
+	key := fmt.Sprint("get_user_details:", input.GetUserID())
+
+	//check redis
+	val, err := models.RedisClient.Get(models.Ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			log.Printf("No result of %v in Redis, reading from DB", key)
+		} else {
+			log.Printf("Error while reading from redis: %v", err.Error())
+		}
+	} else {
+		redisResp := models.GetUserDetailsResponse{}
+		err := json.Unmarshal([]byte(val), &redisResp)
+		if err != nil {
+			log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
+		}
+		c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved user details."), "Data": redisResp})
+		log.Printf("Successful: GetUserDetails: %v - Cached", input.GetUserID())
+		return
 	}
 
 	//retrieve acc info
@@ -136,6 +160,19 @@ func GetUserDetails(c *gin.Context) {
 	if listingsResp == nil {
 		userDetails.UserListings = []models.GetUserListingsResponse{}
 		userDetails.ListingCount = uint32(0)
+	}
+
+	//Retrieved new data, set to Redis
+	data, err := json.Marshal(userDetails)
+	if err != nil {
+		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
+	}
+
+	expiry := 60 * time.Second
+	if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
+		log.Printf("Error while writing to redis: %v", err.Error())
+	} else {
+		log.Printf("Written %v to redis", key)
 	}
 
 	mainend := time.Now().Unix()

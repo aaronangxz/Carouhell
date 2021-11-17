@@ -46,5 +46,10 @@ func DeleteListing(c *gin.Context) {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
 	}
 
+	//invalidate cache of seller profile
+	if err := utils.InvalidateSellerCacheUsingItemID(utils.GetUserDetailsCacheKey, input.GetItemID()); err != nil {
+		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully delete listing.")})
 }
