@@ -34,7 +34,7 @@ func isSpam(c *gin.Context, input models.AddListingCommentsRequest) bool {
 	}
 
 	if count > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("ANTISPAM toggle is on. Not allowed to comment again within 60 secs.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Not allowed to comment again within 60 secs.")})
 		return true
 	}
 	return false
@@ -76,13 +76,13 @@ func AddListingComments(c *gin.Context) {
 	}
 
 	if !utils.ValidateMaxStringLength(input.GetComment()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("comment cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Comment cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		log.Printf("comment length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetComment()))
 		return
 	}
 
 	if input.GetComment() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("comment canot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Comment canot be empty.")})
 		log.Println("comment canot be empty.")
 		return
 	}

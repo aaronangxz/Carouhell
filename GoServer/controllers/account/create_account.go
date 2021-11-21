@@ -30,27 +30,27 @@ func HashSecret(password string) (string, error) {
 func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserName == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot be empty.")})
 			errormsg := "item_image cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.UserName) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("item_image must be string type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username must be string type.")})
 			errormsg := fmt.Sprintf("item_image must be string type. input: %v", input.GetUserName())
 			return errors.New(errormsg)
 		}
 		if input.UserEmail == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email cannot be empty.")})
 			errormsg := "user_email cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.UserEmail) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email must be string type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email must be string type.")})
 			errormsg := fmt.Sprintf("user_email must be string type. input: %v", input.GetUserName())
 			return errors.New(errormsg)
 		}
 		if input.UserPassword == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be empty.")})
 			errormsg := "user_password cannot be empty"
 			return errors.New(errormsg)
 		}
@@ -63,39 +63,39 @@ func ValidateCreateAccountRequest(c *gin.Context, input *models.CreateAccountReq
 
 func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountRequest) error {
 	if input.GetUserName() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot be empty.")})
 		return errors.New("user_name cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("user_name length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserName()))
 		return errors.New(errormsg)
 	}
 	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name can only contains alphanumeric characters")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username can only contain alphanumeric characters.")})
 		errormsg := fmt.Sprintf("user_name can only contains alphanumeric characters. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
 	if input.GetUserEmail() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email cannot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email cannot be empty.")})
 		return errors.New("user_email cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserEmail()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("user_email length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetUserEmail()))
 		return errors.New(errormsg)
 	}
 	if !utils.IsContainsAtSign(input.GetUserEmail()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_email format is invalid")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email format is invalid.")})
 		errormsg := fmt.Sprintf("user_email format is invalid. input :%v", input.GetUserEmail())
 		return errors.New(errormsg)
 	}
 	if input.GetUserPassword() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be empty.")})
 		return errors.New("user_password cannot be empty")
 	}
 	if len(input.GetUserPassword()) < 6 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be shorter than 6 chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be shorter than 6 chars.")})
 		return errors.New("user_password cannot be shorter than 6 chars")
 	}
 	return nil
@@ -158,7 +158,7 @@ func CreateAccount(c *gin.Context) {
 			return
 		} else {
 			if spResp.GetStatus() == -1 {
-				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user already exists.")})
+				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists.")})
 				log.Printf("user already exists: %v / %v\n", input.GetUserName(), input.GetUserEmail())
 				return
 			}
@@ -184,7 +184,7 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	if result.RowsAffected > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("User name or User email already exists. Log in instead.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists. Please log in instead.")})
 		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
 		return
 	}
