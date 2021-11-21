@@ -222,6 +222,9 @@ func PurchaseSingleItem(c *gin.Context) {
 	if err := utils.InvalidateCache(utils.GetUserWalletDetailsCacheKey, input.GetUserID()); err != nil {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
 	}
+	if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
+		log.Printf("Error during InvalidateCache: %v", err.Error())
+	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully purchased listing."), "Data": resp})
 
