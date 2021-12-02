@@ -228,11 +228,13 @@ func PurchaseSingleItem(c *gin.Context) {
 	//dont invalidate if quantity before purchase is already within 'selling fast' & 'low stock' stage
 	if ((listingHold.GetItemQuantity())/listingHold.GetItemStock())*100 > 25 &&
 		((listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock())*100 <= 25 {
+		log.Printf("item state is selling fast: %v", (listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock()*100)
 		if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
 			log.Printf("Error during InvalidateCache: %v", err.Error())
 		}
 	} else if ((listingHold.GetItemQuantity())/listingHold.GetItemStock())*100 > 10 &&
 		((listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock())*100 <= 10 {
+		log.Printf("item state is low in stock: %v", (listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock()*100)
 		if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
 			log.Printf("Error during InvalidateCache: %v", err.Error())
 		}
