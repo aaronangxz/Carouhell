@@ -9,7 +9,7 @@ type Notification struct {
 }
 
 type GetUserNotificationsRequest struct {
-	UserID *uint32
+	UserID *uint32 `json:"user_id"`
 }
 
 func (r *GetUserNotificationsRequest) GetUserID() uint32 {
@@ -20,5 +20,5 @@ func (r *GetUserNotificationsRequest) GetUserID() uint32 {
 }
 
 type GetUserNotificationsResponse struct {
-	NotificationsList []Notification
+	NotificationsList []Notification `json:"notification_list"`
 }
