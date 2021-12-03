@@ -38,6 +38,36 @@ var (
 		" (SELECT l_item_id, item_name FROM listing_tab) "+
 		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id"+
 		" ORDER BY transaction_ctime DESC", constant.TRANSACTION_TYPE_TOPUP)
+
+	NotificationQuery = fmt.Sprintf("SELECT user_info.user_name,"+
+		"item_info.item_name,"+
+		"notification_history.notification_type,"+
+		"notification_history.notification_string,"+
+		"notification_history.ctime"+
+		"FROM (SELECT user_id, item_id,notification_type,notification_string,ctime"+
+		"FROM (SELECT rt_user_id AS user_id, rt_item_id AS item_id, reaction_type AS notification_type, comment AS notification_string, ctime"+
+		"FROM listing_reactions_tab"+
+		"WHERE rt_item_id IN (SELECT l_item_id"+
+		"FROM listing_tab"+
+		"WHERE l_seller_id = ?)"+
+		"UNION ALL"+
+		"SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
+		"FROM user_review_tab"+
+		"WHERE rv_seller_id = ?"+
+		"UNION ALL"+
+		"SELECT lt_user_id AS user_id, lt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, transaction_ctime AS ctime"+
+		"FROM listing_transactions_tab"+
+		"WHERE lt_item_id IN (SELECT l_item_id"+
+		"FROM listing_tab"+
+		"WHERE l_seller_id = ?)) "+
+		"AS user_events) AS notification_history"+
+		"LEFT JOIN (SELECT l_item_id, item_name"+
+		"FROM listing_tab) AS item_info"+
+		"ON notification_history.item_id = item_info.l_item_id"+
+		"LEFT JOIN (SELECT a_user_id, user_name"+
+		"FROM acc_tab) AS user_info"+
+		"ON notification_history.user_id = user_info.a_user_id"+
+		"ORDER  BY ctime DESC ;", constant.NOTIFICATION_TYPE_REVIEW, constant.NOTIFICATION_TYPE_SOLD)
 )
 
 //Fixed query, not possible to append WHERE clause
@@ -229,4 +259,8 @@ func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE MATCH(l.item_name,l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)"+
 		" AND l.l_seller_id = a.a_user_id  AND l.item_status = %v", user_id, constant.LISTING_REACTION_TYPE_LIKE, keyword, keyword, constant.LISTING_REACTION_TYPE_LIKE, keyword, constant.ITEM_STATUS_NORMAL)
+}
+
+func GetNotificationQuery() string {
+	return NotificationQuery
 }

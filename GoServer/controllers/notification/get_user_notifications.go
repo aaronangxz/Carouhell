@@ -11,7 +11,8 @@ import (
 
 func GetUserNotifications(c *gin.Context) {
 	var (
-		input models.GetUserNotificationsRequest
+		input         models.GetUserNotificationsRequest
+		notifications models.GetUserNotificationsResponse
 	)
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserID == nil {
@@ -25,4 +26,13 @@ func GetUserNotifications(c *gin.Context) {
 			return
 		}
 	}
+
+	if err := models.DB.Raw(utils.GetNotificationQuery(), input.GetUserID(), input.GetUserID(), input.GetUserID()).Scan(&notifications).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during GetUserNotifications - get notifications DB query: %v", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved notifications."), "Data": notifications})
+	log.Printf("Successful: GetUserNotifications: %v - DB", input.GetUserID())
 }

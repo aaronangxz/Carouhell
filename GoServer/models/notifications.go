@@ -1,15 +1,22 @@
 package models
 
 type Notification struct {
-	NotificationID    *uint32 `json:"notification_id" gorm:"primary_key"`
-	NotificationText  *uint32 `json:"notification_text"`
-	NotificationCTime *int64  `json:"notification_ctime"`
-	NotificationType  *uint32 `json:"notification_type"`
-	IsRead            *uint32
+	UserName           *string `json:"user_name"`
+	ItemName           *string `json:"item_name"`
+	NotificationType   *uint32 `json:"notification_type"`
+	NotificationString *string `json:"notification_string"`
+	Ctime              *int64  `json:"ctime"`
 }
 
 type GetUserNotificationsRequest struct {
 	UserID *uint32
+}
+
+func (r *GetUserNotificationsRequest) GetUserID() uint32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
 }
 
 type GetUserNotificationsResponse struct {

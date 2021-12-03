@@ -7,6 +7,7 @@ import (
 	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
+	"github.com/aaronangxz/TIC2601/controllers/notification"
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -16,7 +17,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	//models.LoadEnv() //loading env
+	models.LoadEnv() //loading env
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
@@ -74,6 +75,9 @@ func main() {
 	r.POST("/create_user_wallet", wallet.CreateUserWallet)
 	r.POST("/get_user_wallet_details", wallet.GetUserWalletDetails)
 	r.POST("/top_up_user_wallet", wallet.TopUpUserWallet)
+
+	//***************** Notifications Page *****************
+	r.POST("/get_user_notifications", notification.GetUserNotifications)
 
 	r.Run()
 }
