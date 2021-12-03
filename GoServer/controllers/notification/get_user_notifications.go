@@ -37,6 +37,7 @@ func GetUserNotifications(c *gin.Context) {
 	}
 
 	resp.NotificationsList = notifications
+	resp.NotificationsCount = uint32(len(notifications))
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully retrieved notifications."), "Data": resp})
 	log.Printf("Successful: GetUserNotifications: %v - DB", input.GetUserID())
