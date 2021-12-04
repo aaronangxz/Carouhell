@@ -34,17 +34,17 @@ function displayNotifications(notification)
             //like
             case 0: 
             html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> liked your listing <b>' + notification[i].item_name + '</b>.</div>'
+                '<div class="col-10"><b>'+ notification[i].user_name +'</b> liked <b>' + notification[i].item_name + '</b>.</div>'
                 break;
             //comment
             case 1:
                 html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> commented on your listing <b>' + notification[i].item_name + '</b> : "' + notification[i].notification_string +'".</div>'
+                '<div class="col-10"><b>'+ notification[i].user_name +'</b> commented on <b>' + notification[i].item_name + '</b> : "' + notification[i].notification_string +'".</div>'
                 break;
             //sold
             case 2:
                 html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> purchased your listing <b>' + notification[i].item_name + '</b>.</div>'
+                '<div class="col-10"><b>'+ notification[i].user_name +'</b> purchased <b>' + notification[i].item_name + '</b>.</div>'
                 break;
             //review
             case 3:
