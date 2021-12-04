@@ -813,7 +813,7 @@ function displayUserReviews(data)
         }else if (data.user_reviews[i].ratings == 3){
             rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
         }else if (data.user_reviews[i].ratings == 4){
-            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span>'
+            rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="far fa-star" style="color:gold"></i></span>'
         }else if (data.user_reviews[i].ratings == 5){
             rate += '<span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span><span><i class="fas fa-star" style="color:gold"></i></span>'
         }
