@@ -16,7 +16,10 @@ function getWalletDetails()
         }
         else // successful
         {
-            document.getElementById("walletBalance").innerHTML = "SGD $" + (parseInt(data.Data.wallet_info.wallet_balance)/100).toLocaleString() ;
+            document.getElementById("walletBalance").innerHTML = "SGD $" + (parseInt(data.Data.wallet_info.wallet_balance)/100).toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              }) ;
             displayWalletTransactions(data.Data.transactions);
         }
     })
