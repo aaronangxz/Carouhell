@@ -49,7 +49,7 @@ var (
 		" FROM listing_reactions_tab"+
 		" WHERE rt_item_id IN (SELECT l_item_id"+
 		" FROM listing_tab"+
-		" WHERE l_seller_id = ?)"+
+		" WHERE l_seller_id = ?) AND rt_user_id != ?"+
 		" UNION ALL"+
 		" SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
 		" FROM user_review_tab"+
