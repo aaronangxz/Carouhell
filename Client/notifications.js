@@ -26,6 +26,9 @@ function displayNotifications(notification)
 {
     console.log(notification);
     var html = '<h3>Recent Notifications</h3>';
+    if (notification.length == 0){
+        html +='<p>No notifications yet.</p>'
+    }
     for(var i = 0 ; i<notification.length; i++)
     {
         html += '<div class="row p-1 align-items-center h-100">';
@@ -33,23 +36,27 @@ function displayNotifications(notification)
         {
             //like
             case 0: 
-            html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> liked <b>' + notification[i].item_name + '</b>.</div>'
+            html +=
+                '<div class="col-12"><b>'+ notification[i].user_name +'</b> liked <b>' + notification[i].item_name + '</b>. <font style="opacity:.6" size="2px"><i>'+
+                Math.ceil((Date.now()/1000 - notification[i].ctime) / 86400) +' days ago</i></font></div>'
                 break;
             //comment
             case 1:
-                html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> commented on <b>' + notification[i].item_name + '</b> : "' + notification[i].notification_string +'".</div>'
+                html +=
+                '<div class="col-12"><b>'+ notification[i].user_name +'</b> commented on <b>' + notification[i].item_name + '</b> : "' + notification[i].notification_string +'". <font style="opacity:.6" size="2px"><i>'+
+                Math.ceil((Date.now()/1000 - notification[i].ctime) / 86400) +' days ago</i></font></div>'
                 break;
             //sold
             case 2:
-                html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> purchased <b>' + notification[i].item_name + '</b>.</div>'
+                html +=
+                '<div class="col-10"><b>'+ notification[i].user_name +'</b> purchased <b>' + notification[i].item_name + '</b>. <font style="opacity:.6" size="2px"><i>'+
+                Math.ceil((Date.now()/1000 - notification[i].ctime) / 86400) +' days ago</i></font></div>'
                 break;
             //review
             case 3:
-                html +='<div class="col-2">'+convertUnixToTimeStamp(notification[i].ctime)+ ' ' + convertUnixToTimeStampDetailTime(notification[i].ctime)+'</div>'+
-                '<div class="col-10"><b>'+ notification[i].user_name +'</b> left a review : "' + notification[i].notification_string +'".</div>'
+                html +=
+                '<div class="col-10"><b>'+ notification[i].user_name +'</b> left a review : "' + notification[i].notification_string +'". <font style="opacity:.6" size="2px"><i>'+
+                Math.ceil((Date.now()/1000 - notification[i].ctime) / 86400) +' days ago</i></font></div>'
                 break;
         }
         html += '</div>';
