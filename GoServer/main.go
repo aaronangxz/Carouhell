@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/aaronangxz/TIC2601/auth"
+	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notification"
@@ -17,7 +18,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	//models.LoadEnv() //loading env
+	models.LoadEnv() //loading env
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
@@ -25,6 +26,10 @@ func main() {
 	//Allow all CORS
 	//r.Use(cors.Default())
 	r.Use(models.CORSMiddleware())
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"RespMeta": "Welcome to Carouhell's API endpoint!", "List": constant.GetAPIDetails()})
+	})
 
 	//Version endpoint
 	r.GET("/version", func(c *gin.Context) {
