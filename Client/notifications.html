@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Carouhell - My Notifications</title>
+  <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="index.js"></script>
+  <script src="notifications.js"></script>
+  <script> 
+    $(function(){
+      $("#header").load("navbar.html");
+    });
+    getUserNotifications();
+    </script> 
+    <style>
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    #imgContainer{
+      height: 80px;
+    }
+    .center {
+      text-align: center;
+    }
+    #walletTransactions .row {
+        border-top: 1px solid gray;
+    }
+    #walletTransactions{
+        font-size: 1.25em;
+    }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container center mt-3">
+        <div class="row">
+            <div class="col">
+                <span><i class="fas fa-bell fa-5x " style="color:gold"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3 h-100" id="notifications">
+    </div>
+
+  </body>
+</html>

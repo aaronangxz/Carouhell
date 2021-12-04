@@ -3,13 +3,13 @@
 
 ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/aaronangxz/Carouhell?filename=GoServer%2Fgo.mod)
 [![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) 
-![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell) ![GitHub repo size](https://img.shields.io/github/repo-size/aaronangxz/Carouhell) 
+![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell)
 
 
 <h2>Master Branch (Live)</h2>
 
 - API endpoints are deployed on https://tic2601-t11.herokuapp.com
-- Client is deployed on https://carouhell-tic2601.herokuapp.com/index.html
+- Client is deployed on https://carouhell-sg.herokuapp.com
 - Do not merge WIP features here, merge to test branch instead
 
 <h2>Work Flow</h2>
@@ -102,11 +102,22 @@ TZ = Asia/Singapore
 
 <h2>Manual Deployment</h2>
 
+<h3>Backend</h3>
+
 1. Follow steps above to build Docker imgage.
 2. Login via `heroku container:login`
 3. Tag image with Heroku registry link `docker tag <imageid> registry.heroku.com/tic2601-t11/web`
 4. Push the tagged image `docker push registry.heroku.com/tic2601-t11/web`
 5. Release image `heroku container:release web -a tic2601-t11`
+
+<h3>Frontend</h3>
+
+1. Set remote for Front End `heroku git:remote --remote carouhell-client -a carouhell-sg`
+2. Push to `carouhell-sg` via git subtree
+
+```
+git push carouhell-client `git subtree split --prefix Client master`:refs/heads/master --force
+```
 
 <h1>Database Commands</h1>
 

@@ -26,6 +26,7 @@ function resetNavBar()
         document.getElementById("favourites").style.display = "block";
         document.getElementById("wallet").style.display = "block";
         document.getElementById("logout").style.display = "block";
+        document.getElementById("notification").style.display = "block";
 
         return true;
     }
@@ -39,6 +40,7 @@ function resetNavBar()
         document.getElementById("favourites").style.display = "none";
         document.getElementById("wallet").style.display = "none";
         document.getElementById("logout").style.display = "none";
+        document.getElementById("notification").style.display = "none";
 
         return false;
     }
