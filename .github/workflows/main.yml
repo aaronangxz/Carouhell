@@ -50,6 +50,10 @@ jobs:
 #         shell: bash
       - name: Login Heroku
         run: heroku container:login
+      - name: Set FE remote
+        run: heroku git:remote --remote carouhell-client -a carouhell-sg
+      - name: Deploy FE
+        run: git subtree push --prefix Client carouhell-client master
       - name: Build Image
         working-directory: ./GoServer
         run: docker-compose build
