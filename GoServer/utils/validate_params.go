@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"unicode"
 
 	"github.com/aaronangxz/TIC2601/models"
@@ -67,4 +68,13 @@ func IsContainsAtSign(a string) bool {
 		}
 	}
 	return false
+}
+
+func RemoveSpecialChar(a string) string {
+	for _, char := range a {
+		if !unicode.IsLetter(char) && !unicode.IsNumber(char) && !unicode.IsSpace(char) {
+			a = strings.ReplaceAll(a, string(char), "")
+		}
+	}
+	return a
 }
