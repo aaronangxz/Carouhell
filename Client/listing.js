@@ -172,6 +172,7 @@ function viewListingByItemId(itemID)
             console.log(data);
             displayItemContent(data.Data);
             displayItemComments(data.Data.listing_comments, data.Data.item_id);
+            getRecommendedListingsByItemId(data.Data.item_id);
             document.title = 'Carouhell - '+data.Data.item_name;
         })
         .catch(error => console.log(error)); 
@@ -179,20 +180,23 @@ function viewListingByItemId(itemID)
 
 function getRecommendedListingsByItemId(itemID)
 {
-    fetch('https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid', {
+    fetch('http://localhost:8080/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
                 'Authorization': getToken(),
                 'Content-Type': 'application/json'
             }, 
             body: JSON.stringify({
-                "item_id": parseInt(itemID)
+                "item_id": parseInt(itemID),
+                "user_id": parseInt(getCurrentUserID())
             })
         })
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            recommendedListing(data.Data);
+            for(const d of data.Data){
+                displayListing(d,'true');
+             }
         })
         .catch(error => console.log(error)); 
 }
@@ -357,7 +361,7 @@ function displayItemComments(data, itemID)
 {
     var comments =
     '<div class="row mt-3">' +
-        '<div class="col"><h3>Comments <h3></div>'+
+        '<div class="col"><h3>💬 Comments <h3></div>'+
     '</div>';
     for(var i = 0; i < data.length; i++)
     {
@@ -383,75 +387,6 @@ function displayItemComments(data, itemID)
     '</form>';
 
     document.getElementById("commentsSection").innerHTML = comments;
-}
-
-function recommendedListing(d)
-{
-    console.log(d);
-
-    var status = ""
-    if (d.item_status == 2){
-        status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
-    }else if (d.item_stock - d.item_quantity == 0){
-        status +='<span class="badge badge-pill badge-success">Available</span>'
-    }else if (((d.item_quantity/d.item_stock) * 100) <= 10){
-        status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
-    }else if (((d.item_quantity/d.item_stock) * 100) <= 25  || d.item_stock - d.item_quantity <= 5){
-        status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
-    }else if (d.item_status == 1){
-        status +='<span class="badge badge-pill badge-success">Available</span>'
-    }
-
-    var likes = ""
-    if (d.listing_likes >= 10){
-        likes += '<span class="badge badge-pill badge-light">Trending</span>'
-    }
-
-    document.getElementById("recommendedListings").innerHTML += 
-    '<div class="col-md-4 mt-4">'+
-    '<div class="card" id="'+d.item_id+'">'+
-        '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
-        '<div class="card-body pb-5">'+
-        '<div class="container">'+
-            '<div class="row">'+
-                '<div class="col text-center" id="imgContainer">'+
-                    '<img class="img-fluid" src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" />'+
-                '</div>'+
-            '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ d.item_name +'</h5>'+
-                '</div>'+
-            '</div>'+ 
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }) +'</h5>'+
-                '</div>'+                       
-            '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+
-                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');">'+checkIfUserLikedListing(d.is_liked)+'</a> ' + d.listing_likes + 
-                    '</h5>'+
-                '</div>'+
-            '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ status + ' ' + likes +'</h5>'+
-                '</div>'+
-            '</div>'+
-        '</div>'+
-        '</div>'+
-        '<div class="card-footer">'+
-                '<div class="col text-center">'+
-                    '<a href="javascript:void(0);" onclick="toViewListing('+d.item_id+');" class="btn btn-secondary" >View Listing</a> '+
-                '</div>'+
-            '</div>'+ 
-    '</div>'+
-    '</div>'; 
 }
 
 function addListingLikes(itemID)
@@ -510,9 +445,15 @@ function toViewListing(itemID)
     }
 }
 
-function displayListing(d)
+function displayListing(d, isRecommend)
 {
     console.log(d);
+
+    var bool_value = isRecommend == 'true';
+    var element = "cards"
+    if (bool_value === true){
+        element = "recommendedListings"
+    }
 
     var status = ""
     if (d.item_status == 2){
@@ -532,7 +473,7 @@ function displayListing(d)
         likes += '<span class="badge badge-pill badge-light">Trending</span>'
     }
 
-    document.getElementById("cards").innerHTML += 
+    document.getElementById(element).innerHTML += 
     '<div class="col-md-4 mt-4">'+
     '<div class="card" id="'+d.item_id+'">'+
         '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
@@ -540,7 +481,7 @@ function displayListing(d)
         '<div class="container">'+
             '<div class="row">'+
                 '<div class="col text-center" id="imgContainer">'+
-                    '<img class="img-fluid" src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" />'+
+                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" class="img-cover img-fluid" />'+
                 '</div>'+
             '</div>'+
             '<div class="row">'+
