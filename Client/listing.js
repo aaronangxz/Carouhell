@@ -180,7 +180,7 @@ function viewListingByItemId(itemID)
 
 function getRecommendedListingsByItemId(itemID)
 {
-    fetch('http://localhost:8080/get_recommended_listings_by_itemid', {
+    fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
                 'Authorization': getToken(),
