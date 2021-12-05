@@ -266,7 +266,7 @@ func GetNotificationQuery() string {
 }
 
 func GetRecommendedListingsByItemIdQuery(itemId uint32, userId uint32, itemName string, sellerId uint32, itemCategory uint32) string {
-	return fmt.Sprintf("listing_tab.*, acc_tab.user_name AS seller_name, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
+	return fmt.Sprintf("SELECT listing_tab.*, acc_tab.user_name AS seller_name, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
 		" (CASE WHEN l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab, listing_tab"+
