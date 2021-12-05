@@ -266,12 +266,12 @@ func GetNotificationQuery() string {
 }
 
 func GetRecommendedListingsByItemIdQuery(itemId uint32, userId uint32, itemName string, sellerId uint32, itemCategory uint32) string {
-	return fmt.Sprintf("SELECT *, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
+	return fmt.Sprintf("listing_tab.*, acc_tab.user_name AS seller_name, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
 		" (CASE WHEN l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
-		" FROM listing_tab"+
+		" FROM acc_tab, listing_tab"+
 		" LEFT JOIN listing_reactions_tab ON listing_tab.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v WHERE"+
-		" (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR l_seller_id = %v OR item_category = %v)"+
+		" listing_tab.l_seller_id = acc_tab.a_user_id AND (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR l_seller_id = %v OR item_category = %v)"+
 		" AND (l_item_id != %v AND item_status = %v)"+
 		" GROUP BY l_item_id ORDER BY relevance DESC"+
 		" LIMIT 3", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, sellerId, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
