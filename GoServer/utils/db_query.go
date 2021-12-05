@@ -264,3 +264,15 @@ func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 func GetNotificationQuery() string {
 	return NotificationQuery
 }
+
+func GetRecommendedListingsByItemIdQuery(itemId uint32, userId uint32, itemName string, itemCategory uint32) string {
+	return fmt.Sprintf("SELECT *, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
+		" (CASE WHEN l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
+		" COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" FROM listing_tab"+
+		" LEFT JOIN listing_reactions_tab ON l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v WHERE"+
+		" (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR item_category = %v)"+
+		" AND (l_item_id != %v AND item_status = %v)"+
+		" ORDER BY relevance DESC, listing_likes DESC"+
+		" LIMIT 3", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
+}
