@@ -60,7 +60,7 @@ func GetRecommendedListingsByItemId(c *gin.Context) {
 	sanitizedItemName := utils.RemoveSpecialChar(hold.GetItemName())
 
 	//get recommendations
-	recommendationQuery := fmt.Sprintln(utils.GetRecommendedListingsByItemIdQuery(input.GetItemID(), input.GetUserID(), sanitizedItemName, hold.GetItemCategory()))
+	recommendationQuery := fmt.Sprintln(utils.GetRecommendedListingsByItemIdQuery(input.GetItemID(), input.GetUserID(), sanitizedItemName, hold.GetLSellerID(), hold.GetItemCategory()))
 	log.Println(recommendationQuery)
 
 	recommendationResult := models.DB.Raw(recommendationQuery).Scan(&resp)
