@@ -1,17 +1,55 @@
+function setLocalStorage(key, value, ttl)
+{
+    const item = {
+		value: value,
+		expiry: (Date.now()/1000) + ttl,
+	}
+    localStorage.setItem(key, JSON.stringify(item))
+}
+
 function getCurrentUserID()
 {
-    if(sessionStorage.getItem('userID') != null)
-        return sessionStorage.getItem('userID');
+    const itemStr = localStorage.getItem('userID')
+    if (!itemStr) {
+		return -1
+	}
+
+    const item = JSON.parse(itemStr)
+
+	const now = (Date.now()/1000)
+	// compare the expiry time of the item with the current time
+	if (now > item.expiry) {
+		// If the item is expired, delete the item from storage
+		localStorage.removeItem(key)
+		return -1
+	}
+	return item.value
+}
+
+function setCurrentUserName(name)
+{
+    localStorage.setItem('userName',name)
+}
+
+function getCurrentUserName()
+{
+    if(localStorage.getItem('userName') != null || localStorage.getItem('userName') != "")
+        return localStorage.getItem('userName');
     else
-        return -1;
+        return null;
 }
 
 function getToken()
 {
-    if(sessionStorage.getItem('token') != null || sessionStorage.getItem('token') != "")
-        return sessionStorage.getItem('token');
+    if(localStorage.getItem('token') != null || localStorage.getItem('token') != "")
+        return localStorage.getItem('token');
     else
         return -1;
+}
+
+function setPrevLocation()
+{
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getPrevLocation()
@@ -22,10 +60,23 @@ function getPrevLocation()
         return -1;
 }
 
+function setPrevSecureLocation()
+{
+    sessionStorage.setItem('prevSecureLocation',window.location)
+}
+
+function getPrevSecureLocation()
+{
+    if(sessionStorage.getItem('prevSecureLocation') != null || sessionStorage.getItem('prevSecureLocation') != "")
+        return sessionStorage.getItem('prevSecureLocation');
+    else
+        return -1;
+}
+
 /* constantly checking if need to reset Nav Bar links according to user's status(logged in?) */
 function resetNavBar()
 {
-    if(sessionStorage.getItem('userID') != null) // user logged in
+    if(localStorage.getItem('userID') != null) // user logged in
     {
         document.getElementById("register").style.display = "none";
         document.getElementById("login").style.display = "none";
@@ -147,9 +198,19 @@ function loginUser()
             }
             else // successful
             {
-                sessionStorage.setItem('userID',data.Data.user_id);
-                sessionStorage.setItem('token', 'Bearer ' + data.Token.access_token);
-                window.location.href = getPrevLocation();
+                setLocalStorage('userID',data.Data.user_id,604800);
+                // localStorage.setItem('userID',data.Data.user_id);
+                localStorage.setItem('token', 'Bearer ' + data.Token.access_token);
+                setCurrentUserName(username);
+                console.log(username)
+                //document.getElementById('navbar-text').innerHTML += username
+                
+
+                if (getPrevLocation() != null){
+                    window.location.href = getPrevLocation();
+                }else{
+                    window.location.href = "index.html"
+                }
             }
         })
         .catch(error => console.log(error));  
@@ -185,10 +246,15 @@ function resetPassword()
    
 }
 
-
 function signOut()
 {
-    window.location.href = getPrevLocation();
+    var curr = window.location
+    if (curr == getPrevLocation()){
+        window.location.href = getPrevLocation();
+    }else{
+        window.location.href = "index.html"
+    }
+    localStorage.clear();
     sessionStorage.clear();
 }
 

@@ -1,5 +1,8 @@
 function getUserNotifications()
 {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
     fetch('https://tic2601-t11.herokuapp.com/get_user_notifications', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'}, 
