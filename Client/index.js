@@ -14,6 +14,14 @@ function getToken()
         return -1;
 }
 
+function getPrevLocation()
+{
+    if(sessionStorage.getItem('prevLocation') != null || sessionStorage.getItem('prevLocation') != "")
+        return sessionStorage.getItem('prevLocation');
+    else
+        return -1;
+}
+
 /* constantly checking if need to reset Nav Bar links according to user's status(logged in?) */
 function resetNavBar()
 {
@@ -142,7 +150,7 @@ function loginUser()
                     // sessionStorage.setItem('userID',data.user_id);
                     sessionStorage.setItem('userID',data.Data.user_id);
                     sessionStorage.setItem('token', 'Bearer ' + data.Token.access_token);
-                    window.location.href = "index.html";
+                    window.location.href = getPrevLocation();
                 }
             }
         })
@@ -182,8 +190,8 @@ function resetPassword()
 
 function signOut()
 {
+    window.location.href = getPrevLocation();
     sessionStorage.clear();
-    window.location.href = "index.html";
 }
 
 function convertUnixToTimeStamp(unix)
