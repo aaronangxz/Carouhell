@@ -123,6 +123,10 @@ function deleteListing(itemID)
 function addListingComment(userID, itemID)
 {
     var comment = document.getElementById('comment').value;
+    if (comment == ""){
+        confirm("Comment cannot be empty.")
+        return
+    }
     console.log("comment:" + comment);
     fetch('https://tic2601-t11.herokuapp.com/add_listing_comments', {
         method: 'POST',
@@ -176,11 +180,12 @@ function viewListingByItemId(itemID)
             document.title = 'Carouhell - '+data.Data.item_name;
         })
         .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getRecommendedListingsByItemId(itemID)
 {
-    fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
+    fetch('http://localhost:8080/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
                 'Authorization': getToken(),
@@ -211,7 +216,7 @@ function displayItemContent(data)
         status +='<span class="badge badge-pill badge-success">Available</span>'
     }else if (((data.item_quantity/data.item_stock) * 100) <= 10){
         status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
-    }else if (((data.item_quantity/data.item_stock) * 100) <= 25  || data.item_stock - data.item_quantity <= 5){
+    }else if (((data.item_quantity/data.item_stock) * 100) <= 25){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (data.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
@@ -281,7 +286,23 @@ function displayItemContent(data)
             '</div>'+
         '</div>'+
     '</div>';
-    if(data.seller_id == getCurrentUserID()) // user is listing's owner
+    if (getCurrentUserID() == -1){
+        content += 
+        '<form id="purchaseForm" method="post">'+
+            '<div class="row mt-3" id="buyerBtns">'+
+                '<div class="col-4"></div>'+
+                // '<div class="col-3 text-center">'+
+                //     '<h5> Quantity Available: '+ data.item_quantity + '</h5>' +
+                // '</div>'+
+                // '<div class="col-1">'+
+                //     '<input type="button" class="btn btn-secondary disabled" value="Sold Out"/>'+
+                //     // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
+                // '</div>'+
+                '<div class="col-4"></div>'+
+            '</div>'+
+        '</form>';
+    }
+    else if(data.seller_id == getCurrentUserID()) // user is listing's owner
     {
         // display seller's option
         content += 
@@ -359,20 +380,8 @@ function displayItemContent(data)
 
 function displayItemComments(data, itemID)
 {
-    var comments =
-    '<div class="row mt-3">' +
-        '<div class="col"><h3>💬 Comments <h3></div>'+
-    '</div>';
-    for(var i = 0; i < data.length; i++)
-    {
-        console.log("comments: " + data[i]);
-        comments +=
-        '<div class="row text-wrap" >' +
-            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> | '+convertUnixToTimeStamp(data[i].ctime)+ '</div>'+
-            '<div class="col-9">'+data[i].comment+'</div>'+
-        '</div>';
-    }
-    comments +=
+    var commentFooter = ''
+    var showCommentButton = 
     '<form id="listingComment" method="post">'+
         '<div class="row mt-3">' +
             '<div class="col-10">'+
@@ -384,7 +393,37 @@ function displayItemComments(data, itemID)
                 '<input type="button" class="btn btn-secondary" onclick="addListingComment(getCurrentUserID(),'+itemID+')" value="Submit"/>'+
             '</div>'+
         '</div>'+
-    '</form>';
+    '</form>'
+    if (getCurrentUserID()== -1){
+        showCommentButton = ""
+    }
+    var comments =
+    '<div class="row mt-3">' +
+        '<div class="col"><h3>💬 Comments <h3></div>'+
+    '</div>';
+    if (data.length == 0){
+        if (getCurrentUserID()== -1){
+            comments += '<font style="opacity:.6" size="3px"><i><a href="loginForm.html">Login</a> to start a discussion.</i></font>'
+        }else{
+            comments += '<font style="opacity:.6" size="3px"><i>Start a discussion.</i></font>'
+        }        
+    }else{
+        if (getCurrentUserID()== -1){
+             commentFooter += '<font style="opacity:.6" size="3px"><i><a href="loginForm.html">Login</a> to join the discussion.</i></font>'
+        }else{
+            commentFooter += '<font style="opacity:.6" size="3px"><i>Join the discussion.</i></font>'
+        }
+    }
+    for(var i = 0; i < data.length; i++)
+    {
+        console.log("comments: " + data[i]);
+        comments +=
+        '<div class="row text-wrap" >' +
+            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> | '+convertUnixToTimeStamp(data[i].ctime)+ '</div>'+
+            '<div class="col-9">'+data[i].comment+'</div>'+
+        '</div>';
+    }
+    comments += showCommentButton + commentFooter;
 
     document.getElementById("commentsSection").innerHTML = comments;
 }
@@ -424,7 +463,7 @@ function addListingLikes(itemID)
 
 function checkIfUserLikedListing(is_liked)
 {
-    if(is_liked)
+    if(is_liked && getCurrentUserID() != -1)
         return '<span><i class="fas fa-heart" style="color:red"> </i></span>';
     else
         return '<span><i class="far fa-heart" style="color:black"></i></span>';
@@ -432,17 +471,19 @@ function checkIfUserLikedListing(is_liked)
 
 function toViewListing(itemID)
 {
-    if (getCurrentUserID() < 0)
-    {
-       if(confirm("Please Log In first"))
-       {
-        window.location.href = 'loginForm.html';
-       }
-    }
-    else
-    {
-        window.location.href = 'viewListing.html?itemID='+ itemID;
-    }
+    window.location.href = 'viewListing.html?itemID='+ itemID;
+
+    // if (getCurrentUserID() < 0)
+    // {
+    //    if(confirm("Please Log In first"))
+    //    {
+    //     window.location.href = 'loginForm.html';
+    //    }
+    // }
+    // else
+    // {
+    //     window.location.href = 'viewListing.html?itemID='+ itemID;
+    // }
 }
 
 function displayListing(d, isRecommend)
@@ -462,7 +503,7 @@ function displayListing(d, isRecommend)
         status +='<span class="badge badge-pill badge-success">Available</span>'
     }else if (((d.item_quantity/d.item_stock) * 100) <= 10){
         status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
-    }else if (((d.item_quantity/d.item_stock) * 100) <= 25  || d.item_stock - d.item_quantity <= 5){
+    }else if (((d.item_quantity/d.item_stock) * 100) <= 25 ){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (d.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
@@ -559,6 +600,7 @@ function getSearchItem()
         }
     })
     .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getFilterResults()
@@ -647,6 +689,7 @@ function getFilterResults()
         }
     })
     .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function buyNow(itemID, sellerID)
@@ -781,7 +824,7 @@ function viewProfileByUserID(profileID)
         }
     })
     .catch(error => console.log(error)); 
-
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getAllListing() {
@@ -813,6 +856,7 @@ function getLatestListing() {
       }
     })
     .catch(error => {console.log('NO:', JSON.stringify(error));});
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function displayUserReviews(data)
@@ -917,7 +961,6 @@ function loadListingDetails(data)
     document.getElementById("itemLocation").value = data.item_location;
     document.getElementById("myImg").src = 'https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg';
 }
-
 
 function editListing(itemID)
 {
