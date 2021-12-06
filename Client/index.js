@@ -124,7 +124,9 @@ function loginUser()
      }
      else
      {
-        //check if account exist
+        document.getElementById("loginLoad").innerHTML =   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'        //check if account exist
         fetch('https://tic2601-t11.herokuapp.com/authenticate_user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}, 
@@ -145,13 +147,9 @@ function loginUser()
             }
             else // successful
             {
-                if(confirm("Login Successful"))
-                {
-                    // sessionStorage.setItem('userID',data.user_id);
-                    sessionStorage.setItem('userID',data.Data.user_id);
-                    sessionStorage.setItem('token', 'Bearer ' + data.Token.access_token);
-                    window.location.href = getPrevLocation();
-                }
+                sessionStorage.setItem('userID',data.Data.user_id);
+                sessionStorage.setItem('token', 'Bearer ' + data.Token.access_token);
+                window.location.href = getPrevLocation();
             }
         })
         .catch(error => console.log(error));  

@@ -185,6 +185,9 @@ function viewListingByItemId(itemID)
 
 function getRecommendedListingsByItemId(itemID)
 {
+    document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
+    '<div class="col"><h3>🔥 You may also like <h3></div>'+
+'</div>'
     fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
@@ -199,6 +202,7 @@ function getRecommendedListingsByItemId(itemID)
         .then(response => response.json())
         .then(data => {
             console.log(data);
+           
             for(const d of data.Data){
                 displayListing(d,'true');
              }
@@ -492,8 +496,12 @@ function displayListing(d, isRecommend)
 
     var bool_value = isRecommend == 'true';
     var element = "cards"
+    var rcmdHeader = ''
     if (bool_value === true){
         element = "recommendedListings"
+        rcmdHeader += '<div class="row mt-3">' +
+        '<div class="col"><h3>💬 Comments <h3></div>'+
+    '</div>';
     }
 
     var status = ""
@@ -514,7 +522,7 @@ function displayListing(d, isRecommend)
         likes += '<span class="badge badge-pill badge-light">Trending</span>'
     }
 
-    document.getElementById(element).innerHTML += 
+    document.getElementById(element).innerHTML +=
     '<div class="col-md-4 mt-4">'+
     '<div class="card" id="'+d.item_id+'">'+
         '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
@@ -563,6 +571,9 @@ function displayListing(d, isRecommend)
 
 function getSearchItem()
 {
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>';
     var searchItem = document.getElementById('searchItem').value;
     console.log(searchItem + "- searchItem" );
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
@@ -588,6 +599,7 @@ function getSearchItem()
         else // successful
         {
             console.log(data);
+            document.getElementById("landingHomePage").innerHTML = '';
             document.getElementById("cards").innerHTML = "";
             document.getElementById("searchResultText").innerHTML = "";
             document.getElementById("searchResultText").innerHTML += 
@@ -644,6 +656,9 @@ function getFilterResults()
     if(selectedSortFlag)
         selectedSortFlag = parseInt(selectedSortFlag);
 
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>';
 
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
@@ -677,6 +692,7 @@ function getFilterResults()
         }
         else // successful
         {
+            document.getElementById("landingHomePage").innerHTML = '';
             document.getElementById("cards").innerHTML = "";
             document.getElementById("searchResultText").innerHTML = "";
             document.getElementById("searchResultText").innerHTML += 
@@ -841,6 +857,10 @@ function getAllListing() {
 }
 
 function getLatestListing() {
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'   
+  
     fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
       method: 'GET',
       headers:{
@@ -850,6 +870,7 @@ function getLatestListing() {
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
+        document.getElementById("landingHomePage").innerHTML = ''
         console.log(result);
         for(const d of result.Data){
          displayListing(d);
