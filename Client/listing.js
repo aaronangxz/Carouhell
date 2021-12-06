@@ -575,6 +575,9 @@ function getSearchItem()
     '<span class="loader"><span class="loader-inner"></span></span>'+
     '</div>';
     var searchItem = document.getElementById('searchItem').value;
+    if (searchItem == ''){
+        location.reload();
+    }
     console.log(searchItem + "- searchItem" );
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
@@ -591,10 +594,17 @@ function getSearchItem()
         //console.log(data);
         if(data.Respmeta.ErrorCode != 0)
         {
-            if(confirm("0 search results for " +searchItem))
-            {
-                location.reload();
-            }
+            document.getElementById("searchResultText").innerHTML = 
+            '<div class="col">'+
+                '<h1>No result found</h1>'+
+            '</div>';
+            $(".loader-wrapper").fadeOut("slow");
+        document.getElementById("landingHomePage").innerHTML = ''
+            document.getElementById("cards").innerHTML = "";
+            // if(confirm("0 search results for " +searchItem))
+            // {
+            //     location.reload();
+            // }
         }
         else // successful
         {
@@ -860,7 +870,6 @@ function getLatestListing() {
     document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
         '</div>'   
-  
     fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
       method: 'GET',
       headers:{
@@ -870,6 +879,7 @@ function getLatestListing() {
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
+        $(".loader-wrapper").fadeOut("slow");
         document.getElementById("landingHomePage").innerHTML = ''
         console.log(result);
         for(const d of result.Data){
