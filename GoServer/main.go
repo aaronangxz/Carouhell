@@ -57,6 +57,7 @@ func main() {
 	//***************** Listing Page *****************
 	//returns based on item_id
 	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
+	r.POST("/get_recommended_listings_by_itemid", listings.GetRecommendedListingsByItemId)
 
 	r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)

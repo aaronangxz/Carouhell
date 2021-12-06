@@ -28,6 +28,20 @@ type Listing struct {
 	ListingMtime    *int64  `json:"listing_mtime"`
 }
 
+func (r *Listing) GetItemName() string {
+	if r != nil && r.ItemName != nil {
+		return *r.ItemName
+	}
+	return ""
+}
+
+func (r *Listing) GetItemCategory() uint32 {
+	if r != nil && r.ItemCategory != nil {
+		return *r.ItemCategory
+	}
+	return 0
+}
+
 func (r *Listing) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
@@ -611,4 +625,41 @@ type ListingTransaction struct {
 	TransactionCtime    *int64  `json:"transaction_ctime"`
 	TransactionQuantity *uint32 `json:"transaction_quantity"`
 	TransactionAmount   *uint32 `json:"transaction_amount"`
+}
+
+type GetRecommendedListingsByItemIdRequest struct {
+	ItemID *uint32 `json:"item_id" binding:"required"`
+	UserID *int32  `json:"user_id" binding:"required"`
+}
+
+func (r *GetRecommendedListingsByItemIdRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+func (r *GetRecommendedListingsByItemIdRequest) GetUserID() int32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+type GetRecommendedListingsByItemIdResponse struct {
+	LItemID         uint32 `json:"item_id"`
+	ItemName        string `json:"item_name"`
+	ItemPrice       uint32 `json:"item_price"`
+	ItemQuantity    uint32 `json:"item_quantity"`
+	ItemStock       uint32 `json:"item_stock"`
+	ItemDescription string `json:"item_description"`
+	ItemLocation    uint32 `json:"item_location"`
+	ItemStatus      uint32 `json:"item_status"`
+	ItemCategory    uint32 `json:"item_category"`
+	LSellerID       uint32 `json:"seller_id"`
+	SellerName      string `json:"seller_name"`
+	ListingCtime    int64  `json:"listing_ctime"`
+	ListingMtime    int64  `json:"listing_mtime"`
+	ListingLikes    uint32 `json:"listing_likes"`
+	IsLiked         bool   `json:"is_liked"`
 }
