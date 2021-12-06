@@ -21,6 +21,10 @@ function encodeImageFileAsURL(inputFileToLoad) {
 
 function createListing(userID)
 {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     var itemName = document.getElementById('itemName').value;
     var itemPrice = document.getElementById("itemPrice").value;
     var itemQty = document.getElementById("itemQty").value;
@@ -80,11 +84,7 @@ function createListing(userID)
             }
         })
         .catch(error => console.log(error)); 
-
     });
-    
-
-    
 }   
 
 function deleteListing(itemID)
@@ -161,6 +161,7 @@ function addListingComment(userID, itemID)
 
 function viewListingByItemId(itemID)
 {
+    setPrevLocation();
     fetch('https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid', {
             method: 'POST',
             headers:{
@@ -179,8 +180,7 @@ function viewListingByItemId(itemID)
             getRecommendedListingsByItemId(data.Data.item_id);
             document.title = 'Carouhell - '+data.Data.item_name;
         })
-        .catch(error => console.log(error)); 
-    sessionStorage.setItem('prevLocation',window.location)
+        .catch(error => console.log(error));   
 }
 
 function getRecommendedListingsByItemId(itemID)
@@ -270,7 +270,8 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+date+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');">'+checkIfUserLikedListing(data.is_liked)+'</a> ' + data.listing_likes +
+                '<div class="col">'+
+                    '<a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');" id="like_'+ data.item_id+'">'+ checkIfUserLikedListing(data.is_liked)+'</a><span id="likecount_'+ data.item_id+'"> '+ data.listing_likes+'</span>'+
                 '</div>'+
             '</div>'+
             '<div class="row mt-3">' +
@@ -459,7 +460,15 @@ function addListingLikes(itemID)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            document.location.reload();
+
+            if(data.Data.is_liked == true){
+                document.getElementById("like_"+ itemID).innerHTML = '<span><i class="fas fa-heart" style="color:red"> </i></span>'
+                document.getElementById("likecount_"+ itemID).innerHTML = '<span> '+ data.Data.latest_likes_count +'</span>'
+            }else{
+                document.getElementById("like_"+ itemID).innerHTML = '<span><i class="far fa-heart" style="color:black"></i></span>'
+                document.getElementById("likecount_"+ itemID).innerHTML = '<span> '+ data.Data.latest_likes_count +'</span>'
+            }
+            // document.location.reload();
         })
         .catch(error => console.log(error)); 
     }
@@ -492,7 +501,7 @@ function toViewListing(itemID)
 
 function displayListing(d, isRecommend)
 {
-    console.log(d);
+    //console.log(d);
 
     var bool_value = isRecommend == 'true';
     var element = "cards"
@@ -549,7 +558,7 @@ function displayListing(d, isRecommend)
             '<div class="row">'+
                 '<div class="col">'+
                     '<h5 class="card-title">'+
-                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');">'+checkIfUserLikedListing(d.is_liked)+'</a> ' + d.listing_likes + 
+                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
                     '</h5>'+
                 '</div>'+
             '</div>'+
@@ -720,6 +729,7 @@ function getFilterResults()
 
 function buyNow(itemID, sellerID)
 {
+    setPrevSecureLocation();
     console.log("buy now ", itemID);
     var qtyToPurchase = document.getElementById("qtyToPurchase").value;
     console.log("qtyToPurchase: " + qtyToPurchase);
@@ -775,6 +785,10 @@ function buyNow(itemID, sellerID)
 }
 
 function getUserLikedListing() {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     fetch('https://tic2601-t11.herokuapp.com/get_user_liked_listings', {
         method: 'POST',                
         headers:{
@@ -810,6 +824,7 @@ function getUserLikedListing() {
 
 function viewProfileByUserID(profileID)
 {
+    setPrevLocation();
     var currentUser = getCurrentUserID();
     if(!profileID)
     {
@@ -850,7 +865,6 @@ function viewProfileByUserID(profileID)
         }
     })
     .catch(error => console.log(error)); 
-    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getAllListing() {
@@ -936,6 +950,7 @@ function displayUserReviews(data)
 
 function addUserReview(sellerID)
 {
+    setPrevSecureLocation();
     var rating = document.getElementById("rating");
     var ratingValue = rating.options[rating.selectedIndex].value;
     var review = document.getElementById('review').value;
@@ -995,6 +1010,10 @@ function loadListingDetails(data)
 
 function editListing(itemID)
 {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     var itemName = document.getElementById('itemName').value;
     var itemPrice = document.getElementById("itemPrice").value;
     var itemQty = document.getElementById("itemQty").value;
