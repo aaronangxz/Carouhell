@@ -629,7 +629,7 @@ type ListingTransaction struct {
 
 type GetRecommendedListingsByItemIdRequest struct {
 	ItemID *uint32 `json:"item_id" binding:"required"`
-	UserID *uint32 `json:"user_id" binding:"required"`
+	UserID *int32  `json:"user_id" binding:"required"`
 }
 
 func (r *GetRecommendedListingsByItemIdRequest) GetItemID() uint32 {
@@ -639,7 +639,7 @@ func (r *GetRecommendedListingsByItemIdRequest) GetItemID() uint32 {
 	return 0
 }
 
-func (r *GetRecommendedListingsByItemIdRequest) GetUserID() uint32 {
+func (r *GetRecommendedListingsByItemIdRequest) GetUserID() int32 {
 	if r != nil && r.UserID != nil {
 		return *r.UserID
 	}

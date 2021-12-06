@@ -32,12 +32,6 @@ func GetRecommendedListingsByItemId(c *gin.Context) {
 		return
 	}
 
-	if input.GetUserID() == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("UserId must be > 0.")})
-		log.Println("user_id must be > 0.")
-		return
-	}
-
 	if input.GetItemID() == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("ItemId must be > 0.")})
 		log.Println("user_id must be > 0.")
