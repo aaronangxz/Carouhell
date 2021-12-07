@@ -49,7 +49,7 @@ var (
 		" FROM listing_reactions_tab"+
 		" WHERE rt_item_id IN (SELECT l_item_id"+
 		" FROM listing_tab"+
-		" WHERE l_seller_id = ?)"+
+		" WHERE l_seller_id = ?) AND rt_user_id != ?"+
 		" UNION ALL"+
 		" SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
 		" FROM user_review_tab"+
@@ -263,4 +263,16 @@ func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 
 func GetNotificationQuery() string {
 	return NotificationQuery
+}
+
+func GetRecommendedListingsByItemIdQuery(itemId uint32, userId int32, itemName string, sellerId uint32, itemCategory uint32) string {
+	return fmt.Sprintf("SELECT listing_tab.*, acc_tab.user_name AS seller_name, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
+		" (CASE WHEN l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
+		" COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" FROM acc_tab, listing_tab"+
+		" LEFT JOIN listing_reactions_tab ON listing_tab.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v WHERE"+
+		" listing_tab.l_seller_id = acc_tab.a_user_id AND (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR l_seller_id = %v OR item_category = %v)"+
+		" AND (l_item_id != %v AND item_status = %v)"+
+		" GROUP BY l_item_id ORDER BY relevance DESC"+
+		" LIMIT 3", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, sellerId, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
 }

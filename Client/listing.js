@@ -21,6 +21,10 @@ function encodeImageFileAsURL(inputFileToLoad) {
 
 function createListing(userID)
 {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     var itemName = document.getElementById('itemName').value;
     var itemPrice = document.getElementById("itemPrice").value;
     var itemQty = document.getElementById("itemQty").value;
@@ -80,11 +84,7 @@ function createListing(userID)
             }
         })
         .catch(error => console.log(error)); 
-
     });
-    
-
-    
 }   
 
 function deleteListing(itemID)
@@ -123,6 +123,10 @@ function deleteListing(itemID)
 function addListingComment(userID, itemID)
 {
     var comment = document.getElementById('comment').value;
+    if (comment == ""){
+        confirm("Comment cannot be empty.")
+        return
+    }
     console.log("comment:" + comment);
     fetch('https://tic2601-t11.herokuapp.com/add_listing_comments', {
         method: 'POST',
@@ -157,6 +161,7 @@ function addListingComment(userID, itemID)
 
 function viewListingByItemId(itemID)
 {
+    setPrevLocation();
     fetch('https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid', {
             method: 'POST',
             headers:{
@@ -172,11 +177,38 @@ function viewListingByItemId(itemID)
             console.log(data);
             displayItemContent(data.Data);
             displayItemComments(data.Data.listing_comments, data.Data.item_id);
+            getRecommendedListingsByItemId(data.Data.item_id);
             document.title = 'Carouhell - '+data.Data.item_name;
+        })
+        .catch(error => console.log(error));   
+}
+
+function getRecommendedListingsByItemId(itemID)
+{
+    document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
+    '<div class="col"><h3>🔥 You may also like <h3></div>'+
+'</div>'
+    fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
+            method: 'POST',
+            headers:{
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({
+                "item_id": parseInt(itemID),
+                "user_id": parseInt(getCurrentUserID())
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+           
+            for(const d of data.Data){
+                displayListing(d,'true');
+             }
         })
         .catch(error => console.log(error)); 
 }
-
 
 function displayItemContent(data)
 {
@@ -188,23 +220,10 @@ function displayItemContent(data)
         status +='<span class="badge badge-pill badge-success">Available</span>'
     }else if (((data.item_quantity/data.item_stock) * 100) <= 10){
         status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
-    }else if (((data.item_quantity/data.item_stock) * 100) <= 25  || data.item_stock - data.item_quantity <= 5){
+    }else if (((data.item_quantity/data.item_stock) * 100) <= 25){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (data.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
-    }
-
-    var date = ""
-    if (Date.now()/1000 - data.listing_ctime < 300){
-        date = "moments ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 300){
-        date = "5 minutes ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 600){
-        date = "10 minutes ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 6000){
-        date = "an hour ago"
-    }else{
-        date = 'on '+ convertUnixToTimeStamp(data.listing_ctime) +', '+ convertUnixToTimeStampDetailTime(data.listing_ctime)
     }
 
     var progress = ""
@@ -235,10 +254,11 @@ function displayItemContent(data)
             progress+
 
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+date+'</div>'+
+                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+getPostDate(data.listing_ctime)+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');">'+checkIfUserLikedListing(data.is_liked)+'</a> ' + data.listing_likes +
+                '<div class="col">'+
+                    '<a href="javascript:void(0);" onclick="addListingLikes('+data.item_id+');" id="like_'+ data.item_id+'">'+ checkIfUserLikedListing(data.is_liked)+'</a><span id="likecount_'+ data.item_id+'"> '+ data.listing_likes+'</span>'+
                 '</div>'+
             '</div>'+
             '<div class="row mt-3">' +
@@ -248,7 +268,7 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'">@'+data.seller_name+'</a></div>'+
+                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a></div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col"><h3>Description <h3></div>'+
@@ -258,7 +278,23 @@ function displayItemContent(data)
             '</div>'+
         '</div>'+
     '</div>';
-    if(data.seller_id == getCurrentUserID()) // user is listing's owner
+    if (getCurrentUserID() == -1){
+        content += 
+        '<form id="purchaseForm" method="post">'+
+            '<div class="row mt-3" id="buyerBtns">'+
+                '<div class="col-4"></div>'+
+                // '<div class="col-3 text-center">'+
+                //     '<h5> Quantity Available: '+ data.item_quantity + '</h5>' +
+                // '</div>'+
+                // '<div class="col-1">'+
+                //     '<input type="button" class="btn btn-secondary disabled" value="Sold Out"/>'+
+                //     // '<input type="button" id="btnBuyNow" class="btn btn-primary" value="Buy Now"/>'+
+                // '</div>'+
+                '<div class="col-4"></div>'+
+            '</div>'+
+        '</form>';
+    }
+    else if(data.seller_id == getCurrentUserID()) // user is listing's owner
     {
         // display seller's option
         content += 
@@ -336,20 +372,8 @@ function displayItemContent(data)
 
 function displayItemComments(data, itemID)
 {
-    var comments =
-    '<div class="row mt-3">' +
-        '<div class="col"><h3>Comments <h3></div>'+
-    '</div>';
-    for(var i = 0; i < data.length; i++)
-    {
-        console.log("comments: " + data[i]);
-        comments +=
-        '<div class="row text-wrap" >' +
-            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> | '+convertUnixToTimeStamp(data[i].ctime)+ '</div>'+
-            '<div class="col-9">'+data[i].comment+'</div>'+
-        '</div>';
-    }
-    comments +=
+    var commentFooter = ''
+    var showCommentButton = 
     '<form id="listingComment" method="post">'+
         '<div class="row mt-3">' +
             '<div class="col-10">'+
@@ -361,7 +385,37 @@ function displayItemComments(data, itemID)
                 '<input type="button" class="btn btn-secondary" onclick="addListingComment(getCurrentUserID(),'+itemID+')" value="Submit"/>'+
             '</div>'+
         '</div>'+
-    '</form>';
+    '</form>'
+    if (getCurrentUserID()== -1){
+        showCommentButton = ""
+    }
+    var comments =
+    '<div class="row mt-3">' +
+        '<div class="col"><h3>💬 Comments <h3></div>'+
+    '</div>';
+    if (data.length == 0){
+        if (getCurrentUserID()== -1){
+            comments += '<font style="opacity:.6" size="3px"><i><a href="loginForm.html">Login</a> to start a discussion.</i></font>'
+        }else{
+            comments += '<font style="opacity:.6" size="3px"><i>Start a discussion.</i></font>'
+        }        
+    }else{
+        if (getCurrentUserID()== -1){
+             commentFooter += '<font style="opacity:.6" size="3px"><i><a href="loginForm.html">Login</a> to join the discussion.</i></font>'
+        }else{
+            commentFooter += '<font style="opacity:.6" size="3px"><i>Join the discussion.</i></font>'
+        }
+    }
+    for(var i = 0; i < data.length; i++)
+    {
+        console.log("comments: " + data[i]);
+        comments +=
+        '<div class="row text-wrap" >' +
+            '<div class="col-3"><a href="viewProfile.html?profileID='+data[i].user_id+'">'+data[i].user_name +'</a> | '+convertUnixToTimeStamp(data[i].ctime)+ '</div>'+
+            '<div class="col-9">'+data[i].comment+'</div>'+
+        '</div>';
+    }
+    comments += showCommentButton + commentFooter;
 
     document.getElementById("commentsSection").innerHTML = comments;
 }
@@ -393,7 +447,15 @@ function addListingLikes(itemID)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            document.location.reload();
+
+            if(data.Data.is_liked == true){
+                document.getElementById("like_"+ itemID).innerHTML = '<span><i class="fas fa-heart" style="color:red"> </i></span>'
+                document.getElementById("likecount_"+ itemID).innerHTML = '<span> '+ data.Data.latest_likes_count +'</span>'
+            }else{
+                document.getElementById("like_"+ itemID).innerHTML = '<span><i class="far fa-heart" style="color:black"></i></span>'
+                document.getElementById("likecount_"+ itemID).innerHTML = '<span> '+ data.Data.latest_likes_count +'</span>'
+            }
+            // document.location.reload();
         })
         .catch(error => console.log(error)); 
     }
@@ -401,7 +463,7 @@ function addListingLikes(itemID)
 
 function checkIfUserLikedListing(is_liked)
 {
-    if(is_liked)
+    if(is_liked && getCurrentUserID() != -1)
         return '<span><i class="fas fa-heart" style="color:red"> </i></span>';
     else
         return '<span><i class="far fa-heart" style="color:black"></i></span>';
@@ -409,22 +471,34 @@ function checkIfUserLikedListing(is_liked)
 
 function toViewListing(itemID)
 {
-    if (getCurrentUserID() < 0)
-    {
-       if(confirm("Please Log In first"))
-       {
-        window.location.href = 'loginForm.html';
-       }
-    }
-    else
-    {
-        window.location.href = 'viewListing.html?itemID='+ itemID;
-    }
+    window.location.href = 'viewListing.html?itemID='+ itemID;
+
+    // if (getCurrentUserID() < 0)
+    // {
+    //    if(confirm("Please Log In first"))
+    //    {
+    //     window.location.href = 'loginForm.html';
+    //    }
+    // }
+    // else
+    // {
+    //     window.location.href = 'viewListing.html?itemID='+ itemID;
+    // }
 }
 
-function displayListing(d)
+function displayListing(d, isRecommend)
 {
-    console.log(d);
+    //console.log(d);
+
+    var bool_value = isRecommend == 'true';
+    var element = "cards"
+    var rcmdHeader = ''
+    if (bool_value === true){
+        element = "recommendedListings"
+        rcmdHeader += '<div class="row mt-3">' +
+        '<div class="col"><h3>💬 Comments <h3></div>'+
+    '</div>';
+    }
 
     var status = ""
     if (d.item_status == 2){
@@ -433,7 +507,7 @@ function displayListing(d)
         status +='<span class="badge badge-pill badge-success">Available</span>'
     }else if (((d.item_quantity/d.item_stock) * 100) <= 10){
         status +='<span class="badge badge-pill badge-danger">Low in stock</span>'
-    }else if (((d.item_quantity/d.item_stock) * 100) <= 25  || d.item_stock - d.item_quantity <= 5){
+    }else if (((d.item_quantity/d.item_stock) * 100) <= 25 ){
         status +='<span class="badge badge-pill badge-warning">Selling Fast</span>'
     }else if (d.item_status == 1){
         status +='<span class="badge badge-pill badge-success">Available</span>'
@@ -441,59 +515,67 @@ function displayListing(d)
 
     var likes = ""
     if (d.listing_likes >= 10){
-        likes += '<span class="badge badge-pill badge-light">Trending</span>'
+        likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
 
-    document.getElementById("cards").innerHTML += 
+
+
+    document.getElementById(element).innerHTML +=
     '<div class="col-md-4 mt-4">'+
-    '<div class="card" id="'+d.item_id+'">'+
-        '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
-        '<div class="card-body pb-5">'+
-        '<div class="container">'+
-            '<div class="row">'+
-                '<div class="col text-center" id="imgContainer">'+
-                    '<img class="img-fluid" src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" />'+
-                '</div>'+
+        '<div class="card border-0" id="'+d.item_id+'">'+
+            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a>'+
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
-                    '<h5 class="card-title">'+ d.item_name +'</h5>'+
-                '</div>'+
-            '</div>'+ 
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }) +'</h5>'+
-                '</div>'+                       
-            '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+
-                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');">'+checkIfUserLikedListing(d.is_liked)+'</a> ' + d.listing_likes + 
-                    '</h5>'+
+                    '<p class = "pl-4 pt-0" id="itemDay"><font style="opacity:.8" size="2px">'+ getPostDate(d.listing_ctime) +' </font></p>'+
                 '</div>'+
             '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ status + ' ' + likes +'</h5>'+
+                '<div class="card-body pb-5">'+
+                    '<div class="container">'+
+                        '<div class="row ">'+
+                            '<a href="'+'viewListing.html?itemID='+d.item_id+'"class="btn btn-link stretched-link"></a> '+
+                                '<div class="col text-center" id="imgContainer">'+
+                                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" class="img-cover img-fluid" />'+
+                                '</div>'+
+                        '</div>'+
+                        '<div class="row">'+
+                            '<div class="col">'+
+                                '<h5 class="card-title" id="itemName">'+ d.item_name +'</h5>'+
+                            '</div>'+
+                        '</div>'+ 
+                        '<div class="row">'+
+                            '<div class="col">'+
+                                '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                    }) +'</h5>'+
+                            '</div>'+                       
+                        '</div>'+
+                    '</div>'+
                 '</div>'+
-            '</div>'+
+                '<div class="card-footer d-flex border-0">'+
+                    '<div class="row">'+
+                        '<div class="col">'+
+                            '<h5 class="card-title pl-3" id="likebutton">'+
+                                '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
+                            '</h5>'+
+                            '<h5 class="card-title pl-3">'+ status + '  ' + likes +'</h5>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
         '</div>'+
-        '</div>'+
-        '<div class="card-footer">'+
-                '<div class="col text-center">'+
-                    '<a href="javascript:void(0);" onclick="toViewListing('+d.item_id+');" class="btn btn-secondary" >View Listing</a> '+
-                '</div>'+
-            '</div>'+ 
-    '</div>'+
     '</div>'; 
 }
 
 function getSearchItem()
 {
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>';
     var searchItem = document.getElementById('searchItem').value;
+    if (searchItem == ''){
+        location.reload();
+    }
     console.log(searchItem + "- searchItem" );
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
@@ -510,14 +592,22 @@ function getSearchItem()
         //console.log(data);
         if(data.Respmeta.ErrorCode != 0)
         {
-            if(confirm("0 search results for " +searchItem))
-            {
-                location.reload();
-            }
+            document.getElementById("searchResultText").innerHTML = 
+            '<div class="col">'+
+                '<h1>No result found</h1>'+
+            '</div>';
+            $(".loader-wrapper").fadeOut("slow");
+        document.getElementById("landingHomePage").innerHTML = ''
+            document.getElementById("cards").innerHTML = "";
+            // if(confirm("0 search results for " +searchItem))
+            // {
+            //     location.reload();
+            // }
         }
         else // successful
         {
             console.log(data);
+            document.getElementById("landingHomePage").innerHTML = '';
             document.getElementById("cards").innerHTML = "";
             document.getElementById("searchResultText").innerHTML = "";
             document.getElementById("searchResultText").innerHTML += 
@@ -530,6 +620,7 @@ function getSearchItem()
         }
     })
     .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function getFilterResults()
@@ -573,6 +664,9 @@ function getFilterResults()
     if(selectedSortFlag)
         selectedSortFlag = parseInt(selectedSortFlag);
 
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>';
 
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
@@ -606,6 +700,7 @@ function getFilterResults()
         }
         else // successful
         {
+            document.getElementById("landingHomePage").innerHTML = '';
             document.getElementById("cards").innerHTML = "";
             document.getElementById("searchResultText").innerHTML = "";
             document.getElementById("searchResultText").innerHTML += 
@@ -618,10 +713,12 @@ function getFilterResults()
         }
     })
     .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function buyNow(itemID, sellerID)
 {
+    setPrevSecureLocation();
     console.log("buy now ", itemID);
     var qtyToPurchase = document.getElementById("qtyToPurchase").value;
     console.log("qtyToPurchase: " + qtyToPurchase);
@@ -677,6 +774,10 @@ function buyNow(itemID, sellerID)
 }
 
 function getUserLikedListing() {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     fetch('https://tic2601-t11.herokuapp.com/get_user_liked_listings', {
         method: 'POST',                
         headers:{
@@ -712,6 +813,7 @@ function getUserLikedListing() {
 
 function viewProfileByUserID(profileID)
 {
+    setPrevLocation();
     var currentUser = getCurrentUserID();
     if(!profileID)
     {
@@ -752,7 +854,6 @@ function viewProfileByUserID(profileID)
         }
     })
     .catch(error => console.log(error)); 
-
 }
 
 function getAllListing() {
@@ -769,6 +870,9 @@ function getAllListing() {
 }
 
 function getLatestListing() {
+    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'   
     fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
       method: 'GET',
       headers:{
@@ -778,12 +882,15 @@ function getLatestListing() {
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
+        $(".loader-wrapper").fadeOut("slow");
+        document.getElementById("landingHomePage").innerHTML = ''
         console.log(result);
         for(const d of result.Data){
          displayListing(d);
       }
     })
     .catch(error => {console.log('NO:', JSON.stringify(error));});
+    sessionStorage.setItem('prevLocation',window.location)
 }
 
 function displayUserReviews(data)
@@ -832,6 +939,7 @@ function displayUserReviews(data)
 
 function addUserReview(sellerID)
 {
+    setPrevSecureLocation();
     var rating = document.getElementById("rating");
     var ratingValue = rating.options[rating.selectedIndex].value;
     var review = document.getElementById('review').value;
@@ -889,9 +997,12 @@ function loadListingDetails(data)
     document.getElementById("myImg").src = 'https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg';
 }
 
-
 function editListing(itemID)
 {
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
+    setPrevSecureLocation();
     var itemName = document.getElementById('itemName').value;
     var itemPrice = document.getElementById("itemPrice").value;
     var itemQty = document.getElementById("itemQty").value;

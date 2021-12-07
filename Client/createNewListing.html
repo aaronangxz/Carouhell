@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LTF70RE5S6');
+</script>
   <title>Carouhell - Start Selling!</title>
   <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
   <meta charset="utf-8">
@@ -16,10 +25,15 @@
     $(function(){
       $("#header").load("navbar.html");
     });
+    if (getCurrentUserID() == -1){
+        window.location.href = "index.html"
+    }
     </script> 
 </head>
 <body>
     <div id="header"></div>
+    <p></p>
+    <p></p>
     <p></p>
     <div class="container">
         <h1>Start Selling!</h1>

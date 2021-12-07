@@ -1,15 +1,74 @@
+function setLocalStorage(key, value, ttl)
+{
+    const item = {
+		value: value,
+		expiry: (Date.now()/1000) + ttl,
+	}
+    localStorage.setItem(key, JSON.stringify(item))
+}
+
 function getCurrentUserID()
 {
-    if(sessionStorage.getItem('userID') != null)
-        return sessionStorage.getItem('userID');
+    const itemStr = localStorage.getItem('userID')
+    if (!itemStr) {
+		return -1
+	}
+
+    const item = JSON.parse(itemStr)
+
+	const now = (Date.now()/1000)
+	// compare the expiry time of the item with the current time
+	if (now > item.expiry) {
+		// If the item is expired, delete the item from storage
+		localStorage.removeItem(key)
+		return -1
+	}
+	return item.value
+}
+
+function setCurrentUserName(name)
+{
+    localStorage.setItem('userName',name)
+}
+
+function getCurrentUserName()
+{
+    if(localStorage.getItem('userName') != null || localStorage.getItem('userName') != "")
+        return localStorage.getItem('userName');
     else
-        return -1;
+        return null;
 }
 
 function getToken()
 {
-    if(sessionStorage.getItem('token') != null || sessionStorage.getItem('token') != "")
-        return sessionStorage.getItem('token');
+    if(localStorage.getItem('token') != null || localStorage.getItem('token') != "")
+        return localStorage.getItem('token');
+    else
+        return -1;
+}
+
+function setPrevLocation()
+{
+    sessionStorage.setItem('prevLocation',window.location)
+}
+
+function getPrevLocation()
+{
+    if(sessionStorage.getItem('prevLocation') != null || sessionStorage.getItem('prevLocation') != "")
+        return sessionStorage.getItem('prevLocation');
+    else
+        return -1;
+}
+
+function setPrevSecureLocation()
+{
+    sessionStorage.setItem('prevSecureLocation',window.location)
+}
+
+function getPrevSecureLocation()
+{
+    if(sessionStorage.getItem('prevSecureLocation') != null || sessionStorage.getItem('prevSecureLocation') != "")
+        return sessionStorage.getItem('prevSecureLocation');
     else
         return -1;
 }
@@ -17,7 +76,7 @@ function getToken()
 /* constantly checking if need to reset Nav Bar links according to user's status(logged in?) */
 function resetNavBar()
 {
-    if(sessionStorage.getItem('userID') != null) // user logged in
+    if(localStorage.getItem('userID') != null) // user logged in
     {
         document.getElementById("register").style.display = "none";
         document.getElementById("login").style.display = "none";
@@ -116,7 +175,9 @@ function loginUser()
      }
      else
      {
-        //check if account exist
+        document.getElementById("loginLoad").innerHTML =   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'        //check if account exist
         fetch('https://tic2601-t11.herokuapp.com/authenticate_user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}, 
@@ -137,12 +198,18 @@ function loginUser()
             }
             else // successful
             {
-                if(confirm("Login Successful"))
-                {
-                    // sessionStorage.setItem('userID',data.user_id);
-                    sessionStorage.setItem('userID',data.Data.user_id);
-                    sessionStorage.setItem('token', 'Bearer ' + data.Token.access_token);
-                    window.location.href = "index.html";
+                setLocalStorage('userID',data.Data.user_id,604800);
+                // localStorage.setItem('userID',data.Data.user_id);
+                localStorage.setItem('token', 'Bearer ' + data.Token.access_token);
+                setCurrentUserName(username);
+                console.log(username)
+                //document.getElementById('navbar-text').innerHTML += username
+                
+
+                if (getPrevLocation() != null){
+                    window.location.href = getPrevLocation();
+                }else{
+                    window.location.href = "index.html"
                 }
             }
         })
@@ -179,11 +246,16 @@ function resetPassword()
    
 }
 
-
 function signOut()
 {
+    var curr = window.location
+    if (curr == getPrevLocation()){
+        window.location.href = getPrevLocation();
+    }else{
+        window.location.href = "index.html"
+    }
+    localStorage.clear();
     sessionStorage.clear();
-    window.location.href = "index.html";
 }
 
 function convertUnixToTimeStamp(unix)
@@ -254,6 +326,60 @@ function getLastSeen(unix)
         date = "a day ago"
     }else{
         date = 'on '+ convertUnixToTimeStamp(unix) +', '+ convertUnixToTimeStampDetailTime(unix)
+    }
+    return date
+}
+
+function getPostDate(listingDate)
+{
+    var postedDate = listingDate
+    var todayDate = (Date.now()/1000)
+    var dateDifference = todayDate - postedDate
+
+    if (dateDifference > 5259486){
+        date = Math.floor((todayDate - postedDate)/2629743) + ' months ago'
+    }else if (dateDifference > 2629743){
+        date = "1 month ago"
+    }else if (dateDifference > 1209600){
+        date = Math.floor((todayDate - postedDate)/604800) + ' weeks ago'
+    }else if (dateDifference > 604800){
+        date = "1 week ago"
+    }else if (dateDifference > 86400){
+        date = Math.floor((todayDate - postedDate)/86400) + ' days ago'
+    }else if (dateDifference > 86400){
+        date = "1 day ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 21600){
+        date = "6 hour ago"
+    }else if (dateDifference > 18000){
+        date = "5 hour ago"
+    }else if (dateDifference > 14400){
+        date = "4 hour ago"
+    }else if (dateDifference > 10800){
+        date = "3 hours ago"
+    }else if (dateDifference > 7200){
+        date = "2 hours ago"
+    }else if (dateDifference > 3600){
+        date = "an hour ago"
+    }else if (dateDifference > 1800){
+        date = "30 minutes ago"
+    }else if (dateDifference > 1200){
+        date = "20 minutes ago"
+    }else if (dateDifference > 600){
+        date = "10 minutes ago"
+    } else if (dateDifference > 300){
+        date = "5 minutes ago"
+    }else if (dateDifference < 300){
+        date = "moments ago"
     }
     return date
 }
