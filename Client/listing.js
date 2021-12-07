@@ -226,19 +226,6 @@ function displayItemContent(data)
         status +='<span class="badge badge-pill badge-success">Available</span>'
     }
 
-    var date = ""
-    if (Date.now()/1000 - data.listing_ctime < 300){
-        date = "moments ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 300){
-        date = "5 minutes ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 600){
-        date = "10 minutes ago"
-    }else if (Date.now()/1000  - data.listing_ctime < 6000){
-        date = "an hour ago"
-    }else{
-        date = 'on '+ convertUnixToTimeStamp(data.listing_ctime) +', '+ convertUnixToTimeStampDetailTime(data.listing_ctime)
-    }
-
     var progress = ""
     if (((data.item_quantity/data.item_stock) * 100) <= 10 && ((data.item_quantity/data.item_stock) * 100) != 0){
         progress += '<div class="progress" style="width: 20%;">'+
@@ -267,7 +254,7 @@ function displayItemContent(data)
             progress+
 
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+date+'</div>'+
+                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+getPostDate(data.listing_ctime)+'</div>'+
             '</div>'+
             '<div class="row">' +
                 '<div class="col">'+
@@ -281,7 +268,7 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'">@'+data.seller_name+'</a></div>'+
+                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a></div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col"><h3>Description <h3></div>'+
@@ -528,53 +515,55 @@ function displayListing(d, isRecommend)
 
     var likes = ""
     if (d.listing_likes >= 10){
-        likes += '<span class="badge badge-pill badge-light">Trending</span>'
+        likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
+
+
 
     document.getElementById(element).innerHTML +=
     '<div class="col-md-4 mt-4">'+
-    '<div class="card" id="'+d.item_id+'">'+
-        '<div class="card-header"><a href="viewProfile.html?profileID='+d.seller_id+'">@'+d.seller_name+'</a></div>'+
-        '<div class="card-body pb-5">'+
-        '<div class="container">'+
-            '<div class="row">'+
-                '<div class="col text-center" id="imgContainer">'+
-                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" class="img-cover img-fluid" />'+
-                '</div>'+
+        '<div class="card border-0" id="'+d.item_id+'">'+
+            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a>'+
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
-                    '<h5 class="card-title">'+ d.item_name +'</h5>'+
-                '</div>'+
-            '</div>'+ 
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }) +'</h5>'+
-                '</div>'+                       
-            '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+
-                    '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
-                    '</h5>'+
+                    '<p class = "pl-4 pt-0" id="itemDay"><font style="opacity:.8" size="2px">'+ getPostDate(d.listing_ctime) +' </font></p>'+
                 '</div>'+
             '</div>'+
-            '<div class="row">'+
-                '<div class="col">'+
-                    '<h5 class="card-title">'+ status + ' ' + likes +'</h5>'+
+                '<div class="card-body pb-5">'+
+                    '<div class="container">'+
+                        '<div class="row ">'+
+                            '<a href="'+'viewListing.html?itemID='+d.item_id+'"class="btn btn-link stretched-link"></a> '+
+                                '<div class="col text-center" id="imgContainer">'+
+                                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" class="img-cover img-fluid" />'+
+                                '</div>'+
+                        '</div>'+
+                        '<div class="row">'+
+                            '<div class="col">'+
+                                '<h5 class="card-title" id="itemName">'+ d.item_name +'</h5>'+
+                            '</div>'+
+                        '</div>'+ 
+                        '<div class="row">'+
+                            '<div class="col">'+
+                                '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                    }) +'</h5>'+
+                            '</div>'+                       
+                        '</div>'+
+                    '</div>'+
                 '</div>'+
-            '</div>'+
+                '<div class="card-footer d-flex border-0">'+
+                    '<div class="row">'+
+                        '<div class="col">'+
+                            '<h5 class="card-title pl-3" id="likebutton">'+
+                                '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
+                            '</h5>'+
+                            '<h5 class="card-title pl-3">'+ status + '  ' + likes +'</h5>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
         '</div>'+
-        '</div>'+
-        '<div class="card-footer">'+
-                '<div class="col text-center">'+
-                    '<a href="javascript:void(0);" onclick="toViewListing('+d.item_id+');" class="btn btn-secondary" >View Listing</a> '+
-                '</div>'+
-            '</div>'+ 
-    '</div>'+
     '</div>'; 
 }
 
