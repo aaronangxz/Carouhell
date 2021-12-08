@@ -274,5 +274,5 @@ func GetRecommendedListingsByItemIdQuery(itemId uint32, userId int32, itemName s
 		" listing_tab.l_seller_id = acc_tab.a_user_id AND (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR l_seller_id = %v OR item_category = %v)"+
 		" AND (l_item_id != %v AND item_status = %v)"+
 		" GROUP BY l_item_id ORDER BY relevance DESC"+
-		" LIMIT 3", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, sellerId, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
+		" LIMIT 4", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, sellerId, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
 }
