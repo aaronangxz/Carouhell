@@ -172,6 +172,7 @@ type GetSingleListingResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -192,6 +193,7 @@ type GetSingleListingLoggedInResponse struct {
 	ItemCategory    uint32                     `json:"item_category"`
 	LSellerID       uint32                     `json:"seller_id"`
 	SellerName      string                     `json:"seller_name"`
+	SellerType      uint32                     `json:"seller_type"`
 	ListingCtime    int64                      `json:"listing_ctime"`
 	ListingMtime    int64                      `json:"listing_mtime"`
 	ListingLikes    uint32                     `json:"listing_likes"`
@@ -356,6 +358,7 @@ type GetLatestListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -385,6 +388,7 @@ type GetLatestListingsLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -452,6 +456,7 @@ type GetListingsUsingFiltersResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -469,6 +474,7 @@ type GetListingsUsingFiltersLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -553,6 +559,7 @@ type GetUserLikedListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -658,6 +665,7 @@ type GetRecommendedListingsByItemIdResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
