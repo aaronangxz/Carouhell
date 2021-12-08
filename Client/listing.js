@@ -228,13 +228,18 @@ function displayItemContent(data)
 
     var progress = ""
     if (((data.item_quantity/data.item_stock) * 100) <= 10 && ((data.item_quantity/data.item_stock) * 100) != 0){
-        progress += '<div class="progress" style="width: 20%;">'+
-        '<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">'+ (data.item_stock-data.item_quantity) + ' Bought</div>'+
+        progress += '<div class="progress" style="width: 25%">'+
+        '<div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">'+ (data.item_stock-data.item_quantity) + ' Bought</div>'+
       '</div>'
     }else if (((data.item_quantity/data.item_stock) * 100) <= 25 && ((data.item_quantity/data.item_stock) * 100) != 0){
-        progress += '<div class="progress" style="width: 20%;">'+
+        progress += '<div class="progress" style="width: 25%;">'+
         '<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">'+ (data.item_stock-data.item_quantity) + ' Bought</div>'+
       '</div>'
+    }
+
+    var isOfficial = ''
+    if (data.seller_type == 1){
+        isOfficial = '<span><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
     }
 
     var content = "";
@@ -243,7 +248,7 @@ function displayItemContent(data)
         '<div class="col-8">'+
             '<div class="row"><div class="col"><h1>'+data.item_name+' </h1></div></div>'+
               '<div class="row">' +
-                '<div class="col"><h2>'+ '  ' +(parseInt(data.item_price)/100).toLocaleString('en-US', {
+                '<div class="col"><h2>'+ '  S' +(parseInt(data.item_price)/100).toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD',
                   })+'</h2></div>'+
@@ -268,7 +273,7 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a></div>'+
+                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a> '+isOfficial+'</div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col"><h3>Description <h3></div>'+
@@ -424,10 +429,11 @@ function addListingLikes(itemID)
 {
     if (getCurrentUserID() < 0)
     {
-       if(confirm("Please Log In first"))
-       {
-        window.location.href = 'loginForm.html';
-       }
+        $('#promptLogIn').modal('show')
+        //$('.modal-backdrop').remove();
+        $(document).on('click','#toLogin',function(){
+            window.location.href = 'loginForm.html';
+       })
     }
     else // is logged in
     {
@@ -518,17 +524,22 @@ function displayListing(d, isRecommend)
         likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
 
+    var isOfficial = ''
+    if (d.seller_type == 1){
+        isOfficial = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }
+
     document.getElementById(element).innerHTML +=
-    '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mt-4">'+
+    '<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 mt-4">'+
         '<div class="card border-0" id="'+d.item_id+'">'+
-            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a>'+
+            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a> '+ isOfficial +
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
                     '<p class = "pl-4 pt-0" id="itemDay"><font style="opacity:.8" size="2px">'+ getTimeStamp(d.listing_ctime) +' </font></p>'+
                 '</div>'+
             '</div>'+
-                '<div class="card-body pb-5">'+
+                '<div class="card-body pb-3">'+
                     '<div class="container">'+
                         '<div class="row ">'+
                             '<a href="'+'viewListing.html?itemID='+d.item_id+'"class="btn btn-link stretched-link"></a> '+
@@ -537,27 +548,23 @@ function displayListing(d, isRecommend)
                                 '</div>'+
                         '</div>'+
                         '<div class="row">'+
-                            '<div class="col">'+
-                                '<h5 class="card-title" id="itemName">'+ d.item_name +'</h5>'+
-                            '</div>'+
+                        '<h6 class="card-title pl-0" id="itemName">'+ d.item_name +'</h6>'+
                         '</div>'+ 
-                        '<div class="row">'+
-                            '<div class="col">'+
-                                '<h5 class="card-title">'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
-                                    style: 'currency',
-                                    currency: 'USD',
-                                    }) +'</h5>'+
-                            '</div>'+                       
-                        '</div>'+
                     '</div>'+
                 '</div>'+
                 '<div class="card-footer d-flex border-0">'+
                     '<div class="row">'+
                         '<div class="col">'+
-                            '<h5 class="card-title pl-3" id="likebutton">'+
-                                '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
+                            '<h5 class="card-title">S'+ (parseInt(d.item_price)/100).toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                                }) +
                             '</h5>'+
-                            '<h5 class="card-title pl-3">'+ status + '  ' + likes +'</h5>'+
+                            '<h6 class="card-title" id="likebutton">'+
+                                '<a href="javascript:void(0);" onclick="addListingLikes('+d.item_id+');" id="like_'+ d.item_id+'">'+ checkIfUserLikedListing(d.is_liked)+'</a><span id="likecount_'+ d.item_id+'"> '+ d.listing_likes+'</span>'+ 
+                            '</h6>'+
+                            '<h6 class="card-title">'+ status + '  ' + likes +
+                            '</h6>'+
                         '</div>'+
                     '</div>'+
                 '</div>'+
@@ -623,10 +630,11 @@ function getSearchItem()
 
 function getFilterResults()
 {
-   // filterOptions
-
-   console.log("GO GET FILTER RESULTS");
-    
+    document.getElementById("footer").innerHTML = ''
+    document.getElementById("cards").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>'   
+   // filterOptions    
     var sortByCat = document.getElementById("sortByCat");
     var selectedCategory = sortByCat.options[sortByCat.selectedIndex].value;
     var sortByLocation = document.getElementById("sortByLocation");
@@ -636,11 +644,6 @@ function getFilterResults()
     var sortbyFlag = document.getElementById("sortFlag");
     var selectedSortFlag = sortbyFlag.options[sortbyFlag.selectedIndex].value;
     
-    console.log("selected Cat: " + selectedCategory);
-    console.log("selected Location: " + selectedLocation);
-    console.log("min: " + minPrice);
-    console.log("max: " + maxPrice);
-    console.log("sort flag: " + selectedSortFlag);
 
     if(selectedCategory)
         selectedCategory = parseInt(selectedCategory);
@@ -648,23 +651,24 @@ function getFilterResults()
     if(selectedLocation)
         selectedLocation = parseInt(selectedLocation);
     
+    if(parseInt(minPrice) <= 0)
+        minPrice = null;        
+
     if(minPrice || minPrice != "")
         minPrice = parseFloat(minPrice)*100;
     else
         minPrice = null;
-        
+
+    if(parseInt(maxPrice) <= 0)
+        maxPrice = null;         
+    
     if(maxPrice || maxPrice != "")
         maxPrice = parseFloat(maxPrice)*100;
     else
         maxPrice = null;
-        
-    
+
     if(selectedSortFlag)
         selectedSortFlag = parseInt(selectedSortFlag);
-
-    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
-    '<span class="loader"><span class="loader-inner"></span></span>'+
-    '</div>';
 
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
@@ -691,10 +695,11 @@ function getFilterResults()
         console.log(data);
         if(data.Respmeta.ErrorCode != 0)
         {
-            if(confirm("Unable to filter due to the following reason: " + data.Respmeta.DebugMsg))
-            {
+            $('#noResults').modal('show')
+            //$('.modal-backdrop').remove();
+            $('#noResults').on('hidden.bs.modal', function (e) {
                 location.reload();
-            }
+              })
         }
         else // successful
         {
@@ -789,7 +794,7 @@ function getUserLikedListing() {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        document.getElementById("title").innerHTML = '<h1>Your Favourite Listings ('+data.Data.length+')</h1>';
+        document.getElementById("title").innerHTML = '<h1>My Favourites('+data.Data.length+')</h1>';
         if(data.Respmeta.ErrorCode != 0)
         {
             if(confirm("Unable to get user liked listings due to the following reason: " + data.Respmeta.DebugMsg))
@@ -868,7 +873,7 @@ function getAllListing() {
 }
 
 function getLatestListing() {
-    document.getElementById("landingHomePage").innerHTML =   '<div class="loader-wrapper">'+
+    document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
         '</div>'   
     fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
@@ -881,7 +886,6 @@ function getLatestListing() {
     .then(response => response.json())
     .then(result => {/*result.Data*/  
         $(".loader-wrapper").fadeOut("slow");
-        document.getElementById("landingHomePage").innerHTML = ''
         console.log(result);
         for(const d of result.Data){
          displayListing(d);
