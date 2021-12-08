@@ -237,6 +237,11 @@ function displayItemContent(data)
       '</div>'
     }
 
+    var isOfficial = ''
+    if (data.seller_type == 1){
+        isOfficial = '<span><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }
+
     var content = "";
     content += '<div class="row">' +
         '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" /></div>'+
@@ -268,7 +273,7 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a></div>'+
+                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a> '+isOfficial+'</div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col"><h3>Description <h3></div>'+
@@ -519,10 +524,15 @@ function displayListing(d, isRecommend)
         likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
 
+    var isOfficial = ''
+    if (d.seller_type == 1){
+        isOfficial = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }
+
     document.getElementById(element).innerHTML +=
     '<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 mt-4">'+
         '<div class="card border-0" id="'+d.item_id+'">'+
-            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a>'+
+            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a> '+ isOfficial +
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
