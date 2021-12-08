@@ -1,3 +1,6 @@
+.bg-custom-2 {
+  background-image: linear-gradient(15deg, #154360 0%, #743b80 100%);
+  }
 .loader-wrapper {
     width: 100%;
     height: 100%;
@@ -50,10 +53,6 @@
     z-index:3;
     position:relative;
   }
-  #itemName{
-    z-index:3;
-    position:relative;
-  }
   .stretched-link::after {
     position: absolute;
     top: 0;
@@ -71,11 +70,12 @@ body {
 }
   .card-body{
     width:100%;
-    height:400px;
+    height:280px;
   }
   .card-footer{
     background: white !important;
     align-items: left;
+    height: 100%;
   }
   img {
       max-width: 100%;
@@ -83,8 +83,10 @@ body {
   }
   #imgContainer{
     width: 100%;
-    height: 300px;
+    height: 200px;
     object-fit: cover;
+    padding-left: 0px;
+    padding-right: 0px;
     padding-bottom: 10px;
   }
   .img-cover {
@@ -101,3 +103,10 @@ body {
 #itemDay{
   margin-bottom: 0 !important;
   } 
+  #itemName{
+    margin-bottom: 0 !important;
+
+  }
+  .modal-backdrop {
+    background-color: black;
+ }

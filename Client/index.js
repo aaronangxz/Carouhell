@@ -171,11 +171,12 @@ function loginUser()
 
      if(!username | !password)
      {
-        alert("Please fill in the blanks.");
+        $('#loginCredentials').modal('show')
+        //$('.modal-backdrop').remove();
      }
      else
      {
-        document.getElementById("loginLoad").innerHTML =   '<div class="loader-wrapper">'+
+        document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
         '</div>'        //check if account exist
         fetch('https://tic2601-t11.herokuapp.com/authenticate_user', {
@@ -191,10 +192,11 @@ function loginUser()
             console.log(data);
             if(data.Respmeta.ErrorCode != 0)
             {
-                if(confirm("Login Fail, please try again"))
-                {
+                $('#loginFail').modal('show')
+                //$('.modal-backdrop').remove();
+                $(document).on('click','#loginFail',function(){
                     location.reload();
-                }
+               })
             }
             else // successful
             {
@@ -202,10 +204,6 @@ function loginUser()
                 // localStorage.setItem('userID',data.Data.user_id);
                 localStorage.setItem('token', 'Bearer ' + data.Token.access_token);
                 setCurrentUserName(username);
-                console.log(username)
-                //document.getElementById('navbar-text').innerHTML += username
-                
-
                 if (getPrevLocation() != null){
                     window.location.href = getPrevLocation();
                 }else{
