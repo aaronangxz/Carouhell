@@ -223,8 +223,18 @@ func PurchaseSingleItem(c *gin.Context) {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
 	}
 
+	//if became out of stock, need to invalidate
+	if listingHold.GetItemQuantity()-input.GetPurchaseQuantity() == 0 {
+		if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during InvalidateCache: %v", err.Error())
+		}
+		if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during InvalidateCache: %v", err.Error())
+		}
+	}
+
 	//check if item stock state changes after purchase
-	//FE chnages display when stock is lower and equal to 25%
+	//FE changes display when stock is lower and equal to 25%
 	//dont invalidate if quantity before purchase is already within 'selling fast' & 'low stock' stage
 	if ((listingHold.GetItemQuantity())/listingHold.GetItemStock())*100 > 25 &&
 		((listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock())*100 <= 25 {
@@ -232,10 +242,16 @@ func PurchaseSingleItem(c *gin.Context) {
 		if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
 			log.Printf("Error during InvalidateCache: %v", err.Error())
 		}
+		if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during InvalidateCache: %v", err.Error())
+		}
 	} else if ((listingHold.GetItemQuantity())/listingHold.GetItemStock())*100 > 10 &&
 		((listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock())*100 <= 10 {
 		log.Printf("item state is low in stock: %v", (listingHold.GetItemQuantity()-input.GetPurchaseQuantity())/listingHold.GetItemStock()*100)
 		if err := utils.InvalidateCache(utils.GetUserDetailsCacheKey, input.GetUserID()); err != nil {
+			log.Printf("Error during InvalidateCache: %v", err.Error())
+		}
+		if err := utils.InvalidateCache(utils.GetUserLikedListingsCacheKey, input.GetUserID()); err != nil {
 			log.Printf("Error during InvalidateCache: %v", err.Error())
 		}
 	}
