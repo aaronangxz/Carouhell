@@ -312,25 +312,20 @@ function convertUnixToTimeStampDetailTime(unix)
     return formattedDate;
 }
 
-function getLastSeen(unix)
+function getLastSeen(loginDate)
 {
-    if (Date.now()/1000 - unix < 300){
-        date = "moments ago"
-    }else if (Date.now()/1000  - unix < 300){
-        date = "5 minutes ago"
-    }else if (Date.now()/1000  - unix < 600){
-        date = "10 minutes ago"
-    }else if (Date.now()/1000  - unix < 6000){
-        date = "an hour ago"
-    }else if (Date.now()/1000  - unix < 86400){
-        date = "a day ago"
+    var todayDate = (Date.now()/1000)
+    var dateDifference = todayDate - loginDate
+
+    if (dateDifference > 86400){
+        date = 'on '+ convertUnixToTimeStamp(loginDate) +', '+ convertUnixToTimeStampDetailTime(loginDate)
     }else{
-        date = 'on '+ convertUnixToTimeStamp(unix) +', '+ convertUnixToTimeStampDetailTime(unix)
+        date = getTimeStamp(loginDate)
     }
     return date
 }
 
-function getPostDate(listingDate)
+function getTimeStamp(listingDate)
 {
     var postedDate = listingDate
     var todayDate = (Date.now()/1000)
@@ -348,28 +343,14 @@ function getPostDate(listingDate)
         date = Math.floor((todayDate - postedDate)/86400) + ' days ago'
     }else if (dateDifference > 86400){
         date = "1 day ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 21600){
-        date = "6 hour ago"
-    }else if (dateDifference > 18000){
-        date = "5 hour ago"
-    }else if (dateDifference > 14400){
-        date = "4 hour ago"
-    }else if (dateDifference > 10800){
-        date = "3 hours ago"
     }else if (dateDifference > 7200){
-        date = "2 hours ago"
+        date = Math.floor((todayDate - postedDate)/3600) + ' hours ago'
     }else if (dateDifference > 3600){
         date = "an hour ago"
+    }else if (dateDifference > 3000){
+        date = "50 minutes ago"
+    }else if (dateDifference > 2400){
+        date = "40 minutes ago"
     }else if (dateDifference > 1800){
         date = "30 minutes ago"
     }else if (dateDifference > 1200){

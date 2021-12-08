@@ -186,7 +186,7 @@ function viewListingByItemId(itemID)
 function getRecommendedListingsByItemId(itemID)
 {
     document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
-    '<div class="col"><h3>🔥 You may also like <h3></div>'+
+    '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>'+
 '</div>'
     fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
             method: 'POST',
@@ -254,7 +254,7 @@ function displayItemContent(data)
             progress+
 
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+getPostDate(data.listing_ctime)+'</div>'+
+                '<div class="col"><span><i class="fas fa-clock"></i></span> Posted '+getTimeStamp(data.listing_ctime)+'</div>'+
             '</div>'+
             '<div class="row">' +
                 '<div class="col">'+
@@ -391,7 +391,7 @@ function displayItemComments(data, itemID)
     }
     var comments =
     '<div class="row mt-3">' +
-        '<div class="col"><h3>💬 Comments <h3></div>'+
+        '<div class="col"><h3><span><i class="far fa-comment-dots" style="color:grey"></i></span> Comments <h3></div>'+
     '</div>';
     if (data.length == 0){
         if (getCurrentUserID()== -1){
@@ -518,23 +518,21 @@ function displayListing(d, isRecommend)
         likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
 
-
-
     document.getElementById(element).innerHTML +=
-    '<div class="col-md-4 mt-4">'+
+    '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mt-4">'+
         '<div class="card border-0" id="'+d.item_id+'">'+
             '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a>'+
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
-                    '<p class = "pl-4 pt-0" id="itemDay"><font style="opacity:.8" size="2px">'+ getPostDate(d.listing_ctime) +' </font></p>'+
+                    '<p class = "pl-4 pt-0" id="itemDay"><font style="opacity:.8" size="2px">'+ getTimeStamp(d.listing_ctime) +' </font></p>'+
                 '</div>'+
             '</div>'+
                 '<div class="card-body pb-5">'+
                     '<div class="container">'+
                         '<div class="row ">'+
                             '<a href="'+'viewListing.html?itemID='+d.item_id+'"class="btn btn-link stretched-link"></a> '+
-                                '<div class="col text-center" id="imgContainer">'+
+                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-6 text-center" id="imgContainer">'+
                                     '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+d.item_id+'.jpg" class="img-cover img-fluid" />'+
                                 '</div>'+
                         '</div>'+
