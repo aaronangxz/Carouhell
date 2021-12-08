@@ -80,7 +80,7 @@ func GetUserLikedListings(c *gin.Context) {
 	}
 
 	//Retrieved new data, set to Redis
-	expiry := 60 * time.Second
+	expiry := 60 * time.Minute
 	if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
 		log.Printf("Error while writing to redis: %v", err.Error())
 	} else {

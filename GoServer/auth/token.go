@@ -31,7 +31,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 func CreateToken(userid uint32) (*TokenDetails, error) {
 	td := &TokenDetails{}
 
-	td.AtExpires = time.Now().Add(time.Hour * 2).Unix()
+	td.AtExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
 	td.AccessUuid = uuid.NewV4().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
