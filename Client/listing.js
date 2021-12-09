@@ -246,7 +246,7 @@ function displayItemContent(data)
 
     var content = "";
     content += '<div class="row">' +
-        '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" /></div>'+
+        '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" id="singleItemImage"/></div>'+
         '<div class="col-8">'+
             '<div class="row"><div class="col"><h1>'+data.item_name+' </h1></div></div>'+
               '<div class="row">' +
@@ -603,15 +603,12 @@ function getSearchItem()
         {
             document.getElementById("searchResultText").innerHTML = 
             '<div class="col">'+
-                '<h1>No result found</h1>'+
+                '<h1>Hmm..we don\'t have that here.</h1>'+
+                '<h2>Try to search for something else?</h2>'+
             '</div>';
             $(".loader-wrapper").fadeOut("slow");
-        document.getElementById("landingHomePage").innerHTML = ''
+            document.getElementById("landingHomePage").innerHTML = ''
             document.getElementById("cards").innerHTML = "";
-            // if(confirm("0 search results for " +searchItem))
-            // {
-            //     location.reload();
-            // }
         }
         else // successful
         {
@@ -655,17 +652,34 @@ function getFilterResults()
     if(selectedLocation)
         selectedLocation = parseInt(selectedLocation);
     
-    if(parseInt(minPrice) <= 0)
-        minPrice = null;        
+    if(parseInt(minPrice) <= 0){
+        minPrice = null;         
+        document.getElementById('minPrice').value= ''
+    }
 
     if(minPrice || minPrice != "")
         minPrice = parseFloat(minPrice)*100;
     else
         minPrice = null;
 
-    if(parseInt(maxPrice) <= 0)
+    if(parseInt(minPrice) || parseInt(maxPrice) >= 4294967295){
+        var myModal = document.getElementById('noResults');
+        var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+        myModal.addEventListener('show.bs.modal', function () {
+            var modalTitle = myModal.querySelector('.modal-title')
+            var modalBodyInput = myModal.querySelector('.modal-body')
+            modalTitle.textContent = 'Incorrect input'
+            modalBodyInput.textContent = 'Maximum price allowed is S$4,294,967,295'
+          })
+        registerFailedModal.show();
+    }
+
+    if(parseInt(maxPrice) <= 0){
         maxPrice = null;         
-    
+       document.getElementById('maxPrice').value= ''
+    }
+
     if(maxPrice || maxPrice != "")
         maxPrice = parseFloat(maxPrice)*100;
     else
@@ -699,11 +713,35 @@ function getFilterResults()
         console.log(data);
         if(data.Respmeta.ErrorCode != 0)
         {
+            if (data.Respmeta.ErrorCode == 3){
+                document.getElementById("searchResultText").innerHTML = 
+            '<div class="col">'+
+                '<h1>Hmm..we don\'t have that here.</h1>'+
+                '<h2>Try to search for something else?</h2>'+
+            '</div>';
+            document.getElementById("landingHomePage").innerHTML = ''
+            document.getElementById("cards").innerHTML = "";
+            }else{
+            var myModal = document.getElementById('noResults');
+                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+                myModal.addEventListener('show.bs.modal', function () {
+                    var modalTitle = myModal.querySelector('.modal-title')
+                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    modalTitle.textContent = 'Unable to retrieve results: Error ' + data.Respmeta.ErrorCode
+                    modalBodyInput.textContent = data.Respmeta.DebugMsg
+                  })
+                registerFailedModal.show();
+                myModal.addEventListener('hide.bs.modal', function () {
+                    location.reload();
+                  })
+
             $('#noResults').modal('show')
             //$('.modal-backdrop').remove();
             $('#noResults').on('hidden.bs.modal', function (e) {
                 location.reload();
               })
+            }
         }
         else // successful
         {
@@ -916,7 +954,7 @@ function displayUserReviews(data)
         '<div class="col"><h1>@'+data.account_info.user_name + ' ' + sellerType +'</h1></div>'+
     '</div>' +
     '<div class="row mt-1">' +
-        '<div class="col"><small style="color:grey;">Last seen '+ getLastSeen(data.account_info.user_last_login) +'</small></div>'+
+        '<div class="col"><small style="color:grey;"> '+ getLastSeen(data.account_info.user_last_login) +'</small></div>'+
     '</div>'+
     '<div class="row mt-3">' +
         '<div class="col"><h2>'+data.ratings.user_ratings+'<span><i class="fas fa-star" style="color:gold"></i></span> ('+data.review_count+' Reviews)</h2></div>'+
