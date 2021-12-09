@@ -310,6 +310,7 @@ type GetUserListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -328,6 +329,7 @@ type GetUserListingsLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
