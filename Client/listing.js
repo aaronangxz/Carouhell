@@ -246,7 +246,7 @@ function displayItemContent(data)
 
     var content = "";
     content += '<div class="row">' +
-        '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" /></div>'+
+        '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_'+data.item_id+'.jpg" class="img-fluid" id="singleItemImage"/></div>'+
         '<div class="col-8">'+
             '<div class="row"><div class="col"><h1>'+data.item_name+' </h1></div></div>'+
               '<div class="row">' +

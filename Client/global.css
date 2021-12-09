@@ -99,6 +99,10 @@ body {
   .card:hover{
     box-shadow: 2px 2px 10px #E6E9EC;
 }
+#singleItemImage{
+  box-shadow: 3px 3px 10px #E6E9EC;
+
+}
 #itemDay{
   margin-bottom: 0 !important;
   } 
@@ -116,4 +120,12 @@ body {
  #sellerLabel{
   display:inline-block;
   padding-bottom: 10px;
+ }
+ #okButton{
+  background-color: #5f4282 !important;
+  border-color: rgb(255, 255, 255)
+ }
+ #toLogin{
+  background-color: #5f4282 !important;
+  border-color: rgb(255, 255, 255)
  }
