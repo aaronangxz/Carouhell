@@ -337,7 +337,7 @@ function getTimeStamp(listingDate)
         date = Math.floor((todayDate - postedDate)/604800) + ' weeks ago'
     }else if (dateDifference > 604800){
         date = "1 week ago"
-    }else if (dateDifference > 86400){
+    }else if (dateDifference > 172800){
         date = Math.floor((todayDate - postedDate)/86400) + ' days ago'
     }else if (dateDifference > 86400){
         date = "1 day ago"
