@@ -117,11 +117,11 @@ function registerUser()
 
      if(!username | !email | !password | !cfmPassword)
      {
-        alert("Please fill in the blanks.");
-     }
+        $('#registerFieldsEmpty').modal('show')
+    }
      else if(password !== cfmPassword)
      {
-        alert("password not tally.");
+        $('#passwordMismatch').modal('show')
         document.getElementById("password").value = "";
         document.getElementById("cfmPassword").value = "";
      }
@@ -135,29 +135,30 @@ function registerUser()
                 "user_name": username,
                 "user_email": email,
                 "user_password": password,
-                "user_security_question": 1,
-                "user_security_answer": "x"
             })
         })
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            if (confirm(data.Respmeta.DebugMsg))
+            if(data.Respmeta.ErrorCode != 0)
             {
-                if(data.Respmeta.ErrorCode != 0) //failed
-                {
-                    if(confirm("Registration failed due to the following: " + data.Respmeta.DebugMsg))
-                    {
-                        window.location.href = "registerForm.html";
-                    }
-                }
-                else
-                {
-                    if(confirm("Please Proceed to Login"))
-                    {
-                        window.location.href = "loginForm.html";
-                    }
-                }
+                var myModal = document.getElementById('registerFailed');
+                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+                myModal.addEventListener('show.bs.modal', function () {
+                    var modalTitle = myModal.querySelector('.modal-title')
+                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    modalTitle.textContent = 'Registration Fail: Error ' + data.Respmeta.ErrorCode
+                    modalBodyInput.textContent = data.Respmeta.DebugMsg
+                  })
+                  registerFailedModal.show();
+            }
+            else
+            {
+                $('#registerSuccess').modal('show')
+                $(document).on('click','#registerSuccess',function(){
+                    window.location.href = 'loginForm.html';
+                })
             }
         })
         .catch(error => console.log(error)); 
@@ -172,13 +173,12 @@ function loginUser()
      if(!username | !password)
      {
         $('#loginCredentials').modal('show')
-        //$('.modal-backdrop').remove();
      }
      else
      {
         document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
-        '</div>'        //check if account exist
+        '</div>'
         fetch('https://tic2601-t11.herokuapp.com/authenticate_user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}, 
@@ -192,16 +192,23 @@ function loginUser()
             console.log(data);
             if(data.Respmeta.ErrorCode != 0)
             {
-                $('#loginFail').modal('show')
-                //$('.modal-backdrop').remove();
-                $(document).on('click','#loginFail',function(){
+                var myModal = document.getElementById('loginFail');
+                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+                myModal.addEventListener('show.bs.modal', function () {
+                    var modalTitle = myModal.querySelector('.modal-title')
+                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    modalTitle.textContent = 'Login Fail: Error ' + data.Respmeta.ErrorCode
+                    modalBodyInput.textContent = data.Respmeta.DebugMsg
+                  })
+                registerFailedModal.show();
+                myModal.addEventListener('hide.bs.modal', function () {
                     location.reload();
-               })
-            }
+                  })
+             }
             else // successful
             {
                 setLocalStorage('userID',data.Data.user_id,604800);
-                // localStorage.setItem('userID',data.Data.user_id);
                 localStorage.setItem('token', 'Bearer ' + data.Token.access_token);
                 setCurrentUserName(username);
                 if (getPrevLocation() != null){
