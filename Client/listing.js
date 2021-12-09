@@ -188,7 +188,7 @@ function getRecommendedListingsByItemId(itemID)
     document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
     '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>'+
 '</div>'
-    fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
                 'Authorization': getToken(),
@@ -880,12 +880,15 @@ function getLatestListing() {
     document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
         '</div>'   
-    fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
-      method: 'GET',
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+      method: 'POST',
       headers:{
         'Authorization': getToken(),
         'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({
+        "user_id": parseInt(getCurrentUserID())
+        })
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  

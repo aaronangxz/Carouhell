@@ -50,14 +50,15 @@ func main() {
 	//returns all, sorted by listing_ctime ASC
 	r.GET("/get_all_listings", listings.GetAllListings)
 	//returns all, sorted by listing_ctime DESC
-	r.GET("/get_latest_listings", listings.GetLatestListings)
+	r.GET("/get_latest_listings", listings.GetLatestListings) //deprecated
+	r.POST("/v2/get_latest_listings", listings.GetLatestListingsv2)
 	//returns based on filters, sorted by listing_ctime DESC
 	r.POST("/get_listings_using_filters", listings.GetListingsUsingFilters)
 
 	//***************** Listing Page *****************
 	//returns based on item_id
 	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
-	r.POST("/get_recommended_listings_by_itemid", listings.GetRecommendedListingsByItemId)
+	r.POST("/v2/get_recommended_listings_by_itemid", listings.GetRecommendedListingsByItemId)
 
 	r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
 	r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)

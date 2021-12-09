@@ -75,3 +75,10 @@ func ValidateGetListingByItemIDLoggedInResult(results models.GetSingleListingLog
 	}
 	return models.NewSuccessMessageResponse("GetListingByItemID success.")
 }
+
+func ValidateGetLatestListingsv2Result(results []models.GetLatestListingsv2Response) models.ResponseMeta {
+	if len(results) == 0 {
+		return models.NewNotFoundResponse()
+	}
+	return models.NewSuccessMessageResponse(fmt.Sprintf("GetLatestListingsV2 success. results: %v", len(results)))
+}
