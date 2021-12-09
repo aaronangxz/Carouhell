@@ -310,6 +310,7 @@ type GetUserListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -328,6 +329,7 @@ type GetUserListingsLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -345,7 +347,6 @@ type GetLatestListingsRequest struct {
 	ItemStatus   *uint32 `json:"item_status"`
 	Limit        *uint32 `json:"limit"`
 }
-
 type GetLatestListingsResponse struct {
 	LItemID         uint32 `json:"item_id"`
 	ItemName        string `json:"item_name"`
@@ -670,4 +671,34 @@ type GetRecommendedListingsByItemIdResponse struct {
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
 	IsLiked         bool   `json:"is_liked"`
+}
+
+type GetLatestListingsv2Request struct {
+	UserID *int32 `json:"user_id" binding:"required"`
+}
+
+type GetLatestListingsv2Response struct {
+	LItemID         uint32 `json:"item_id"`
+	ItemName        string `json:"item_name"`
+	ItemPrice       uint32 `json:"item_price"`
+	ItemQuantity    uint32 `json:"item_quantity"`
+	ItemStock       uint32 `json:"item_stock"`
+	ItemDescription string `json:"item_description"`
+	ItemLocation    uint32 `json:"item_location"`
+	ItemStatus      uint32 `json:"item_status"`
+	ItemCategory    uint32 `json:"item_category"`
+	LSellerID       uint32 `json:"seller_id"`
+	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
+	ListingCtime    int64  `json:"listing_ctime"`
+	ListingMtime    int64  `json:"listing_mtime"`
+	ListingLikes    uint32 `json:"listing_likes"`
+	IsLiked         bool   `json:"is_liked"`
+}
+
+func (r *GetLatestListingsv2Request) GetUserID() int32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
 }

@@ -188,7 +188,7 @@ function getRecommendedListingsByItemId(itemID)
     document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
     '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>'+
 '</div>'
-    fetch('https://tic2601-t11.herokuapp.com/get_recommended_listings_by_itemid', {
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
                 'Authorization': getToken(),
@@ -237,9 +237,11 @@ function displayItemContent(data)
       '</div>'
     }
 
-    var isOfficial = ''
+    var sellerType = ''
     if (data.seller_type == 1){
-        isOfficial = '<span><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+        sellerType = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }else if (data.seller_type == 2){
+        sellerType = '<span title = "Preferred Seller"><i class="fas fa-medal" style="color:Coral"></i></span>'
     }
 
     var content = "";
@@ -273,7 +275,7 @@ function displayItemContent(data)
                 '<div class="col"><span><i class="fas fa-map-marker-alt"></i></span> '+location_Arr[data.item_location]+'</div>'+
             '</div>'+
             '<div class="row">' +
-                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a> '+isOfficial+'</div>'+
+                '<div class="col"><span><i class="fas fa-user"></i> </span><a href="viewProfile.html?profileID='+data.seller_id+'"style="color: black">@'+data.seller_name+'</a> '+sellerType+'</div>'+
             '</div>'+
             '<div class="row mt-3">' +
                 '<div class="col"><h3>Description <h3></div>'+
@@ -524,15 +526,17 @@ function displayListing(d, isRecommend)
         likes += '<span><i class="fas fa-chart-line" style="color:red"></i></span>'
     }
 
-    var isOfficial = ''
+    var sellerType = ''
     if (d.seller_type == 1){
-        isOfficial = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+        sellerType = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }else if (d.seller_type == 2){
+        sellerType = '<span title = "Preferred Seller"><i class="fas fa-medal" style="color:Coral"></i></span>'
     }
 
     document.getElementById(element).innerHTML +=
     '<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 mt-4">'+
         '<div class="card border-0" id="'+d.item_id+'">'+
-            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a> '+ isOfficial +
+            '<div class="card-header card-header-color border-0 pb-0"><a href="viewProfile.html?profileID='+d.seller_id+'" style="color: black">@'+d.seller_name+'</a> '+ sellerType +
             '</div>'+
             '<div class="row">'+
                 '<div class="col">'+
@@ -876,12 +880,15 @@ function getLatestListing() {
     document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
         '<span class="loader"><span class="loader-inner"></span></span>'+
         '</div>'   
-    fetch('https://tic2601-t11.herokuapp.com/get_latest_listings', {
-      method: 'GET',
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+      method: 'POST',
       headers:{
         'Authorization': getToken(),
         'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({
+        "user_id": parseInt(getCurrentUserID())
+        })
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
@@ -897,9 +904,16 @@ function getLatestListing() {
 
 function displayUserReviews(data)
 {
+    var sellerType = ''
+    if (data.account_info.seller_type == 1){
+        sellerType = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
+    }else if (data.account_info.seller_type == 2){
+        sellerType = '<span title = "Preferred Seller"><i class="fas fa-medal" style="color:Coral"></i></span>'
+    }
+
     var reviews =
     '<div class="row mt-3">' +
-        '<div class="col"><h1>@'+data.account_info.user_name+'\'s Profile </h1></div>'+
+        '<div class="col"><h1>@'+data.account_info.user_name + ' ' + sellerType +'</h1></div>'+
     '</div>' +
     '<div class="row mt-1">' +
         '<div class="col"><small style="color:grey;">Last seen '+ getLastSeen(data.account_info.user_last_login) +'</small></div>'+
@@ -908,6 +922,8 @@ function displayUserReviews(data)
         '<div class="col"><h2>'+data.ratings.user_ratings+'<span><i class="fas fa-star" style="color:gold"></i></span> ('+data.review_count+' Reviews)</h2></div>'+
     '</div>';
     
+
+
     for(var i = 0; i < data.user_reviews.length; i++)
     {
         if (i == 10){
