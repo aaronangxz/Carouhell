@@ -323,9 +323,9 @@ function getLastSeen(loginDate)
     var dateDifference = todayDate - loginDate
 
     if (dateDifference > 86400){
-        date = 'on '+ convertUnixToTimeStamp(loginDate) +', '+ convertUnixToTimeStampDetailTime(loginDate)
+        date = 'Last seen on'+ convertUnixToTimeStamp(loginDate) +', '+ convertUnixToTimeStampDetailTime(loginDate)
     }else{
-        date = getTimeStamp(loginDate)
+        date = 'Last seen ' + getTimeStamp(loginDate)
     }
     return date
 }
