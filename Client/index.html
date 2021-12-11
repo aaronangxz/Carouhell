@@ -22,6 +22,20 @@
   $(function(){
     $("#header").load("navbar.html");
   });
+
+  $(document).ready(function(){
+    $('#minPrice').keypress(function(e){
+      if(e.keyCode==13)
+      $('#filterButton').click();
+    });
+});
+
+$(document).ready(function(){
+  $('#maxPrice').keypress(function(e){
+    if(e.keyCode==13)
+    $('#filterButton').click();
+  });
+});
   </script> 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
@@ -84,24 +98,24 @@
 <div class="row" id="landingHomePage"></div>
 <div class="container center">
     <div class="row"> 
-        <div class="col mt-3">
+        <div class="col-3 mt-3">
             <div class="form-group">
                 <select class="form-control" id="sortByCat">
                     
                 </select> 
             </div>
         </div>
-        <div class="col mt-3">
+        <div class="col-2 mt-3">
             <div class="form-group">
                 <select class="form-control" id="sortByLocation">
                 </select> 
             </div>
         </div>
-        <div class="col mt-3">
+        <div class="col-4 mt-3">
             <div class="form-group">
               <div class="row">
                   <div class="col">
-                      <input maxlength="2" type="number" class="form-control" id="minPrice" placeholder="$ Min" >
+                      <input type="number" class="form-control" id="minPrice" placeholder="$ Min" >
                   </div>
                   -
                   <div class="col">
@@ -110,18 +124,18 @@
               </div>
             </div>
         </div>
-        <div class="col mt-3">
+        <div class="col-3 mt-3">
             <div class="form-group">
               <div class="row">
-                <div class="col-4 my-auto"> Sort:</div>
-                <div class="col-8"><select class="form-control" id="sortFlag"></select></div>
+                <div class="col-5 my-auto"> Order By:</div>
+                <div class="col-7"><select class="form-control" id="sortFlag"></select></div>
               </div>
             </div>
         </div>
     </div>
     <div class="row"> 
         <div class="col text-center">
-          <input type="button" class="btn btn-secondary " onclick="getFilterResults()" value="Apply Filters"/>
+          <input type="button" class="btn btn-secondary " onclick="getFilterResults()" value="Apply Filters" id="filterButton"/>
         </div>
     </div>  
 </div>

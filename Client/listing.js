@@ -185,9 +185,11 @@ function viewListingByItemId(itemID)
 
 function getRecommendedListingsByItemId(itemID)
 {
-    document.getElementById("recommendedListingsSection").innerHTML +='<div class="row mt-3">' +
-    '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>'+
-'</div>'
+    document.getElementById("recommendedListingsSection").innerHTML += 
+    '<div class="mb-4"><hr class="solid"></div>'+
+    '<div class="row mt-3">' +
+        '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>'+
+    '</div>'
     fetch('https://tic2601-t11.herokuapp.com/v2/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers:{
@@ -212,7 +214,11 @@ function getRecommendedListingsByItemId(itemID)
 
 function displayItemContent(data)
 {
-    
+    var topBread = 
+    '<li class="breadcrumb-item"><a href=categories.html?category='+ data.item_category +'>'+categories_Arr[data.item_category]+'</a></li>'+
+    '<li class="breadcrumb-item active" aria-current="page">'+ data.item_name +'</li>'
+    document.getElementById("topBread").innerHTML += topBread;
+
     var status = ""
     if (data.item_status == 2){
         status +='<span class="badge badge-pill badge-secondary">Sold Out</span>'
@@ -340,15 +346,27 @@ function displayItemContent(data)
             '<form id="purchaseForm" method="post">'+
                 '<div class="row mt-3" id="buyerBtns">'+
                     '<div class="col-4"></div>'+
-                        '<div class="col-3">'+
+                        '<div class="col-2">'+
                             '<div class="form-group">'+
-                            '<input type="number" class="form-control" id="qtyToPurchase" placeholder="Enter Quantity">'+
-                            '<p>Quantity Available: '+ data.item_quantity + '</p>'+
+                                '<div class="input-group">'+
+                                    '<span class="input-group-prepend">'+
+                                        '<button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">'+
+                                            '<span><i class="bi bi-dash-circle"></i></span>'+
+                                        '</button>'+
+                                    '</span>'+
+                                    '<input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">'+
+                                    '<span class="input-group-append">'+
+                                        '<button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">'+
+                                            '<span><i class="bi bi-plus-circle"></i></span>'+
+                                        '</button>'+
+                                    '</span>'+
+                                '</div>'+
+                                // '<input type="number" class="form-control" id="qtyToPurchase" placeholder="Enter Quantity">'+
                             '</div>'+
-                    '</div>'+
-                    '<div class="col-1">'+
-                        '<input type="button" onclick="buyNow('+data.item_id+','+data.seller_id+')" class="btn btn-primary" background-color value="Buy Now"/>'+
-                    '</div>'+
+                        '</div>'+
+                        '<div class="col-3">'+
+                            '<span>Available: '+ data.item_quantity + '</span>'+ 
+                            '<span id="buyButton"><input type="button" onclick="buyNow('+data.item_id+','+data.seller_id+')" class="btn btn-primary" background-color value="Buy Now"/></span>'+
                     '<div class="col-4"></div>'+
                 '</div>'+
             '</form>';
@@ -383,7 +401,7 @@ function displayItemComments(data, itemID)
     var showCommentButton = 
     '<form id="listingComment" method="post">'+
         '<div class="row mt-3">' +
-            '<div class="col-10">'+
+            '<div class="col-5">'+
                 '<div class="form-group">'+
                     '<input type="text" class="form-control" id="comment" placeholder="Add a comment...">'+
                 '</div>'+
@@ -629,12 +647,81 @@ function getSearchItem()
     sessionStorage.setItem('prevLocation',window.location)
 }
 
-function getFilterResults()
+function getCategoryResults(selectedCategory)
 {
     document.getElementById("footer").innerHTML = ''
     document.getElementById("cards").innerHTML =   '<div class="loader-wrapper">'+
     '<span class="loader"><span class="loader-inner"></span></span>'+
     '</div>'   
+   
+    fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
+        method: 'POST',
+        headers:{
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({
+            "category_filter": {
+                "item_category": parseInt(selectedCategory)
+            },
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        if(data.Respmeta.ErrorCode != 0)
+        {
+            if (data.Respmeta.ErrorCode == 3){
+                document.getElementById("searchResultText").innerHTML = 
+            '<div class="col">'+
+                '<h1>Hmm..we don\'t have that here.</h1>'+
+                '<h2>Try to search for something else?</h2>'+
+            '</div>';
+            document.getElementById("landingHomePage").innerHTML = ''
+            document.getElementById("cards").innerHTML = "";
+            }else{
+            var myModal = document.getElementById('noResults');
+                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+                myModal.addEventListener('show.bs.modal', function () {
+                    var modalTitle = myModal.querySelector('.modal-title')
+                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    modalTitle.textContent = 'Unable to retrieve results: Error ' + data.Respmeta.ErrorCode
+                    modalBodyInput.textContent = data.Respmeta.DebugMsg
+                  })
+                registerFailedModal.show();
+                myModal.addEventListener('hide.bs.modal', function () {
+                    location.reload();
+                  })
+
+            $('#noResults').modal('show')
+            $('#noResults').on('hidden.bs.modal', function (e) {
+                location.reload();
+              })
+            }
+        }
+        else // successful
+        {
+            document.getElementById("landingHomePage").innerHTML = '';
+            document.getElementById("cards").innerHTML = "";
+            document.getElementById("searchResultText").innerHTML = "";
+            document.getElementById("searchResultText").innerHTML += 
+            '<div class="col">'+
+                '<p></p>'+
+                '<h1>'+ categories_Arr[selectedCategory]+'</h1>'+
+                '<h6>'+ data.Data.length + ' listings found in '+ categories_Arr[selectedCategory]+'</h6>'
+            '</div>';
+            for(const d of data.Data){
+                displayListing(d,);
+            }
+        }
+    })
+    .catch(error => console.log(error)); 
+    sessionStorage.setItem('prevLocation',window.location)
+}
+
+function getFilterResults()
+{
    // filterOptions    
     var sortByCat = document.getElementById("sortByCat");
     var selectedCategory = sortByCat.options[sortByCat.selectedIndex].value;
@@ -662,22 +749,9 @@ function getFilterResults()
     else
         minPrice = null;
 
-    if(parseInt(minPrice) || parseInt(maxPrice) >= 4294967295){
-        var myModal = document.getElementById('noResults');
-        var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
-
-        myModal.addEventListener('show.bs.modal', function () {
-            var modalTitle = myModal.querySelector('.modal-title')
-            var modalBodyInput = myModal.querySelector('.modal-body')
-            modalTitle.textContent = 'Incorrect input'
-            modalBodyInput.textContent = 'Maximum price allowed is S$4,294,967,295'
-          })
-        registerFailedModal.show();
-    }
-
     if(parseInt(maxPrice) <= 0){
         maxPrice = null;         
-       document.getElementById('maxPrice').value= ''
+        document.getElementById('maxPrice').value= ''
     }
 
     if(maxPrice || maxPrice != "")
@@ -685,8 +759,29 @@ function getFilterResults()
     else
         maxPrice = null;
 
+    if(parseInt(minPrice)  >= 4294967295 || parseInt(maxPrice) >= 4294967295){
+        var myModal = document.getElementById('noResults');
+        var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+        myModal.addEventListener('show.bs.modal', function () {
+            var modalTitle = myModal.querySelector('.modal-title')
+            var modalBodyInput = myModal.querySelector('.modal-body')
+            modalTitle.textContent = 'Incorrect input'
+            modalBodyInput.textContent = 'Maximum price allowed is S$42,949,672'
+          })
+        registerFailedModal.show();
+        myModal.addEventListener('hide.bs.modal', function () {
+            location.reload();
+          })
+    }
+
     if(selectedSortFlag)
         selectedSortFlag = parseInt(selectedSortFlag);
+
+    document.getElementById("footer").innerHTML = ''
+    document.getElementById("cards").innerHTML =   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>'   
 
     fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
         method: 'POST',
