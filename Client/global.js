@@ -1,7 +1,7 @@
 /*Constants to be used for mainly dropdown selections */
 const categories_Arr = ["Food & Drinks", "Computers & Tech","Mobile Phones & Gadgets", "Men's Fashion","Woman's Fashion","Pets","Furniture",
                         "Cars","Beauty","Games","Home Appliances", "Babies & Kids","Hobbies & Toys","Tickets",
-                        "Sports","Virtual Goods", "Property"];
+                        "Sports","Virtual Goods", "Properties"];
 
 const sortFlag_Arr = ["Default", "Recent", "Highest Price", "Lowest Price", "Popular"];
 
