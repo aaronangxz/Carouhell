@@ -16,16 +16,15 @@
   <script src="index.js"></script>
   <script src="listing.js"></script>
   <script> 
-    $(window).on("load",function(){
-      $(".loader-wrapper").fadeOut("slow");
-    });
     $(function(){
       $("#header").load("navbar.html");
+    });
+    $(window).on("load",function(){
+      $(".loader-wrapper").fadeOut("slow");
     });
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const itemID = urlParams.get('itemID')
-    console.log(itemID);
     $(document).ready(viewListingByItemId(itemID));
     $('.btn-number').click(function(e){
       e.preventDefault();
@@ -127,7 +126,6 @@
   <div class="loader-wrapper">
     <span class="loader"><span class="loader-inner"></span></span>
 </div>
-  <body>
     <div id="header"></div>
     <div class="container">
       <nav aria-label="breadcrumb">
@@ -148,6 +146,6 @@
         <div class="row" id="recommendedListings">
         </div>
     </div>
-    <p></p>
+    <div id="footer"></div>
   </body>
-</html>
+  </html>
