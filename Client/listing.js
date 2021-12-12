@@ -35,7 +35,7 @@ function createListing(userID)
     var locationValue = location.options[location.selectedIndex].value;
 
     var base64String = "";
-    const file = document.getElementById("img").files[0];
+    const file = document.getElementById("imgBrowser").files[0];
     var reader = new FileReader();
       
     reader.onload = function () {
