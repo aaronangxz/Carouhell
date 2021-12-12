@@ -159,6 +159,11 @@ $(document).ready(function(){
 <script>
 
 getLatestListing();
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const itemID = urlParams.get('itemID')
+
 var loadSortByCategoryContent = '<option class="disabled" value="null">Select Category</option>';
 for(var i = 0; i <categories_Arr.length; i++)
 {

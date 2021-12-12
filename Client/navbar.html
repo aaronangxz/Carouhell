@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
   <link rel="stylesheet" href="global.css?v5.1">
   <script src="index.js"></script>
+  <script src="listing.js"></script>
   <style>
     body {
       padding-top: 80px;
@@ -47,9 +48,10 @@
     <img id = "sitelogo" src="logo.png"  width="200" height="50" alt="" >
   </a>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" id="searchBarContainer">
       <form class="form-inline my-2 my-lg-0" id="ItemSearchForm" method="post">
         <input class="form-control mr-sm-2" type="search" id="searchItem" placeholder="Search" aria-label="Search">
+        <a href ="index.html?search=1" class="btn btn-secondary" onclick="getSearchItem()">Search</a>
         <input type="button" class="btn btn-secondary" onclick="getSearchItem()" value="Search"/>
       </form>
     </ul>

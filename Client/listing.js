@@ -600,7 +600,8 @@ function getSearchItem()
     '<span class="loader"><span class="loader-inner"></span></span>'+
     '</div>';
     var searchItem = document.getElementById('searchItem').value;
-    if (searchItem == ''){
+    console.log(searchItem)
+    if (searchItem == '' || null){
         location.reload();
     }
     console.log(searchItem + "- searchItem" );
