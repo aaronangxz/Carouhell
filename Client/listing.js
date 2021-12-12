@@ -35,7 +35,7 @@ function createListing(userID)
     var locationValue = location.options[location.selectedIndex].value;
 
     var base64String = "";
-    const file = document.getElementById("img").files[0];
+    const file = document.getElementById("imgBrowser").files[0];
     var reader = new FileReader();
       
     reader.onload = function () {
@@ -44,7 +44,22 @@ function createListing(userID)
   
         imageBase64Stringsep = base64String;
     }
-    reader.readAsDataURL(file);
+
+    if (file && itemName && itemPrice && itemQty && itemDesc && itemCatValue &&  locationValue != null ){
+        reader.readAsDataURL(file);
+    }else{
+        var myModal = document.getElementById('failedCreateListing');
+        var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+        myModal.addEventListener('show.bs.modal', function () {
+            var modalTitle = myModal.querySelector('.modal-title')
+            var modalBodyInput = myModal.querySelector('.modal-body')
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "All fields and image are required."
+          })
+        registerFailedModal.show();
+    }
+
     reader.addEventListener('load', (event) => {
         console.log('load finish: ' + base64String ); // base 64
 
@@ -70,17 +85,20 @@ function createListing(userID)
             console.log(data);
             if(data.Respmeta.ErrorCode != 0)
             {
-                if(confirm("Failed creating listing"))
-                {
-                    window.history.back();
-                }
+                var myModal = document.getElementById('failedCreateListing');
+                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+
+                myModal.addEventListener('show.bs.modal', function () {
+                    var modalTitle = myModal.querySelector('.modal-title')
+                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    modalTitle.textContent = 'Unable to create listing: Error ' + data.Respmeta.ErrorCode
+                    modalBodyInput.textContent = data.Respmeta.DebugMsg
+                  })
+                registerFailedModal.show();
             }
             else // successful
             {
-                if(confirm("Listing Created!"))
-                {
-                    window.location.href = "viewListing.html?itemID=" + data.Data.item_id;
-                }
+                window.location.href = "viewListing.html?itemID=" + data.Data.item_id;
             }
         })
         .catch(error => console.log(error)); 
@@ -174,7 +192,7 @@ function viewListingByItemId(itemID)
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            $(".loader-wrapper").fadeOut("fast");
             displayItemContent(data.Data);
             displayItemComments(data.Data.listing_comments, data.Data.item_id);
             getRecommendedListingsByItemId(data.Data.item_id);
@@ -681,7 +699,7 @@ function getCategoryResults(selectedCategory)
             document.getElementById("landingHomePage").innerHTML = ''
             document.getElementById("cards").innerHTML = "";
             }else{
-            var myModal = document.getElementById('noResults');
+                var myModal = document.getElementById('noResults');
                 var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
 
                 myModal.addEventListener('show.bs.modal', function () {
@@ -915,6 +933,9 @@ function buyNow(itemID, sellerID)
 }
 
 function getUserLikedListing() {
+    document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'   
     if (getCurrentUserID() == -1){
         window.location.href = "index.html"
     }
@@ -943,7 +964,7 @@ function getUserLikedListing() {
         else // successful
         {
             document.getElementById("cards").innerHTML = "";
-            // document.getElementById("title").innerHTML = "<h1>Your Favourite Listings</h1>";
+            $(".loader-wrapper").fadeOut("fast");
             for(const d of data.Data){
                 displayListing(d);
             }
@@ -954,6 +975,9 @@ function getUserLikedListing() {
 
 function viewProfileByUserID(profileID)
 {
+    document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
+    '<span class="loader"><span class="loader-inner"></span></span>'+
+    '</div>'   
     setPrevLocation();
     var currentUser = getCurrentUserID();
     if(!profileID)
@@ -986,10 +1010,10 @@ function viewProfileByUserID(profileID)
         {
             document.getElementById("cards").innerHTML = "";
             document.getElementById("title").innerHTML = "<h2>"+data.Data.user_listings.length+" listings</h2>";
-
             for(const d of data.Data.user_listings){
                 displayListing(d);
             }
+            $(".loader-wrapper").fadeOut("fast");
             displayUserReviews(data.Data);
             document.title = 'Carouhell - @'+data.Data.account_info.user_name + "'s profile";
         }
@@ -1026,11 +1050,10 @@ function getLatestListing() {
     })
     .then(response => response.json())
     .then(result => {/*result.Data*/  
-        $(".loader-wrapper").fadeOut("slow");
-        console.log(result);
         for(const d of result.Data){
          displayListing(d);
       }
+      $(".loader-wrapper").fadeOut("slow");
     })
     .catch(error => {console.log('NO:', JSON.stringify(error));});
     sessionStorage.setItem('prevLocation',window.location)

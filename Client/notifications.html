@@ -19,6 +19,9 @@
       window.location.href = "index.html"
   }
     getUserNotifications();
+    $(window).on("load",function(){
+      $(".loader-wrapper").fadeOut("slow");
+    });
     </script> 
     <style>
     img {
@@ -49,6 +52,9 @@
 </script>
 </head>
 <body>
+  <div class="loader-wrapper">
+    <span class="loader"><span class="loader-inner"></span></span>
+</div>
     <div id="header"></div>
     <p></p>
     <p></p>

@@ -15,6 +15,9 @@
       $("#header").load("navbar.html");
     });
     getWalletDetails();
+    $(window).on("load",function(){
+      $(".loader-wrapper").fadeOut("slow");
+    });
     </script> 
     <style>
       #walletTransactions{
@@ -47,6 +50,9 @@
 </script>
 </head>
 <body>
+  <div class="loader-wrapper">
+    <span class="loader"><span class="loader-inner"></span></span>
+</div>
     <div id="header"></div>
     <div class="container center mt-3">
         <div class="row">

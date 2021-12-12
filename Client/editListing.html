@@ -97,8 +97,8 @@
                    <div class="col">
                        <div class="form-group">
                            <label for="image"><b>Images</b></label>
-                             <br><img id="myImg" width="30%" src="#">
-                           <input name="img" type="file" class="form-control-file" id="img">
+                             <br><img id="myImg" width="30%">
+                           <input name="img" type="file" class="form-control-file" id="imgBrowser">
                        </div>
                    </div>
                </div>
@@ -115,7 +115,7 @@
            {
                document.querySelector('input[type="file"]').addEventListener('change', function() {
                    if (this.files && this.files[0]) {
-                       var image = document.querySelector('img');
+                       var image = document.getElementById('myImg');
                        //var img = document.getElementById('img');
                        image.onload = () => {
                            URL.revokeObjectURL(image.src);  // no longer needed, free memory
