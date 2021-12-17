@@ -1,165 +1,168 @@
-   <!DOCTYPE html>
-   <html lang="en">
-   <head>
-     <title>Carouhell - Edit Listing</title>
-     <link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
-     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-     <script src="global.js"></script>
-     <script src="index.js"></script>
-     <script src="listing.js"></script>
-     <link rel="stylesheet" href="global.css?v5.1">
-     <script> 
-       $(function(){
-         $("#header").load("navbar.html");
-       });
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Carouhell - Edit Listing</title>
+    <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="global.js"></script>
+    <script src="index.js"></script>
+    <script src="listing.js"></script>
+    <link rel="stylesheet" href="global.css?v5.1">
+    <script>
+        $(function() {
+            $("#header").load("navbar.html");
+        });
 
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const itemID = urlParams.get('itemID')
         console.log(itemID);
-    
 
-        window.onload = function(){
+
+        window.onload = function() {
             const data = JSON.parse(sessionStorage.getItem(itemID));
             console.log("data:" + data)
             loadListingDetails(data);
         }
-       </script> 
-              <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-LTF70RE5S6');
-</script>
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-   </head>
-   <body>
+        gtag('config', 'G-LTF70RE5S6');
+    </script>
+
+</head>
+
+<body>
     <div class="modal fade" id="failedEditListing" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Uh oh..</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uh oh..</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>We can't find what you're looking for. Try other search criterias!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="okButton">Okay</button>
+                </div>
             </div>
-            <div class="modal-body">
-              <p>We can't find what you're looking for. Try other search criterias!</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="okButton">Okay</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-       <div id="header"></div>
-       <p></p>
-       <div class="container">
-           <h1>Edit Listing</h1>
-           <form id="createNewListing" method="post">
-               <div class="row">
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemName">Item Name</label>
-                           <input type="text" class="form-control" id="itemName" placeholder="Enter item name">
-                       </div>
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemPrice">Item Price</label>
-                           <input type="number" class="form-control" id="itemPrice" placeholder="Enter item price">
-                       </div>
-                   </div>
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemQty">Item Quantity</label>
-                           <input type="number" class="form-control" id="itemQty" placeholder="Enter item quantity">
-                       </div>
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemDesc">Item Description</label>
-                           <textarea class="form-control" id="itemDesc" rows="3"></textarea>
-                       </div>
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemCat">Select Category</label>
-                           <select class="form-control" id="itemCat">
-                           </select>
-                       </div>
-                   </div>
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="itemLocation">Mailing Location</label>
-                           <select class="form-control" id="itemLocation">                         
-                           </select>
-                       </div>
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col">
-                       <div class="form-group">
-                           <label for="image"><b>Images</b></label>
-                             <br><img id="myImg" width="30%">
-                           <input name="img" type="file" class="form-control-file" id="imgBrowser">
-                       </div>
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col text-center">
-                       <input type="button" class="btn btn-secondary" onclick="editListing(itemID)" value="Save"/>
-                   </div>
-               </div>
-               
-       </form>
-       </div>
-       <script>
-           window.addEventListener('load', function() 
-           {
-               document.querySelector('input[type="file"]').addEventListener('change', function() {
-                   if (this.files && this.files[0]) {
-                       var image = document.getElementById('myImg');
-                       //var img = document.getElementById('img');
-                       image.onload = () => {
-                           URL.revokeObjectURL(image.src);  // no longer needed, free memory
-                       }
-   
-                       image.src = URL.createObjectURL(this.files[0]); // set src to blob url
-                   }
-               });
-           });
-   
-           var loadCategoryContent = "";
-           for(var i = 0; i <categories_Arr.length; i++)
-           {
-               loadCategoryContent += '<option value="'+i+'">'+categories_Arr[i]+'</option>';
-           }
-           document.getElementById("itemCat").innerHTML = loadCategoryContent; 
-   
-           var loadLocationContent = "";
-           for(var i = 0; i <location_Arr.length; i++)
-           {
-               loadLocationContent += '<option value="'+i+'">'+location_Arr[i]+'</option>';
-           }
-           document.getElementById("itemLocation").innerHTML = loadLocationContent; 
-       </script>
-       <div id="footer"></div>
+    <div id="header"></div>
+    <p></p>
+    <div class="container">
+        <h1>Edit Listing</h1>
+        <form id="createNewListing" method="post">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" class="form-control" id="itemName" placeholder="Enter item name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemPrice">Item Price</label>
+                        <input type="number" class="form-control" id="itemPrice" placeholder="Enter item price">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemQty">Item Quantity</label>
+                        <input type="number" class="form-control" id="itemQty" placeholder="Enter item quantity">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemDesc">Item Description</label>
+                        <textarea class="form-control" id="itemDesc" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemCat">Select Category</label>
+                        <select class="form-control" id="itemCat">
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="itemLocation">Mailing Location</label>
+                        <select class="form-control" id="itemLocation">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="image"><b>Images</b></label>
+                        <br><img id="myImg" width="30%">
+                        <input name="img" type="file" class="form-control-file" id="imgBrowser">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <input type="button" class="btn btn-secondary" onclick="editListing(itemID)" value="Save" />
+                </div>
+            </div>
 
-     </body>
-   </html>
+        </form>
+    </div>
+    <script>
+        window.addEventListener('load', function() {
+            document.querySelector('input[type="file"]').addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    var image = document.getElementById('myImg');
+                    //var img = document.getElementById('img');
+                    image.onload = () => {
+                        URL.revokeObjectURL(image.src); // no longer needed, free memory
+                    }
+
+                    image.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                }
+            });
+        });
+
+        var loadCategoryContent = "";
+        for (var i = 0; i < categories_Arr.length; i++) {
+            loadCategoryContent += '<option value="' + i + '">' + categories_Arr[i] + '</option>';
+        }
+        document.getElementById("itemCat").innerHTML = loadCategoryContent;
+
+        var loadLocationContent = "";
+        for (var i = 0; i < location_Arr.length; i++) {
+            loadLocationContent += '<option value="' + i + '">' + location_Arr[i] + '</option>';
+        }
+        document.getElementById("itemLocation").innerHTML = loadLocationContent;
+    </script>
+    <div id="footer"></div>
+
+</body>
+
+</html>
