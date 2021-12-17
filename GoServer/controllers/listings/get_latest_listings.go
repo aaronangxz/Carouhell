@@ -7,6 +7,7 @@ import (
 
 	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/constant"
+	"github.com/aaronangxz/TIC2601/database"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 
@@ -25,10 +26,11 @@ func GetLatestListings(c *gin.Context) {
 		log.Printf("Error during ExtractTokenMetadata: %v", err)
 		//not logged in
 		//only return available items
-		query := utils.GetListingQueryWithCustomCondition() + fmt.Sprintf(" AND l.item_status = %v GROUP BY l.l_item_id ORDER BY listing_ctime DESC", constant.ITEM_STATUS_NORMAL)
+		query := database.LoadSqlQuery(database.DB_GET_LISTING_QUERY_WITH_CUSTOM_CONDITION) +
+			fmt.Sprintf(" AND l.item_status = %v GROUP BY l.l_item_id ORDER BY listing_ctime DESC", constant.ITEM_STATUS_NORMAL)
 		log.Println(query)
 
-		result := models.DB.Raw(query).Scan(&listings)
+		result := models.DB.Raw(query, constant.LISTING_REACTION_TYPE_LIKE).Scan(&listings)
 		if err := result.Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 			log.Printf("Error during GetLatestListings DB query: %v\n", err.Error())
@@ -48,8 +50,13 @@ func GetLatestListings(c *gin.Context) {
 
 	//logged in
 	//only return available items
-	log.Println(utils.GetListingLoggedInQuery(userId))
-	result := models.DB.Raw(utils.GetListingLoggedInQuery(userId)).Scan(&listingsWithLikes)
+	result := models.DB.Raw(
+		database.LoadSqlQuery(database.DB_GET_LISTING_LOGGEDIN_QUERY),
+		userId,
+		constant.LISTING_REACTION_TYPE_LIKE,
+		constant.LISTING_REACTION_TYPE_LIKE,
+		constant.ITEM_STATUS_NORMAL).
+		Scan(&listingsWithLikes)
 	if err := result.Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetLatestListings - LoggedIn DB query: %v\n", err.Error())
