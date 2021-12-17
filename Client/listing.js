@@ -21,10 +21,16 @@ function encodeImageFileAsURL(inputFileToLoad) {
 
 function createListing(userID)
 {
+    var myModal = document.getElementById('failedCreateListing');
+    var createListingError = bootstrap.Modal.getOrCreateInstance(myModal)
+    var modalTitle = myModal.querySelector('.modal-title')
+    var modalBodyInput = myModal.querySelector('.modal-body')
+
     if (getCurrentUserID() == -1){
         window.location.href = "index.html"
     }
     setPrevSecureLocation();
+
     var itemName = document.getElementById('itemName').value;
     var itemPrice = document.getElementById("itemPrice").value;
     var itemQty = document.getElementById("itemQty").value;
@@ -48,19 +54,44 @@ function createListing(userID)
     if (file && itemName && itemPrice && itemQty && itemDesc && itemCatValue &&  locationValue != null ){
         reader.readAsDataURL(file);
     }else{
-        var myModal = document.getElementById('failedCreateListing');
-        var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
-
         myModal.addEventListener('show.bs.modal', function () {
-            var modalTitle = myModal.querySelector('.modal-title')
-            var modalBodyInput = myModal.querySelector('.modal-body')
             modalTitle.textContent = 'Unable to create listing'
             modalBodyInput.textContent = "All fields and image are required."
           })
-        registerFailedModal.show();
+          createListingError.show();
     }
 
-    reader.addEventListener('load', (event) => {
+    if (itemName.length > 40 ){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Item Name should not exceed 40 characters."
+          })
+          createListingError.show();
+    }else if(itemPrice > 42949672){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Maximum price allowed is S$42,949,672."
+          })
+          createListingError.show();
+    }
+    else if(itemQty > 42949672 || itemQty <= 0){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Quantity allowed is 1 - 42,949,672."
+          })
+          createListingError.show();
+    }else if(itemDesc.length > 500){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Item Description should not exceed 500 characters."
+          })
+          createListingError.show();
+    }else{
+        document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
+        '<span class="loader"><span class="loader-inner"></span></span>'+
+        '</div>'   
+
+       reader.addEventListener('load', (event) => {
         console.log('load finish: ' + base64String ); // base 64
 
         fetch('https://tic2601-t11.herokuapp.com/create_listing', {
@@ -85,24 +116,28 @@ function createListing(userID)
             console.log(data);
             if(data.Respmeta.ErrorCode != 0)
             {
-                var myModal = document.getElementById('failedCreateListing');
-                var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
+                // var myModal = document.getElementById('failedCreateListing');
+                // var registerFailedModal = bootstrap.Modal.getOrCreateInstance(myModal)
 
                 myModal.addEventListener('show.bs.modal', function () {
-                    var modalTitle = myModal.querySelector('.modal-title')
-                    var modalBodyInput = myModal.querySelector('.modal-body')
+                    // var modalTitle = myModal.querySelector('.modal-title')
+                    // var modalBodyInput = myModal.querySelector('.modal-body')
                     modalTitle.textContent = 'Unable to create listing: Error ' + data.Respmeta.ErrorCode
                     modalBodyInput.textContent = data.Respmeta.DebugMsg
                   })
-                registerFailedModal.show();
+                  createListingError.show();
             }
             else // successful
             {
+                $(".loader-wrapper").fadeOut("slow");
                 window.location.href = "viewListing.html?itemID=" + data.Data.item_id;
             }
         })
         .catch(error => console.log(error)); 
-    });
+    }); 
+    }
+
+    
 }   
 
 function deleteListing(itemID)
@@ -1174,6 +1209,15 @@ function loadListingDetails(data)
 
 function editListing(itemID)
 {
+    var myModal = document.getElementById('failedEditListing');
+    var editListingError = bootstrap.Modal.getOrCreateInstance(myModal)
+    var modalTitle = myModal.querySelector('.modal-title')
+    var modalBodyInput = myModal.querySelector('.modal-body')
+
+    document.getElementById("footer").innerHTML +=   '<div class="loader-wrapper">'+
+                '<span class="loader"><span class="loader-inner"></span></span>'+
+                '</div>'   
+
     if (getCurrentUserID() == -1){
         window.location.href = "index.html"
     }
@@ -1213,11 +1257,40 @@ function editListing(itemID)
 
 
     var base64String = "";
-    const file1 = document.getElementById("img").files[0];
-    const file2 = document.getElementById("img").files[1];
+    const file1 = document.getElementById("imgBrowser").files[0];
     console.log("file1: " + file1);
-    console.log("file2: " + file2);
-    if(file1)
+
+    if (itemName.length > 40 ){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Item Name should not exceed 40 characters."
+          })
+          editListingError.show();
+          $(".loader-wrapper").fadeOut("slow");
+    }else if(itemPrice > 42949672){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Maximum price allowed is S$42,949,672."
+          })
+          editListingError.show();
+          $(".loader-wrapper").fadeOut("slow");          
+    }
+    else if(itemQty > 42949672 || itemQty <= 0){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Quantity allowed is 1 - 42,949,672."
+          })
+          editListingError.show();
+          $(".loader-wrapper").fadeOut("slow");
+    }else if(itemDesc.length > 500){
+        myModal.addEventListener('show.bs.modal', function () {
+            modalTitle.textContent = 'Unable to create listing'
+            modalBodyInput.textContent = "Item Description should not exceed 500 characters."
+          })
+          editListingError.show();
+          $(".loader-wrapper").fadeOut("slow");
+    }else{
+       if(file1)
     {
         var reader = new FileReader();
       
@@ -1253,17 +1326,17 @@ function editListing(itemID)
                 console.log(data);
                 if(data.Respmeta.ErrorCode != 0)
                     {
-                        if(confirm("Failed updating listing"))
-                        {
-                            location.reload();
-                        }
+                        myModal.addEventListener('show.bs.modal', function () {
+                            modalTitle.textContent = 'Unable to edit listing. Error:' + data.Respmeta.ErrorCode
+                            modalBodyInput.textContent = data.Respmeta.DebugMsg
+                          })
+                          editListingError.show();
+                          $(".loader-wrapper").fadeOut("slow");
                     }
                     else // successful
                     {
-                        if(confirm("Listing Updated!"))
-                        {
-                            window.location.href = "viewListing.html?itemID="+itemID;
-                        }
+                        $(".loader-wrapper").fadeOut("slow");
+                        window.location.href = "viewListing.html?itemID="+itemID;
                     }
             })
             .catch(error => console.log(error));
@@ -1294,19 +1367,22 @@ function editListing(itemID)
                 console.log(data);
                 if(data.Respmeta.ErrorCode != 0)
                     {
-                        if(confirm("Failed updating listing"))
-                        {
-                            location.reload();
-                        }
+                        myModal.addEventListener('show.bs.modal', function () {
+                            modalTitle.textContent = 'Unable to edit listing. Error:' + data.Respmeta.ErrorCode
+                            modalBodyInput.textContent = data.Respmeta.DebugMsg
+                          })
+                          editListingError.show();
+                          $(".loader-wrapper").fadeOut("slow");
                     }
                     else // successful
                     {
-                        if(confirm("Listing Updated!"))
-                        {
-                            window.location.href = "viewListing.html?itemID="+itemID;
-                        }
+                        $(".loader-wrapper").fadeOut("slow");
+                        window.location.href = "viewListing.html?itemID="+itemID;
                     }
             })
             .catch(error => console.log(error));
+        } 
     }
+
+    
 }
