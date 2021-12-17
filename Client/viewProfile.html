@@ -1,68 +1,70 @@
 <html>
+
 <head>
-<title>Carouhell - Profile</title>
-<link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
-<script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
-</script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-<link rel="stylesheet" href="global.css?v5.1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="global.js"></script>
-<script src="index.js"></script>
-<script src="listing.js"></script>
-<script> 
-  $(function(){
-    $("#header").load("navbar.html");
+    <title>Carouhell - Profile</title>
+    <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="global.css?v5.1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="global.js"></script>
+    <script src="index.js"></script>
+    <script src="listing.js"></script>
+    <script>
+        $(function() {
+            $("#header").load("navbar.html");
 
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const profileID = urlParams.get('profileID')
-    console.log("Current Profile User ID: " + profileID);
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const profileID = urlParams.get('profileID')
+            console.log("Current Profile User ID: " + profileID);
 
-    $(document).ready(viewProfileByUserID(profileID));
-  });
-  </script> 
+            $(document).ready(viewProfileByUserID(profileID));
+        });
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-LTF70RE5S6');
-</script>
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LTF70RE5S6');
+    </script>
 </head>
-  <div class="modal fade" id="promptLogIn" tabindex="-1" role="dialog">
+<div class="modal fade" id="promptLogIn" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Uh oh..</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Uh oh..</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <p>You need to log in to like a listing.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">It's fine</button>
+                <button type="button" class="btn btn-primary" id="toLogin">Log In</button>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>You need to log in to like a listing.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">It's fine</button>
-          <button type="button" class="btn btn-primary" id="toLogin">Log In</button>
-        </div>
-      </div>
     </div>
-  </div>
-<body>
-<div id="header"></div>
-<div class="container" id="reviewSection">
 </div>
-<div class="container" id="listingsSection">
-    <div class="row p-3" id="title"></div>
-    <!-- <div class="row">
+
+<body>
+    <div id="header"></div>
+    <div class="container" id="reviewSection">
+    </div>
+    <div class="container" id="listingsSection">
+        <div class="row p-3" id="title"></div>
+        <!-- <div class="row">
         <div class="container">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -78,15 +80,16 @@
             <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">profileee</div>
         </div>
     </div> -->
-    <div class="row" id="searchResultText"></div>
-    <div class="row" id="cards"></div>
-</div>
+        <div class="row" id="searchResultText"></div>
+        <div class="row" id="cards"></div>
+    </div>
 
 
-<!--Remaining section-->
-<div id="footer"></div>
-<script>
-</script>
+    <!--Remaining section-->
+    <div id="footer"></div>
+    <script>
+    </script>
 
 </body>
+
 </html>
