@@ -30,7 +30,7 @@ func GetUserNotifications(c *gin.Context) {
 	}
 	query := fmt.Sprint(utils.GetNotificationQuery())
 	log.Print(query)
-	if err := models.DB.Raw(query, input.GetUserID(), input.GetUserID(), input.GetUserID(), input.GetUserID()).Scan(&notifications).Error; err != nil {
+	if err := models.DB.Raw(query, input.GetUserID(), input.GetUserID(), input.GetUserID(), input.GetUserID(), input.GetUserID(), input.GetUserID()).Scan(&notifications).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		log.Printf("Error during GetUserNotifications - get notifications DB query: %v", err.Error())
 		return

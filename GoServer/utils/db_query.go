@@ -39,35 +39,53 @@ var (
 		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id"+
 		" ORDER BY transaction_ctime DESC", constant.TRANSACTION_TYPE_TOPUP)
 
-	NotificationQuery = fmt.Sprintf("SELECT user_info.user_name,"+
-		" item_info.item_name,"+
+	NotificationQuery = fmt.Sprintf("SELECT user_info.a_user_id, user_info.user_name,"+
+		" item_info.l_item_id, item_info.item_name,"+
 		" notification_history.notification_type,"+
 		" notification_history.notification_string,"+
 		" notification_history.ctime"+
-		" FROM (SELECT user_id, item_id,notification_type,notification_string,ctime"+
-		" FROM (SELECT rt_user_id AS user_id, rt_item_id AS item_id, reaction_type AS notification_type, comment AS notification_string, ctime"+
-		" FROM listing_reactions_tab"+
-		" WHERE rt_item_id IN (SELECT l_item_id"+
-		" FROM listing_tab"+
-		" WHERE l_seller_id = ?) AND rt_user_id != ?"+
-		" UNION ALL"+
-		" SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
-		" FROM user_review_tab"+
-		" WHERE rv_seller_id = ?"+
-		" UNION ALL"+
-		" SELECT lt_user_id AS user_id, lt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, transaction_ctime AS ctime"+
-		" FROM listing_transactions_tab"+
-		" WHERE lt_item_id IN (SELECT l_item_id"+
-		" FROM listing_tab"+
-		" WHERE l_seller_id = ?)) "+
-		" AS user_events) AS notification_history"+
-		" LEFT JOIN (SELECT l_item_id, item_name"+
-		" FROM listing_tab) AS item_info"+
-		" ON notification_history.item_id = item_info.l_item_id"+
-		" LEFT JOIN (SELECT a_user_id, user_name"+
-		" FROM acc_tab) AS user_info"+
-		" ON notification_history.user_id = user_info.a_user_id"+
-		" ORDER  BY ctime DESC ;", constant.NOTIFICATION_TYPE_REVIEW, constant.NOTIFICATION_TYPE_SOLD)
+		" 	FROM (SELECT user_id, item_id,notification_type,notification_string,ctime"+
+		" 		FROM (SELECT rt_user_id AS user_id, rt_item_id AS item_id, reaction_type AS notification_type, comment AS notification_string, ctime"+
+		" 			FROM listing_reactions_tab"+
+		" 			WHERE rt_item_id IN (SELECT l_item_id"+
+		" 				FROM listing_tab"+
+		" 				WHERE l_seller_id = ?) AND rt_user_id != ?"+
+		" 		UNION ALL"+
+		" 			SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
+		" 			FROM user_review_tab"+
+		" 			WHERE rv_seller_id = ?"+
+		" 		UNION ALL"+
+		" 			SELECT lt_user_id AS user_id, lt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, transaction_ctime AS ctime"+
+		" 			FROM listing_transactions_tab"+
+		" 			WHERE lt_item_id IN (SELECT l_item_id"+
+		" 				FROM listing_tab"+
+		" 				WHERE l_seller_id = ?)"+
+		" 		UNION ALL"+
+		" 			SELECT NULL AS user_id, l_item_id AS item_id, %v AS notification_type, NULL AS notification_string, listing_mtime AS ctime"+
+		" 			FROM listing_tab"+
+		" 			WHERE l_seller_id = ? AND item_status = %v"+
+		" 		UNION ALL"+
+		" 			SELECT NULL AS user_id, lr.rt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, l.listing_mtime AS ctime"+
+		" 			FROM listing_reactions_tab lr, listing_tab l"+
+		" 			WHERE lr.rt_user_id = ?"+
+		"			AND lr.reaction_type = %v"+
+		"			AND lr.rt_item_id = l.l_item_id"+
+		" 			AND l.item_status = %v)"+
+		" 		AS user_events) AS notification_history"+
+		" 			LEFT JOIN (SELECT l_item_id, item_name"+
+		" 						FROM listing_tab) AS item_info"+
+		" 			ON notification_history.item_id = item_info.l_item_id"+
+		" 			LEFT JOIN (SELECT a_user_id, user_name"+
+		" 						FROM acc_tab) AS user_info"+
+		" 			ON notification_history.user_id = user_info.a_user_id"+
+		" ORDER  BY ctime DESC ;",
+		constant.NOTIFICATION_TYPE_REVIEW,
+		constant.NOTIFICATION_TYPE_SOLD,
+		constant.NOTIFICATION_TYPE_OWNED_LISTING_SOLDOUT,
+		constant.ITEM_STATUS_SOLDOUT,
+		constant.NOTIFICATION_TYPE_FAVOURITE_ITEM_SOLDOUT,
+		constant.LISTING_REACTION_TYPE_LIKE,
+		constant.ITEM_STATUS_SOLDOUT)
 )
 
 //Fixed query, not possible to append WHERE clause
@@ -204,7 +222,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - %v, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetPurchaseQuantity(), input.GetItemID())
+	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - %v, listing_mtime = %v, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetPurchaseQuantity(), time.Now().Unix()+1, input.GetItemID())
 	log.Println(updateListingQuery)
 	if err := tx.Exec(updateListingQuery).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:updateListing: %v", err.Error())

@@ -1,7 +1,9 @@
 package models
 
 type Notification struct {
+	AUserId            *uint32 `json:"user_id"`
 	UserName           *string `json:"user_name"`
+	LItemId            *uint32 `json:"item_id"`
 	ItemName           *string `json:"item_name"`
 	NotificationType   *uint32 `json:"notification_type"`
 	NotificationString *string `json:"notification_string"`
