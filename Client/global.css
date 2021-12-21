@@ -177,6 +177,11 @@ img {
     background-color: #ffffff !important;
 }
 
-#buyButton {
+#buyButtonSpan {
     padding-left: 50px;
+}
+
+#buyButton {
+    background-color: #7a59a2 !important;
+    border-color: rgb(255, 255, 255)
 }
