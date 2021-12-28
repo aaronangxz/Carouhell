@@ -386,7 +386,7 @@ function displayItemContent(data) {
                 '<span><i class="bi bi-dash-circle"></i></span>' +
                 '</button>' +
                 '</span>' +
-                '<input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">' +
+                '<input type="text" name="quant[1]" id="qtyToPurchase" class="form-control input-number" value="1" min="1" max="10">' +
                 '<span class="input-group-append">' +
                 '<button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">' +
                 '<span><i class="bi bi-plus-circle"></i></span>' +
@@ -398,7 +398,7 @@ function displayItemContent(data) {
                 '</div>' +
                 '<div class="col-3">' +
                 '<span>Available: ' + data.item_quantity + '</span>' +
-                '<span id="buyButton"><input type="button" onclick="buyNow(' + data.item_id + ',' + data.seller_id + ')" class="btn btn-primary" background-color value="Buy Now"/></span>' +
+                '<span id="buyButtonSpan"><input type="button" id="buyButton" onclick="buyNow(' + data.item_id + ',' + data.seller_id + ')" class="btn btn-primary" value="Buy Now"/></span>' +
                 '<div class="col-4"></div>' +
                 '</div>' +
                 '</form>';
@@ -617,6 +617,7 @@ function displayListing(d, isRecommend) {
 }
 
 function getSearchItem() {
+    document.getElementById("carouselExampleIndicators").innerHTML = '';
     document.getElementById("landingHomePage").innerHTML = '<div class="loader-wrapper">' +
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>';
@@ -739,6 +740,7 @@ function getCategoryResults(selectedCategory) {
 
 function getFilterResults() {
     // filterOptions    
+    document.getElementById("carouselExampleIndicators").innerHTML = '';
     var sortByCat = document.getElementById("sortByCat");
     var selectedCategory = sortByCat.options[sortByCat.selectedIndex].value;
     var sortByLocation = document.getElementById("sortByLocation");
