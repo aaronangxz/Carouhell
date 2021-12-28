@@ -538,8 +538,6 @@ function toViewListing(itemID) {
 }
 
 function displayListing(d, isRecommend) {
-    //console.log(d);
-
     var bool_value = isRecommend == 'true';
     var element = "cards"
     var rcmdHeader = ''
@@ -1025,18 +1023,104 @@ function getLatestListing() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "user_id": parseInt(getCurrentUserID())
+                "user_id": parseInt(getCurrentUserID()),
+                "pagination": parseInt(1)
             })
         })
         .then(response => response.json())
-        .then(result => { /*result.Data*/
-            for (const d of result.Data) {
+        .then(result => {
+            for (const d of result.Data.Listings) {
                 displayListing(d);
             }
+            displayPaginations(result.Data.Paginations.total_page, result.Data.Paginations.current_page, result.Data.Paginations.next_page);
             $(".loader-wrapper").fadeOut("slow");
         })
         .catch(error => { console.log('NO:', JSON.stringify(error)); });
     sessionStorage.setItem('prevLocation', window.location)
+}
+
+function getLatestListingPaginated(page) {
+    document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
+        '<span class="loader"><span class="loader-inner"></span></span>' +
+        '</div>'
+    document.getElementById("cards").innerHTML = '<p></p>'
+    document.getElementById("paginationDisplay").innerHTML = '<p></p>'
+
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+            method: 'POST',
+            headers: {
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "user_id": parseInt(getCurrentUserID()),
+                "pagination": parseInt(page)
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            for (const d of result.Data.Listings) {
+                displayListing(d);
+            }
+            displayPaginations(result.Data.Paginations.total_page, result.Data.Paginations.current_page, result.Data.Paginations.next_page);
+            $(".loader-wrapper").fadeOut("slow");
+        })
+        .catch(error => { console.log('NO:', JSON.stringify(error)); });
+    sessionStorage.setItem('prevLocation', window.location)
+}
+
+function displayPaginations(pages, current, next) {
+    paginationHtml =
+        '<p></p>' +
+        '<nav aria-label="...">' +
+        '<ul class="pagination justify-content-center">'
+
+    //disable previous button on page 1
+    if (current == 1) {
+        paginationHtml +=
+            '<li class="page-item disabled">' +
+            '<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>' +
+            '</li>'
+    } else {
+        paginationHtml +=
+            '<li class="page-item">' +
+            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current - 1) + ')">Previous</a>' +
+            '</li>'
+    }
+
+    //active
+    for (let i = 1; i <= pages; i++) {
+        //active page
+        if (i == current) {
+            paginationHtml +=
+                '<li class="page-item active">' +
+                '<a class="page-link" href="#">' + i + '</a>' +
+                '</li>'
+        } else {
+            //other pages
+            paginationHtml +=
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + i + ')">' + i + '</a>' +
+                '</li>'
+        }
+    }
+
+    if (next != 0) {
+        //next button
+        paginationHtml +=
+            '<li class="page-item">' +
+            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current + 1) + ')">Next</a>' +
+            '</li>'
+    } else {
+        paginationHtml +=
+            '<li class="page-item disabled">' +
+            '<a class="page-link" >Next</a>' +
+            '</li>'
+    }
+    paginationHtml +=
+        '</ul>' +
+        '</nav>'
+    document.getElementById("paginationDisplay").innerHTML = paginationHtml
 }
 
 function displayUserReviews(data) {
