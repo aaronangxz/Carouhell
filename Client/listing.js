@@ -386,7 +386,7 @@ function displayItemContent(data) {
                 '<span><i class="bi bi-dash-circle"></i></span>' +
                 '</button>' +
                 '</span>' +
-                '<input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">' +
+                '<input type="text" name="quant[1]" id="qtyToPurchase" class="form-control input-number" value="1" min="1" max="10">' +
                 '<span class="input-group-append">' +
                 '<button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">' +
                 '<span><i class="bi bi-plus-circle"></i></span>' +
@@ -398,7 +398,7 @@ function displayItemContent(data) {
                 '</div>' +
                 '<div class="col-3">' +
                 '<span>Available: ' + data.item_quantity + '</span>' +
-                '<span id="buyButton"><input type="button" onclick="buyNow(' + data.item_id + ',' + data.seller_id + ')" class="btn btn-primary" background-color value="Buy Now"/></span>' +
+                '<span id="buyButtonSpan"><input type="button" id="buyButton" onclick="buyNow(' + data.item_id + ',' + data.seller_id + ')" class="btn btn-primary" value="Buy Now"/></span>' +
                 '<div class="col-4"></div>' +
                 '</div>' +
                 '</form>';
@@ -538,8 +538,6 @@ function toViewListing(itemID) {
 }
 
 function displayListing(d, isRecommend) {
-    //console.log(d);
-
     var bool_value = isRecommend == 'true';
     var element = "cards"
     var rcmdHeader = ''
@@ -619,6 +617,7 @@ function displayListing(d, isRecommend) {
 }
 
 function getSearchItem() {
+    document.getElementById("carouselExampleIndicators").innerHTML = '';
     document.getElementById("landingHomePage").innerHTML = '<div class="loader-wrapper">' +
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>';
@@ -741,6 +740,7 @@ function getCategoryResults(selectedCategory) {
 
 function getFilterResults() {
     // filterOptions    
+    document.getElementById("carouselExampleIndicators").innerHTML = '';
     var sortByCat = document.getElementById("sortByCat");
     var selectedCategory = sortByCat.options[sortByCat.selectedIndex].value;
     var sortByLocation = document.getElementById("sortByLocation");
@@ -1023,18 +1023,104 @@ function getLatestListing() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "user_id": parseInt(getCurrentUserID())
+                "user_id": parseInt(getCurrentUserID()),
+                "pagination": parseInt(1)
             })
         })
         .then(response => response.json())
-        .then(result => { /*result.Data*/
-            for (const d of result.Data) {
+        .then(result => {
+            for (const d of result.Data.Listings) {
                 displayListing(d);
             }
+            displayPaginations(result.Data.Paginations.total_page, result.Data.Paginations.current_page, result.Data.Paginations.next_page);
             $(".loader-wrapper").fadeOut("slow");
         })
         .catch(error => { console.log('NO:', JSON.stringify(error)); });
     sessionStorage.setItem('prevLocation', window.location)
+}
+
+function getLatestListingPaginated(page) {
+    document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
+        '<span class="loader"><span class="loader-inner"></span></span>' +
+        '</div>'
+    document.getElementById("cards").innerHTML = '<p></p>'
+    document.getElementById("paginationDisplay").innerHTML = '<p></p>'
+
+    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+            method: 'POST',
+            headers: {
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "user_id": parseInt(getCurrentUserID()),
+                "pagination": parseInt(page)
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            for (const d of result.Data.Listings) {
+                displayListing(d);
+            }
+            displayPaginations(result.Data.Paginations.total_page, result.Data.Paginations.current_page, result.Data.Paginations.next_page);
+            $(".loader-wrapper").fadeOut("slow");
+        })
+        .catch(error => { console.log('NO:', JSON.stringify(error)); });
+    sessionStorage.setItem('prevLocation', window.location)
+}
+
+function displayPaginations(pages, current, next) {
+    paginationHtml =
+        '<p></p>' +
+        '<nav aria-label="...">' +
+        '<ul class="pagination justify-content-center">'
+
+    //disable previous button on page 1
+    if (current == 1) {
+        paginationHtml +=
+            '<li class="page-item disabled">' +
+            '<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>' +
+            '</li>'
+    } else {
+        paginationHtml +=
+            '<li class="page-item">' +
+            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current - 1) + ')">Previous</a>' +
+            '</li>'
+    }
+
+    //active
+    for (let i = 1; i <= pages; i++) {
+        //active page
+        if (i == current) {
+            paginationHtml +=
+                '<li class="page-item active">' +
+                '<a class="page-link" href="#">' + i + '</a>' +
+                '</li>'
+        } else {
+            //other pages
+            paginationHtml +=
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + i + ')">' + i + '</a>' +
+                '</li>'
+        }
+    }
+
+    if (next != 0) {
+        //next button
+        paginationHtml +=
+            '<li class="page-item">' +
+            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current + 1) + ')">Next</a>' +
+            '</li>'
+    } else {
+        paginationHtml +=
+            '<li class="page-item disabled">' +
+            '<a class="page-link" >Next</a>' +
+            '</li>'
+    }
+    paginationHtml +=
+        '</ul>' +
+        '</nav>'
+    document.getElementById("paginationDisplay").innerHTML = paginationHtml
 }
 
 function displayUserReviews(data) {

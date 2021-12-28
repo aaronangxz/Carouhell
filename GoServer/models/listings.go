@@ -674,7 +674,8 @@ type GetRecommendedListingsByItemIdResponse struct {
 }
 
 type GetLatestListingsv2Request struct {
-	UserID *int32 `json:"user_id" binding:"required"`
+	UserID     *int32  `json:"user_id" binding:"required"`
+	Pagination *uint32 `json:"pagination" binding:"required"`
 }
 
 type GetLatestListingsv2Response struct {
@@ -696,9 +697,27 @@ type GetLatestListingsv2Response struct {
 	IsLiked         bool   `json:"is_liked"`
 }
 
+type GetLatestListingsv2WithPaginationResponse struct {
+	Listings    []GetLatestListingsv2Response `json:"Listings"`
+	Paginations Pagination                    `json:"Paginations"`
+}
+
 func (r *GetLatestListingsv2Request) GetUserID() int32 {
 	if r != nil && r.UserID != nil {
 		return *r.UserID
 	}
 	return 0
+}
+
+func (r *GetLatestListingsv2Request) GetPagination() uint32 {
+	if r != nil && r.Pagination != nil {
+		return *r.Pagination
+	}
+	return 0
+}
+
+type Pagination struct {
+	CurrentPage uint32 `json:"current_page"`
+	NextPage    uint32 `json:"next_page"`
+	TotalPage   uint32 `json:"total_page"`
 }
