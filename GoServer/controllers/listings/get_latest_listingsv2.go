@@ -3,6 +3,7 @@ package listings
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 
 	"github.com/aaronangxz/TIC2601/constant"
@@ -37,10 +38,10 @@ func GetLatestListingsv2(c *gin.Context) {
 	}
 
 	//default results per page
-	resultsPerPage := uint32(10)
+	resultsPerPage := uint32(20)
 
 	//total pages
-	totalPages := uint32(totalCount / resultsPerPage)
+	totalPages := uint32(math.Ceil(float64(totalCount) / float64(resultsPerPage)))
 
 	paginationResp.TotalPage = totalPages
 	paginationResp.CurrentPage = input.GetPagination()
