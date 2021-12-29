@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width/2, initial-scale=1.0" />
     <title>Carouhell - Home</title>
-    <link rel="shortcut icon" type="image/jpg" href="./asset/favicon.png" />
+    <link rel="shortcut icon" type="image/jpg" href="../asset/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -11,10 +11,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <link rel="stylesheet" href="global.css?v5.4">
-    <script src="global.js"></script>
-    <script src="index.js"></script>
-    <script src="listing.js"></script>
+    <link rel="stylesheet" href="../global.css?v5.4">
+    <script src="../handlers/listings/listing_data.js"></script>
+    <script src="../handlers/user_session/get_local_storage.js"></script>
+    <script src="../handlers/user_session/set_local_storage.js"></script>
+    <script src="../handlers/time/get_time.js"></script>
+    <script src="../handlers/listing.js"></script>
     <script>
         $(function() {
             $("#header").load("navbar.html");
@@ -155,17 +157,17 @@
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <a href="viewProfile.html?profileID=635&amp;promoted=1">
-                        <img src="./banner/dior copy.png" href="index.html" , class="d-block w-100" alt="...">
+                        <img src="../banner/dior copy.png" href="index.html" , class="d-block w-100" alt="...">
                     </a>
                 </div>
                 <div class="carousel-item">
                     <a href="viewListing.html?itemID=935&amp;promoted=1">
-                        <img src="./banner/mcd.jpg" class="d-block w-100" alt="...">
+                        <img src="../banner/mcd.jpg" class="d-block w-100" alt="...">
                     </a>
                 </div>
                 <div class="carousel-item">
                     <a href="viewProfile.html?profileID=575&amp;promoted=1">
-                        <img src="./banner/ikea.jpg" class="d-block w-100" alt="...">
+                        <img src="../banner/ikea.jpg" class="d-block w-100" alt="...">
                     </a>
                 </div>
             </div>
@@ -195,7 +197,7 @@
             </div>
             <font style="opacity:.8" size="2px">2021 © NUS TIC2601 Group 11</font>
             <p></p>
-            <a href="https://github.com/aaronangxz/Carouhell"><img src="./asset/GitHub-Mark-32px.png" style="width:20px;height:20px;"></a>
+            <a href="https://github.com/aaronangxz/Carouhell"><img src="../asset/GitHub-Mark-32px.png" style="width:20px;height:20px;"></a>
         </div>
     </div>
     <script>

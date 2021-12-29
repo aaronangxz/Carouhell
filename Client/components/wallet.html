@@ -2,15 +2,20 @@
 
 <head>
     <title>Carouhell - My Wallet</title>
-    <link rel="shortcut icon" type="image/jpg" href="./asset/favicon.png" />
+    <link rel="shortcut icon" type="image/jpg" href="../asset/favicon.png" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="index.js"></script>
-    <script src="wallet.js"></script>
-    <link rel="stylesheet" href="global.css?v5.4">
+    <script src="../handlers/user_session/get_local_storage.js"></script>
+    <script src="../handlers/user_session/set_local_storage.js"></script>
+    <script src="../handlers/time/get_time.js"></script>
+    <script src="../handlers/time/time_conversion.js"></script>
+    <script src="../handlers/wallet/get_wallet_details.js"></script>
+    <script src="../handlers/wallet/display_wallet_transactions.js"></script>
+    <script src="../handlers/wallet/top_up_wallet.js"></script>
+    <link rel="stylesheet" href="../global.css?v5.4">
     <script>
         $(function() {
             $("#header").load("navbar.html");
