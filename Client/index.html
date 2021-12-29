@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width/2, initial-scale=1.0" />
     <title>Carouhell - Home</title>
-    <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
+    <link rel="shortcut icon" type="image/jpg" href="./asset/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -154,17 +154,17 @@
             </div>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <a href="viewProfile.html?profileID=635">
+                    <a href="viewProfile.html?profileID=635&amp;promoted=1">
                         <img src="./banner/dior copy.png" href="index.html" , class="d-block w-100" alt="...">
                     </a>
                 </div>
                 <div class="carousel-item">
-                    <a href="viewListing.html?itemID=935">
+                    <a href="viewListing.html?itemID=935&amp;promoted=1">
                         <img src="./banner/mcd.jpg" class="d-block w-100" alt="...">
                     </a>
                 </div>
                 <div class="carousel-item">
-                    <a href="viewProfile.html?profileID=575">
+                    <a href="viewProfile.html?profileID=575&amp;promoted=1">
                         <img src="./banner/ikea.jpg" class="d-block w-100" alt="...">
                     </a>
                 </div>
@@ -191,19 +191,22 @@
             <!-- <h2><span><i class="fas fa-pray" style="color:gray"></i></span></h2>
             <h5>Oops, we ran out of listings.</h5> -->
             <div class="mb-4">
-                <hr class="solid">
+                <hr class="solid" style="width:50%; margin-left:25% !important; margin-right:25% !important;">
             </div>
-            <p>
-                <font style="opacity:.8" size="2px">2021 © NUS TIC2601 Group 11</font>
-            </p>
+            <font style="opacity:.8" size="2px">2021 © NUS TIC2601 Group 11</font>
+            <p></p>
+            <a href="https://github.com/aaronangxz/Carouhell"><img src="./asset/GitHub-Mark-32px.png" style="width:20px;height:20px;"></a>
         </div>
     </div>
     <script>
-        getLatestListing();
-
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        const itemID = urlParams.get('itemID')
+        const pagination = urlParams.get('page')
+        getLatestListingPaginated(pagination);
+
+        if (pagination > 1) {
+            document.getElementById("carouselExampleIndicators").innerHTML = '';
+        }
 
         var loadSortByCategoryContent = '<option class="disabled" value="null">Select Category</option>';
         for (var i = 0; i < categories_Arr.length; i++) {
