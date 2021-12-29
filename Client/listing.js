@@ -251,6 +251,11 @@ function getRecommendedListingsByItemId(itemID) {
 }
 
 function displayItemContent(data) {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const isPromoted = urlParams.get('promoted')
+
+    console.log(isPromoted)
     var topBread =
         '<li class="breadcrumb-item"><a href=categories.html?category=' + data.item_category + '>' + categories_Arr[data.item_category] + '</a></li>' +
         '<li class="breadcrumb-item active" aria-current="page">' + data.item_name + '</li>'
@@ -267,6 +272,10 @@ function displayItemContent(data) {
         status += '<span class="badge badge-pill badge-warning">Selling Fast</span>'
     } else if (data.item_status == 1) {
         status += '<span class="badge badge-pill badge-success">Available</span>'
+    }
+
+    if (isPromoted == 1) {
+        status += '<span> </span><span class="badge badge-pill badge-secondary">Promoted</span>'
     }
 
     var progress = ""
@@ -732,6 +741,7 @@ function getCategoryResults(selectedCategory) {
                 for (const d of data.Data) {
                     displayListing(d, );
                 }
+                document.title = 'Carouhell - ' + categories_Arr[selectedCategory];
             }
         })
         .catch(error => console.log(error));
@@ -741,6 +751,7 @@ function getCategoryResults(selectedCategory) {
 function getFilterResults() {
     // filterOptions    
     document.getElementById("carouselExampleIndicators").innerHTML = '';
+    document.getElementById("paginationDisplay").innerHTML = '<p></p>'
     var sortByCat = document.getElementById("sortByCat");
     var selectedCategory = sortByCat.options[sortByCat.selectedIndex].value;
     var sortByLocation = document.getElementById("sortByLocation");
@@ -1040,6 +1051,9 @@ function getLatestListing() {
 }
 
 function getLatestListingPaginated(page) {
+    if (page == null) {
+        page = 1
+    }
     document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>'
@@ -1084,7 +1098,7 @@ function displayPaginations(pages, current, next) {
     } else {
         paginationHtml +=
             '<li class="page-item">' +
-            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current - 1) + ')">Previous</a>' +
+            '<a class="page-link" href="index.html?page=' + (current - 1) + '" onclick="getLatestListingPaginated(' + (current - 1) + ')">Previous</a>' +
             '</li>'
     }
 
@@ -1100,7 +1114,7 @@ function displayPaginations(pages, current, next) {
             //other pages
             paginationHtml +=
                 '<li class="page-item">' +
-                '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + i + ')">' + i + '</a>' +
+                '<a class="page-link" href="index.html?page=' + i + '" onclick="getLatestListingPaginated(' + i + ')">' + i + '</a>' +
                 '</li>'
         }
     }
@@ -1109,7 +1123,7 @@ function displayPaginations(pages, current, next) {
         //next button
         paginationHtml +=
             '<li class="page-item">' +
-            '<a class="page-link" href="#" onclick="getLatestListingPaginated(' + (current + 1) + ')">Next</a>' +
+            '<a class="page-link" href="index.html?page=' + (current + 1) + '" onclick="getLatestListingPaginated(' + (current + 1) + ')">Next</a>' +
             '</li>'
     } else {
         paginationHtml +=
@@ -1124,11 +1138,19 @@ function displayPaginations(pages, current, next) {
 }
 
 function displayUserReviews(data) {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const isPromoted = urlParams.get('promoted')
+
     var sellerType = ''
     if (data.account_info.seller_type == 1) {
         sellerType = '<span title = "Official Store"><i class="fas fa-check-circle" style="color:Dodgerblue"></i></span>'
     } else if (data.account_info.seller_type == 2) {
         sellerType = '<span title = "Preferred Seller"><i class="fas fa-medal" style="color:Coral"></i></span>'
+    }
+
+    if (isPromoted == 1) {
+        sellerType += '<span> </span><span class="badge badge-pill badge-secondary">Promoted</span>'
     }
 
     var reviews =
