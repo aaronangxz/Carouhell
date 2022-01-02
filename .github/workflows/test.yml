@@ -11,7 +11,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  test-deployment:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -37,10 +37,10 @@ jobs:
       - name: Set FE remote
         run: heroku git:remote --remote carouhell-client -a carouhell-sg-test
       - name: Deploy FE
-        run: git push carouhell-client `git subtree split --prefix Client master`:refs/heads/master --force
+        run: git push carouhell-client `git subtree split --prefix Client test`:refs/heads/master --force
       - name: Build Image
         working-directory: ./GoServer
-        run: docker-compose build
+        run: docker-compose -f docker-compose.test.yml build
       - name: Push Image
         run: docker push registry.heroku.com/carouhell-sg-api-test/web
       - name: Release Image
