@@ -4,7 +4,9 @@ services:
   test-server:
       image: registry.heroku.com/carouhell-sg-api-test/web
       container_name: carouhell-sg-api-test
-      build: https://github.com/aaronangxz/Carouhell.git#test
+      build:
+        context: .
+        dockerfile: ./Dockerfile.server
       ports:
         - 8080:8080
       restart: on-failure
