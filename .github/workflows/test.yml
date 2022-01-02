@@ -40,7 +40,8 @@ jobs:
         run: git push carouhell-client `git subtree split --prefix Client test`:refs/heads/master --force
       - name: Build Image
         working-directory: ./GoServer
-        run: docker-compose -f docker-compose.test.yml build
+        #run: docker-compose -f docker-compose.test.yml build
+        run: docker-compose build
       - name: Push Image
         run: docker push registry.heroku.com/carouhell-sg-api-test/web
       - name: Release Image
