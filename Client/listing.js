@@ -92,7 +92,7 @@ function createListing(userID) {
         reader.addEventListener('load', (event) => {
             console.log('load finish: ' + base64String); // base 64
 
-            fetch('https://https://' + getCurrentEnv() + '.herokuapp.com/create_listing', {
+            fetch('https://' + getCurrentEnv() + '.herokuapp.com/create_listing', {
                     method: 'POST',
                     headers: {
                         'Authorization': getToken(),
