@@ -1027,7 +1027,7 @@ function getLatestListing() {
     document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>'
-    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/v2/get_latest_listings', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -1060,7 +1060,7 @@ function getLatestListingPaginated(page) {
     document.getElementById("cards").innerHTML = '<p></p>'
     document.getElementById("paginationDisplay").innerHTML = '<p></p>'
 
-    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/v2/get_latest_listings', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),

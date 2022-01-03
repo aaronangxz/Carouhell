@@ -16,6 +16,15 @@
     <script src="index.js"></script>
     <script src="listing.js"></script>
     <script>
+        let envName = "";
+        if (document.URL.startsWith("http://localhost")) {
+            setCurrentEnv("local")
+        } else if (document.URL.indexOf("127.0.0.1:5500") != -1) {
+            setCurrentEnv("local")
+        } else if (document.URL.indexOf("carouhell-sg-test") != -1) {
+            setCurrentEnv("test")
+        }
+
         $(function() {
             $("#header").load("navbar.html");
         });
