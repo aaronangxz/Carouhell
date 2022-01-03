@@ -18,7 +18,13 @@ import (
 
 func main() {
 	r := gin.Default()
-	//models.LoadEnv() //loading env
+
+	//"" = live env
+	//"test" = test env
+	//"local" = local test env
+	//SET BEFORE MERGING INTO TEST OR MASTER
+	models.SetEnv("test")
+
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
