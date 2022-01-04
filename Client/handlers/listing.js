@@ -92,7 +92,7 @@ function createListing(userID) {
         reader.addEventListener('load', (event) => {
             console.log('load finish: ' + base64String); // base 64
 
-            fetch('https://tic2601-t11.herokuapp.com/create_listing', {
+            fetch('https://' + getCurrentEnv() + '.herokuapp.com/create_listing', {
                     method: 'POST',
                     headers: {
                         'Authorization': getToken(),
@@ -137,7 +137,7 @@ function createListing(userID) {
 }
 
 function deleteListing(itemID) {
-    fetch('https://tic2601-t11.herokuapp.com/delete_single_listing', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/delete_single_listing', {
             method: 'DELETE',
             headers: {
                 'Authorization': getToken(),
@@ -171,7 +171,7 @@ function addListingComment(userID, itemID) {
         return
     }
     console.log("comment:" + comment);
-    fetch('https://tic2601-t11.herokuapp.com/add_listing_comments', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/add_listing_comments', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -201,7 +201,7 @@ function addListingComment(userID, itemID) {
 
 function viewListingByItemId(itemID) {
     setPrevLocation();
-    fetch('https://tic2601-t11.herokuapp.com/get_single_listing_by_itemid', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_single_listing_by_itemid', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -228,7 +228,7 @@ function getRecommendedListingsByItemId(itemID) {
         '<div class="row mt-3">' +
         '<div class="col"><h3><i class="fas fa-fire" style="color:red"></i></span> You may also like <h3></div>' +
         '</div>'
-    fetch('https://tic2601-t11.herokuapp.com/v2/get_recommended_listings_by_itemid', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/v2/get_recommended_listings_by_itemid', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -298,7 +298,7 @@ function displayItemContent(data) {
 
     var content = "";
     content += '<div class="row">' +
-        '<div class="col-4"><img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_' + data.item_id + '.jpg" class="img-fluid" id="singleItemImage"/></div>' +
+        '<div class="col-4"><img src="https://' + getCurrentEnv() + '.s3.ap-southeast-1.amazonaws.com/listing_' + data.item_id + '.jpg" class="img-fluid" id="singleItemImage"/></div>' +
         '<div class="col-8">' +
         '<div class="row"><div class="col"><h1>' + data.item_name + ' </h1></div></div>' +
         '<div class="row">' +
@@ -495,7 +495,7 @@ function addListingLikes(itemID) {
     {
         var userID = sessionStorage.getItem('status');
 
-        fetch('https://tic2601-t11.herokuapp.com/add_listing_likes', {
+        fetch('https://' + getCurrentEnv() + '.herokuapp.com/add_listing_likes', {
                 method: 'POST',
                 headers: {
                     'Authorization': getToken(),
@@ -597,7 +597,7 @@ function displayListing(d, isRecommend) {
         '<div class="row ">' +
         '<a href="' + 'viewListing.html?itemID=' + d.item_id + '"class="btn btn-link stretched-link"></a> ' +
         '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-6 text-center" id="imgContainer">' +
-        '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_' + d.item_id + '.jpg" class="img-cover img-fluid" />' +
+        '<img src="https://' + getCurrentEnv() + '.s3.ap-southeast-1.amazonaws.com/listing_' + d.item_id + '.jpg" class="img-cover img-fluid" />' +
         '</div>' +
         '</div>' +
         '<div class="row">' +
@@ -636,7 +636,7 @@ function getSearchItem() {
         location.reload();
     }
     console.log(searchItem + "- searchItem");
-    fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_listings_using_filters', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -683,7 +683,7 @@ function getCategoryResults(selectedCategory) {
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>'
 
-    fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_listings_using_filters', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -812,7 +812,7 @@ function getFilterResults() {
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>'
 
-    fetch('https://tic2601-t11.herokuapp.com/get_listings_using_filters', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_listings_using_filters', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -890,7 +890,7 @@ function buyNow(itemID, sellerID) {
     console.log("qtyToPurchase: " + qtyToPurchase);
     if (qtyToPurchase != "" || !qtyToPurchase) {
         if (Number(qtyToPurchase) && Number(qtyToPurchase) != 0) {
-            fetch('https://tic2601-t11.herokuapp.com/purchase_single_item', {
+            fetch('https://' + getCurrentEnv() + '.herokuapp.com/purchase_single_item', {
                     method: 'POST',
                     headers: {
                         'Authorization': getToken(),
@@ -936,7 +936,7 @@ function getUserLikedListing() {
         window.location.href = "index.html"
     }
     setPrevSecureLocation();
-    fetch('https://tic2601-t11.herokuapp.com/get_user_liked_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_user_liked_listings', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -977,7 +977,7 @@ function viewProfileByUserID(profileID) {
         profileID = currentUser;
     }
 
-    fetch('https://tic2601-t11.herokuapp.com/get_user_details', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_user_details', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -1010,7 +1010,7 @@ function viewProfileByUserID(profileID) {
 }
 
 function getAllListing() {
-    fetch('https://tic2601-t11.herokuapp.com/get_all_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_all_listings', {
             method: 'GET'
         })
         .then(response => response.json())
@@ -1027,7 +1027,7 @@ function getLatestListing() {
     document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
         '<span class="loader"><span class="loader-inner"></span></span>' +
         '</div>'
-    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/v2/get_latest_listings', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -1060,7 +1060,7 @@ function getLatestListingPaginated(page) {
     document.getElementById("cards").innerHTML = '<p></p>'
     document.getElementById("paginationDisplay").innerHTML = '<p></p>'
 
-    fetch('https://tic2601-t11.herokuapp.com/v2/get_latest_listings', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/v2/get_latest_listings', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -1207,7 +1207,7 @@ function addUserReview(sellerID) {
         location.reload();
     }
 
-    fetch('https://tic2601-t11.herokuapp.com/add_user_review', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/add_user_review', {
             method: 'POST',
             headers: {
                 'Authorization': getToken(),
@@ -1246,7 +1246,7 @@ function loadListingDetails(data) {
     document.getElementById("itemDesc").value = data.item_description;
     document.getElementById("itemCat").value = data.item_category;
     document.getElementById("itemLocation").value = data.item_location;
-    document.getElementById("myImg").src = 'https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_' + data.item_id + '.jpg';
+    document.getElementById("myImg").src = 'https://' + getCurrentEnv() + '.s3.ap-southeast-1.amazonaws.com/listing_' + data.item_id + '.jpg';
 }
 
 function editListing(itemID) {
@@ -1342,7 +1342,7 @@ function editListing(itemID) {
             reader.readAsDataURL(file1);
             reader.addEventListener('load', (event) => {
                 console.log('load finish: ' + base64String); // base 64  
-                fetch('https://tic2601-t11.herokuapp.com/update_single_listing', {
+                fetch('https://' + getCurrentEnv() + '.herokuapp.com/update_single_listing', {
                         method: 'PATCH',
                         headers: {
                             'Authorization': getToken(),
@@ -1379,7 +1379,7 @@ function editListing(itemID) {
                     .catch(error => console.log(error));
             });
         } else {
-            fetch('https://tic2601-t11.herokuapp.com/update_single_listing', {
+            fetch('https://' + getCurrentEnv() + '.herokuapp.com/update_single_listing', {
                     method: 'PATCH',
                     headers: {
                         'Authorization': getToken(),
