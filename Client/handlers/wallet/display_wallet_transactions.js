@@ -18,7 +18,7 @@ function displayWalletTransactions(transactions) {
             case 1:
                 html += '<div class="col-2.5"><font size="3px">' + convertUnixToTimeStamp(transactions[i].transaction_ctime) + ' ' + convertUnixToTimeStampDetailTime(transactions[i].transaction_ctime) + '</font></div>' +
                     '<div class="col-2 text-center" id="walletImgContainer">' +
-                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_' + transactions[i].item_id + '.jpg">' +
+                    '<img src="https://' + getCurrentEnv() + '.s3.ap-southeast-1.amazonaws.com/listing_' + transactions[i].item_id + '.jpg">' +
                     // '<img src="'+transactions[i].item_image+'" />'+
                     '</div>' +
                     '<div class="col-6"><a href="viewListing.html?itemID=' + transactions[i].item_id + '">PURCHASED: ' + transactions[i].item_name + '</a></div>' +
@@ -31,7 +31,7 @@ function displayWalletTransactions(transactions) {
             case 2:
                 html += '<div class="col-2.5"><font size="3px">' + convertUnixToTimeStamp(transactions[i].transaction_ctime) + ' ' + convertUnixToTimeStampDetailTime(transactions[i].transaction_ctime) + '</font></div>' +
                     '<div class="col-2 text-center" id="walletImgContainer">' +
-                    '<img src="https://tic2601-t11.s3.ap-southeast-1.amazonaws.com/listing_' + transactions[i].item_id + '.jpg">' +
+                    '<img src="https://' + getCurrentEnv() + '.s3.ap-southeast-1.amazonaws.com/listing_' + transactions[i].item_id + '.jpg">' +
                     '</div>' +
                     '<div class="col-6"><a href="viewListing.html?itemID=' + transactions[i].item_id + '">SOLD: ' + transactions[i].item_name + '</a></div>' +
                     '<div class="col-1.5 text-left" id = "walletTrxAmount"><h6> + ' + (parseInt(transactions[i].transaction_amount) / 100).toLocaleString('en-US', {

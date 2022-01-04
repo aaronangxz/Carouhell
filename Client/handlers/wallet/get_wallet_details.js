@@ -3,7 +3,7 @@ function getWalletDetails() {
         window.location.href = "index.html"
     }
     setPrevSecureLocation();
-    fetch('https://tic2601-t11.herokuapp.com/get_user_wallet_details', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/get_user_wallet_details', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

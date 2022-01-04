@@ -8,7 +8,7 @@ function loginUser() {
         document.getElementById("footer").innerHTML += '<div class="loader-wrapper">' +
             '<span class="loader"><span class="loader-inner"></span></span>' +
             '</div>'
-        fetch('https://tic2601-t11.herokuapp.com/authenticate_user', {
+        fetch('https://' + getCurrentEnv() + '.herokuapp.com/authenticate_user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

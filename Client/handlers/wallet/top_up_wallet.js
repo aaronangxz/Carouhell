@@ -8,7 +8,7 @@ function topUpWallet() {
     }
     amt *= 100;
 
-    fetch('https://tic2601-t11.herokuapp.com/top_up_user_wallet', {
+    fetch('https://' + getCurrentEnv() + '.herokuapp.com/top_up_user_wallet', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

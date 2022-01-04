@@ -15,7 +15,7 @@ function registerUser() {
         document.getElementById("cfmPassword").value = "";
     } else {
         //store into user account db
-        fetch('https://tic2601-t11.herokuapp.com/create_account', {
+        fetch('https://' + getCurrentEnv() + '.herokuapp.com/create_account', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
