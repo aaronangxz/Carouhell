@@ -2,7 +2,7 @@
 name: FECORE
 about: New FE Core Feature
 title: ''
-labels: ''
+labels: front end
 assignees: ''
 
 ---
