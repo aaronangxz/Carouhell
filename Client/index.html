@@ -29,12 +29,16 @@
     <script>
         let envName = "";
         if (document.URL.startsWith("http://localhost")) {
+            envName = "local"
             setCurrentEnv("local")
         } else if (document.URL.indexOf("127.0.0.1:5500") != -1) {
+            envName = "local"
             setCurrentEnv("local")
-        } else if (document.URL.indexOf("carouhell-sg-test") != -1) {
+        } else if (document.URL.indexOf("test") != -1) {
+            envName = "test"
             setCurrentEnv("test")
         }
+        console.log("CurrentEnv : " + envName)
 
         $(function() {
             $("#header").load("navbar.html");
