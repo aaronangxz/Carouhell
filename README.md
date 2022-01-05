@@ -2,15 +2,24 @@
 <img src = "header.png">
 
 ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/aaronangxz/Carouhell?filename=GoServer%2Fgo.mod)
-[![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) 
 ![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell)
-
+<br>
+[![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) [![Test Deployment](https://github.com/aaronangxz/Carouhell/actions/workflows/test.yml/badge.svg?branch=test)](https://github.com/aaronangxz/Carouhell/actions/workflows/test.yml)
 
 <h2>Master Branch (Live)</h2>
 
-- API endpoints are deployed on https://tic2601-t11.herokuapp.com
-- Client is deployed on https://carouhell-sg.herokuapp.com
+- API endpoint: https://tic2601-t11.herokuapp.com
+- Client: https://carouhell-sg.herokuapp.com
+- Stable release
+- Live DB, Redis and S3 Bucket
 - Do not merge WIP features here, merge to test branch instead
+
+<h2>Test Branch (Test Environment)</h2>
+
+- API endpoint: https://carouhell-sg-api-test.herokuapp.com
+- Client: https://carouhell-sg-test.herokuapp.com
+- Test DB, Redis and S3 Bucket
+- WIP and experimental features can be merged here
 
 <h2>Work Flow</h2>
 
@@ -88,8 +97,6 @@ CONFIG_ANTISPAM = TRUE
 TZ = Asia/Singapore
 ```
 
-
-
 <h1>Deployment</h1>
 
 <h2>CI/CD</h2>
@@ -99,8 +106,10 @@ TZ = Asia/Singapore
 - Push / Merge pull requests to `master` branch
 3. The following changes will trigger the Build pipeline:
 - Push / Create pull requests to `test` branch
+4. The following changes will trigger the Test Deployment pipeline:
+- Push / Merge pull requests to `test` branch
 
-<h2>Manual Deployment</h2>
+<h2>Manual Deployment (Live)</h2>
 
 <h3>Backend</h3>
 
