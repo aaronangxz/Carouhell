@@ -37,6 +37,9 @@
         } else if (document.URL.indexOf("test") != -1) {
             envName = "test"
             setCurrentEnv("test")
+        } else {
+            envName = "live"
+            setCurrentEnv("live")
         }
         console.log("CurrentEnv : " + envName)
 
