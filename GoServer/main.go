@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/aaronangxz/TIC2601/auth"
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/controllers/account"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
@@ -18,7 +17,12 @@ import (
 
 func main() {
 	r := gin.Default()
-	//models.LoadEnv() //loading env
+
+	//"" = live env
+	//"test" = test env
+	//"local" = local test env
+	//SET BEFORE MERGING INTO TEST OR MASTER
+	models.SetEnv("")
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
@@ -43,7 +47,8 @@ func main() {
 
 	//Available endpoints
 	//***************** Home Page *****************
-	r.POST("/create_listing", auth.TokenAuthMiddleware(), listings.CreateListing)
+	//r.POST("/create_listing", auth.TokenAuthMiddleware(), listings.CreateListing)
+	r.POST("/create_listing", listings.CreateListing)
 	r.POST("/create_account", account.CreateAccount)
 	r.POST("/authenticate_user", account.AuthenticateUser)
 
@@ -60,8 +65,10 @@ func main() {
 	r.POST("/get_single_listing_by_itemid", listings.GetListingByItemID)
 	r.POST("/v2/get_recommended_listings_by_itemid", listings.GetRecommendedListingsByItemId)
 
-	r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
-	r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)
+	//r.PATCH("/update_single_listing", auth.TokenAuthMiddleware(), listings.UpdateSingleListing)
+	//r.DELETE("/delete_single_listing", auth.TokenAuthMiddleware(), listings.DeleteListing)
+	r.PATCH("/update_single_listing", listings.UpdateSingleListing)
+	r.DELETE("/delete_single_listing", listings.DeleteListing)
 	r.POST("/get_listing_reactions", listings.GetListingReactions)
 	r.POST("/add_listing_likes", listings.AddListingLikes)
 	r.POST("/add_listing_comments", listings.AddListingComments)
