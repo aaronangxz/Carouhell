@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Carouhell - My Notifications</title>
+    <link rel="shortcut icon" type="image/jpg" href="../asset/favicon.png" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../global.css?v5.5">
+    <script src="../handlers/environment/environment.js"></script>
+    <script src="../handlers/user_session/get_local_storage.js"></script>
+    <script src="../handlers/time/get_time.js"></script>
+    <script src="../handlers/notifications/get_user_notifications.js"></script>
+    <script src="../handlers/notifications/display_notifications.js"></script>
+
+    <script>
+        $(function() {
+            $("#header").load("navbar.html");
+        });
+        if (getCurrentUserID() == -1) {
+            window.location.href = "index.html"
+        }
+        getUserNotifications();
+        $(window).on("load", function() {
+            $(".loader-wrapper").fadeOut("slow");
+        });
+    </script>
+    <style>
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        #imgContainer {
+            height: 80px;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        #walletTransactions .row {
+            border-top: 1px solid gray;
+        }
+        
+        #walletTransactions {
+            font-size: 1.25em;
+        }
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LTF70RE5S6');
+    </script>
+</head>
+
+<body>
+    <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+    </div>
+    <div id="header"></div>
+    <p></p>
+    <p></p>
+    <div class="container center mt-3">
+        <div class="row">
+            <div class="col">
+                <span><i class="fas fa-bell fa-5x " style="color:gold"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3 h-100" id="notifications">
+    </div>
+</body>
+
+</html>

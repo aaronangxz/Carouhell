@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Carouhell - Join Us</title>
+    <link rel="shortcut icon" type="image/jpg" href="../asset/favicon.png" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../global.css?v5.5">
+    <script src="../handlers/environment/environment.js"></script>
+    <script src="../handlers/user_session/get_local_storage.js"></script>
+    <script src="../handlers/user_session/set_local_storage.js"></script>
+    <script src="../handlers/time/get_time.js"></script>
+    <script src="../handlers/user_authentication/user_registration.js"></script>
+    <script>
+        $(function() {
+            $("#header").load("navbar.html");
+        });
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LTF70RE5S6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LTF70RE5S6');
+    </script>
+</head>
+
+<body>
+    <div class="modal fade" id="registerFieldsEmpty" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uh oh..</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <p>Please fill in all the details.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="passwordMismatch" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uh oh..</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <p>Password and Confirm Password mismatched.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerFailed" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerFailedTitle"></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body" id="registerFailedBody">
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerSuccess" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Welcome to Carouhell!</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <p>Successfully registered.</p>
+                    <p>Log in to start shopping!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="header"></div>
+    <p></p>
+    <p></p>
+    <p></p>
+    <br>
+    <div class="container text-center">
+        <img src="../asset/headerimg.png" width="40%">
+        <h1>Hello there.</h1>
+        <h2>We don't do annoying songs and ads here. Join us now.</h2>
+        <br>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="row d-flex justify-content-center">
+                    <input type="text" class="form-control col-3" id="username" placeholder="Enter username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <div class="row d-flex justify-content-center">
+
+                    <input type="email" class="form-control col-3" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="row d-flex justify-content-center">
+
+                    <input type="password" class="form-control col-3" id="password" placeholder="Password">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="cfmPassword">Confirm Password</label>
+                <div class="row d-flex justify-content-center">
+
+                    <input type="password" class="form-control col-3" id="cfmPassword" placeholder="Password">
+                </div>
+
+            </div>
+            <!-- <div class="form-group">
+                <label for="securityQn">Select Security Question</label>
+                <select class="form-control" id="securityQn">
+                  <option value="0">Where did your parents meet?</option>
+                  <option value="1">In what city were you born?</option>
+                  <option value="2">What is the name of your first school?</option>
+                  <option value="3">What is the name of your first pet?</option>
+                  <option value="4">Where did you meet your spouse?</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="securityAns">Answer</label>
+                <input type="text" class="form-control" id="securityAns" placeholder="Answer for Security Question">
+            </div> -->
+            <input type="button" class="btn btn-primary" onclick="registerUser()" value="Register" />
+            <br>
+            <br>
+            <a href="loginForm.html">Already have an account? Log In here!</a>
+        </form>
+    </div>
+
+</body>
+
+</html>
