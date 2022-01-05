@@ -6,7 +6,7 @@ function setCurrentEnv(env) {
 }
 
 function getCurrentEnv() {
-    if (CurrentEnv == "local" || "test") {
+    if (CurrentEnv == "local" || CurrentEnv == "test") {
         return "carouhell-sg-api-test"
     } else {
         return "tic2601-t11"
