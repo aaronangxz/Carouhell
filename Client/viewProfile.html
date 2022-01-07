@@ -2,17 +2,25 @@
 
 <head>
     <title>Carouhell - Profile</title>
-    <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
+    <link rel="shortcut icon" type="image/jpg" href="./asset/favicon.png" />
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
     </script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="global.css?v5.1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="global.js"></script>
-    <script src="index.js"></script>
-    <script src="listing.js"></script>
+    <link rel="stylesheet" href="../global.css?v5.5">
+    <script src="../handlers/environment/environment.js"></script>
+    <script src="../handlers/listings/listing_data.js"></script>
+    <script src="../handlers/user_session/get_local_storage.js"></script>
+    <script src="../handlers/user_session/set_local_storage.js"></script>
+    <script src="../handlers/time/get_time.js"></script>
+    <script src="../handlers/time/time_conversion.js"></script>
+    <script src="../handlers/profile/view_profile_by_user_id.js"></script>
+    <script src="../handlers/listings/display_listing.js"></script>
+    <script src="../handlers/listings/check_if_user_liked_listing.js"></script>
+    <script src="../handlers/profile/display_user_reviews.js"></script>
+    <script src="../handlers/listings/add_listing_likes.js"></script>
     <script>
         $(function() {
             $("#header").load("navbar.html");
@@ -53,6 +61,25 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">It's fine</button>
                 <button type="button" class="btn btn-primary" id="toLogin">Log In</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loadProfileFail" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Uh oh..</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+            <div class="modal-body">
+                <p>This user does not exist.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
             </div>
         </div>
     </div>

@@ -177,6 +177,36 @@ img {
     background-color: #ffffff !important;
 }
 
-#buyButton {
+#buyButtonSpan {
     padding-left: 50px;
+}
+
+#buyButton {
+    background-color: #7a59a2 !important;
+    border-color: rgb(255, 255, 255)
+}
+
+.pagination>li>a {
+    background-color: white;
+    color: #5f4282;
+}
+
+.pagination>li>a:focus,
+.pagination>li>a:hover,
+.pagination>li>span:focus,
+.pagination>li>span:hover {
+    color: #5a5a5a;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination>.active>a {
+    color: white;
+    background-color: #5f4282 !Important;
+    border: solid 1px #5f4282 !Important;
+}
+
+.pagination>.active>a:hover {
+    background-color: #5f4282 !Important;
+    border: solid 1px #5f4282;
 }

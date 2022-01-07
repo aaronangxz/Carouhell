@@ -25,7 +25,16 @@ var (
 	S3Client    *session.Session
 	RedisClient *redis.Client
 	Ctx         = context.TODO()
+	Env         string
 )
+
+func SetEnv(environment string) {
+	if environment == "local" {
+		LoadEnv() //loading env
+	}
+	Env = environment
+	log.Printf("Current env: %v", Env)
+}
 
 func LoadEnv() {
 	err := godotenv.Load(".env")
@@ -65,8 +74,12 @@ func CORSMiddleware() gin.HandlerFunc {
 
 //NewDatabase : intializes and returns mysql db
 func NewMySQL() {
-
-	URL := fmt.Sprintf("%v:%v@tcp(%v)/%v", os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
+	var URL string
+	if Env == "local" {
+		URL = fmt.Sprintf("%v:%v@tcp(%v)/%v", os.Getenv("TEST_DB_USERNAME"), os.Getenv("TEST_DB_PASSWORD"), os.Getenv("TEST_DB_URL"), os.Getenv("TEST_DB_NAME"))
+	} else {
+		URL = fmt.Sprintf("%v:%v@tcp(%v)/%v", os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
+	}
 	log.Printf("Connecting to %v", URL)
 	db, err := gorm.Open("mysql", URL)
 
@@ -104,9 +117,17 @@ func NewAWSInstance() {
 }
 
 func NewRedis() {
-
-	redisAddress := fmt.Sprintf("%v:%v", os.Getenv("REDIS_URL"), os.Getenv("REDIS_PORT"))
-	redisPassword := os.Getenv("REDIS_PASSWORD")
+	var (
+		redisAddress  string
+		redisPassword string
+	)
+	if Env == "local" {
+		redisAddress = fmt.Sprintf("%v:%v", os.Getenv("TEST_REDIS_URL"), os.Getenv("TEST_REDIS_PORT"))
+		redisPassword = os.Getenv("TEST_REDIS_PASSWORD")
+	} else {
+		redisAddress = fmt.Sprintf("%v:%v", os.Getenv("REDIS_URL"), os.Getenv("REDIS_PORT"))
+		redisPassword = os.Getenv("REDIS_PASSWORD")
+	}
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddress,
