@@ -17,16 +17,12 @@ import (
 
 func main() {
 	r := gin.Default()
-<<<<<<< HEAD
-	models.LoadEnv() //loading env
-=======
 
 	//"" = live env
 	//"test" = test env
 	//"local" = local test env
 	//SET BEFORE MERGING INTO TEST OR MASTER
 	models.SetEnv("")
->>>>>>> origin/test
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
