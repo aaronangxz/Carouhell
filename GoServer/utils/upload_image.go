@@ -14,9 +14,16 @@ import (
 
 func UploadBase64Image(item_id uint32, base64File string) (string, error) {
 	var (
-		s3Bucket = os.Getenv("S3_BUCKET")
-		s3Region = os.Getenv("AWS_S3_REGION")
+		s3Bucket string
+		s3Region string
 	)
+
+	if models.Env == "local" {
+		s3Bucket = os.Getenv("TEST_S3_BUCKET")
+	} else {
+		s3Bucket = os.Getenv("S3_BUCKET")
+	}
+	s3Region = os.Getenv("AWS_S3_REGION")
 
 	decode, err := base64.StdEncoding.DecodeString(base64File)
 	if err != nil {

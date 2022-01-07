@@ -168,7 +168,7 @@ func GetUserDetails(c *gin.Context) {
 		log.Printf("Failed to marshal JSON results: %v\n", err.Error())
 	}
 
-	expiry := 60 * time.Second
+	expiry := 60 * time.Minute
 	if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
 		log.Printf("Error while writing to redis: %v", err.Error())
 	} else {

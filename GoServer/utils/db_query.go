@@ -12,7 +12,7 @@ import (
 var (
 	ListingFixedQuery = fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id AND l.item_status = %v"+
@@ -38,6 +38,54 @@ var (
 		" (SELECT l_item_id, item_name FROM listing_tab) "+
 		" AS item_info ON transaction_history.lt_item_id = item_info.l_item_id"+
 		" ORDER BY transaction_ctime DESC", constant.TRANSACTION_TYPE_TOPUP)
+
+	NotificationQuery = fmt.Sprintf("SELECT user_info.a_user_id, user_info.user_name,"+
+		" item_info.l_item_id, item_info.item_name,"+
+		" notification_history.notification_type,"+
+		" notification_history.notification_string,"+
+		" notification_history.ctime"+
+		" 	FROM (SELECT user_id, item_id,notification_type,notification_string,ctime"+
+		" 		FROM (SELECT rt_user_id AS user_id, rt_item_id AS item_id, reaction_type AS notification_type, comment AS notification_string, ctime"+
+		" 			FROM listing_reactions_tab"+
+		" 			WHERE rt_item_id IN (SELECT l_item_id"+
+		" 				FROM listing_tab"+
+		" 				WHERE l_seller_id = ?) AND rt_user_id != ?"+
+		" 		UNION ALL"+
+		" 			SELECT rv_user_id AS user_id, NULL AS item_id, %v AS notification_type, review_text AS notification_string, ctime"+
+		" 			FROM user_review_tab"+
+		" 			WHERE rv_seller_id = ?"+
+		" 		UNION ALL"+
+		" 			SELECT lt_user_id AS user_id, lt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, transaction_ctime AS ctime"+
+		" 			FROM listing_transactions_tab"+
+		" 			WHERE lt_item_id IN (SELECT l_item_id"+
+		" 				FROM listing_tab"+
+		" 				WHERE l_seller_id = ?)"+
+		" 		UNION ALL"+
+		" 			SELECT NULL AS user_id, l_item_id AS item_id, %v AS notification_type, NULL AS notification_string, listing_mtime AS ctime"+
+		" 			FROM listing_tab"+
+		" 			WHERE l_seller_id = ? AND item_status = %v"+
+		" 		UNION ALL"+
+		" 			SELECT NULL AS user_id, lr.rt_item_id AS item_id, %v AS notification_type, NULL AS notification_string, l.listing_mtime AS ctime"+
+		" 			FROM listing_reactions_tab lr, listing_tab l"+
+		" 			WHERE lr.rt_user_id = ?"+
+		"			AND lr.reaction_type = %v"+
+		"			AND lr.rt_item_id = l.l_item_id"+
+		" 			AND l.item_status = %v)"+
+		" 		AS user_events) AS notification_history"+
+		" 			LEFT JOIN (SELECT l_item_id, item_name"+
+		" 						FROM listing_tab) AS item_info"+
+		" 			ON notification_history.item_id = item_info.l_item_id"+
+		" 			LEFT JOIN (SELECT a_user_id, user_name"+
+		" 						FROM acc_tab) AS user_info"+
+		" 			ON notification_history.user_id = user_info.a_user_id"+
+		" ORDER  BY ctime DESC ;",
+		constant.NOTIFICATION_TYPE_REVIEW,
+		constant.NOTIFICATION_TYPE_SOLD,
+		constant.NOTIFICATION_TYPE_OWNED_LISTING_SOLDOUT,
+		constant.ITEM_STATUS_SOLDOUT,
+		constant.NOTIFICATION_TYPE_FAVOURITE_ITEM_SOLDOUT,
+		constant.LISTING_REACTION_TYPE_LIKE,
+		constant.ITEM_STATUS_SOLDOUT)
 )
 
 //Fixed query, not possible to append WHERE clause
@@ -49,7 +97,7 @@ func GetListingFixedQuery() string {
 func GetListingLoggedInQuery(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -61,7 +109,7 @@ func GetListingLoggedInQuery(user_id uint64) string {
 func GetListingQueryWithCustomCondition() string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE l.l_seller_id = a.a_user_id", constant.LISTING_REACTION_TYPE_LIKE)
@@ -70,7 +118,7 @@ func GetListingQueryWithCustomCondition() string {
 func GetListingLoggedInQueryWithCustomCondition(user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) as listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -174,7 +222,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 		return err
 	}
 
-	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - %v, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetPurchaseQuantity(), input.GetItemID())
+	updateListingQuery := fmt.Sprintf("UPDATE listing_tab SET item_quantity = item_quantity - %v, listing_mtime = %v, item_status = CASE WHEN item_quantity = 0 THEN 2 ELSE item_status END WHERE l_item_id = %v", input.GetPurchaseQuantity(), time.Now().Unix()+1, input.GetItemID())
 	log.Println(updateListingQuery)
 	if err := tx.Exec(updateListingQuery).Error; err != nil {
 		log.Printf("Error during StartItemPurchaseTx:updateListing: %v", err.Error())
@@ -211,7 +259,7 @@ func StartItemPurchaseTx(input models.PurchaseSingleItemRequest, totalPrice uint
 func GetFullTextSearchQuery(keyword string) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
@@ -222,11 +270,27 @@ func GetFullTextSearchQuery(keyword string) string {
 func GetFullTextSearchLoggedInQuery(keyword string, user_id uint64) string {
 	return fmt.Sprintf("SELECT l.l_item_id, l.item_name, l.item_price, l.item_quantity,"+
 		" l.item_stock, l.item_description, l.item_location, l.item_status, l.item_category,"+
-		" l.l_seller_id, a.user_name AS seller_name, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
+		" l.l_seller_id, a.user_name AS seller_name, a.seller_type, l.listing_ctime,l.listing_mtime, COUNT(listing_reactions_tab.rt_item_id) AS listing_likes,"+
 		" (CASE WHEN l.l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
 		" ((1.5 * (MATCH(l.item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance"+
 		" FROM acc_tab a, listing_tab l"+
 		" LEFT JOIN listing_reactions_tab ON l.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v"+
 		" WHERE MATCH(l.item_name,l.item_description) AGAINST ('%v*' IN BOOLEAN MODE)"+
 		" AND l.l_seller_id = a.a_user_id  AND l.item_status = %v", user_id, constant.LISTING_REACTION_TYPE_LIKE, keyword, keyword, constant.LISTING_REACTION_TYPE_LIKE, keyword, constant.ITEM_STATUS_NORMAL)
+}
+
+func GetNotificationQuery() string {
+	return NotificationQuery
+}
+
+func GetRecommendedListingsByItemIdQuery(itemId uint32, userId int32, itemName string, sellerId uint32, itemCategory uint32) string {
+	return fmt.Sprintf("SELECT listing_tab.*, acc_tab.user_name AS seller_name, acc_tab.seller_type, ((2 * (MATCH(item_name) AGAINST ('%v*' IN BOOLEAN MODE))) + (0.5 * (MATCH(item_description) AGAINST ('%v*' IN BOOLEAN MODE)))) AS relevance,"+
+		" (CASE WHEN l_item_id IN (SELECT rt_item_id FROM listing_reactions_tab WHERE rt_user_id = %v AND reaction_type = %v GROUP BY rt_item_id)THEN TRUE ELSE FALSE END) AS is_liked,"+
+		" COUNT(listing_reactions_tab.rt_item_id) as listing_likes"+
+		" FROM acc_tab, listing_tab"+
+		" LEFT JOIN listing_reactions_tab ON listing_tab.l_item_id = listing_reactions_tab.rt_item_id AND listing_reactions_tab.reaction_type = %v WHERE"+
+		" listing_tab.l_seller_id = acc_tab.a_user_id AND (MATCH(item_name,item_description) AGAINST ('%v*' IN BOOLEAN MODE) OR l_seller_id = %v OR item_category = %v)"+
+		" AND (l_item_id != %v AND item_status = %v)"+
+		" GROUP BY l_item_id ORDER BY relevance DESC"+
+		" LIMIT 4", itemName, itemName, userId, constant.LISTING_REACTION_TYPE_LIKE, constant.LISTING_REACTION_TYPE_LIKE, itemName, sellerId, itemCategory, itemId, constant.ITEM_STATUS_NORMAL)
 }

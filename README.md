@@ -2,15 +2,24 @@
 <img src = "header.png">
 
 ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/aaronangxz/Carouhell?filename=GoServer%2Fgo.mod)
-[![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) 
-![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell) ![GitHub repo size](https://img.shields.io/github/repo-size/aaronangxz/Carouhell) 
-
+![GitHub issues](https://img.shields.io/github/issues/aaronangxz/Carouhell) ![GitHub last commit](https://img.shields.io/github/last-commit/aaronangxz/Carouhell) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/aaronangxz/Carouhell)
+<br>
+[![Build](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml/badge.svg?branch=test)](https://github.com/aaronangxz/TIC2601/actions/workflows/build.yml) [![Deployment](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml/badge.svg)](https://github.com/aaronangxz/TIC2601/actions/workflows/main.yml) [![Test Deployment](https://github.com/aaronangxz/Carouhell/actions/workflows/test.yml/badge.svg?branch=test)](https://github.com/aaronangxz/Carouhell/actions/workflows/test.yml)
 
 <h2>Master Branch (Live)</h2>
 
-- API endpoints are deployed on https://tic2601-t11.herokuapp.com
-- Client is deployed on https://carouhell-tic2601.herokuapp.com/index.html
+- API endpoint: https://tic2601-t11.herokuapp.com
+- Client: https://carouhell-sg.herokuapp.com
+- Stable release
+- Live DB, Redis and S3 Bucket
 - Do not merge WIP features here, merge to test branch instead
+
+<h2>Test Branch (Test Environment)</h2>
+
+- API endpoint: https://carouhell-sg-api-test.herokuapp.com
+- Client: https://carouhell-sg-test.herokuapp.com
+- Test DB, Redis and S3 Bucket
+- WIP and experimental features can be merged here
 
 <h2>Work Flow</h2>
 
@@ -88,8 +97,6 @@ CONFIG_ANTISPAM = TRUE
 TZ = Asia/Singapore
 ```
 
-
-
 <h1>Deployment</h1>
 
 <h2>CI/CD</h2>
@@ -99,14 +106,27 @@ TZ = Asia/Singapore
 - Push / Merge pull requests to `master` branch
 3. The following changes will trigger the Build pipeline:
 - Push / Create pull requests to `test` branch
+4. The following changes will trigger the Test Deployment pipeline:
+- Push / Merge pull requests to `test` branch
 
-<h2>Manual Deployment</h2>
+<h2>Manual Deployment (Live)</h2>
+
+<h3>Backend</h3>
 
 1. Follow steps above to build Docker imgage.
 2. Login via `heroku container:login`
 3. Tag image with Heroku registry link `docker tag <imageid> registry.heroku.com/tic2601-t11/web`
 4. Push the tagged image `docker push registry.heroku.com/tic2601-t11/web`
 5. Release image `heroku container:release web -a tic2601-t11`
+
+<h3>Frontend</h3>
+
+1. Set remote for Front End `heroku git:remote --remote carouhell-client -a carouhell-sg`
+2. Push to `carouhell-sg` via git subtree
+
+```
+git push carouhell-client `git subtree split --prefix Client master`:refs/heads/master --force
+```
 
 <h1>Database Commands</h1>
 

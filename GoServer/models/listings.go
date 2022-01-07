@@ -28,6 +28,20 @@ type Listing struct {
 	ListingMtime    *int64  `json:"listing_mtime"`
 }
 
+func (r *Listing) GetItemName() string {
+	if r != nil && r.ItemName != nil {
+		return *r.ItemName
+	}
+	return ""
+}
+
+func (r *Listing) GetItemCategory() uint32 {
+	if r != nil && r.ItemCategory != nil {
+		return *r.ItemCategory
+	}
+	return 0
+}
+
 func (r *Listing) GetLItemID() uint32 {
 	if r != nil && r.LItemID != nil {
 		return *r.LItemID
@@ -158,6 +172,7 @@ type GetSingleListingResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -178,6 +193,7 @@ type GetSingleListingLoggedInResponse struct {
 	ItemCategory    uint32                     `json:"item_category"`
 	LSellerID       uint32                     `json:"seller_id"`
 	SellerName      string                     `json:"seller_name"`
+	SellerType      uint32                     `json:"seller_type"`
 	ListingCtime    int64                      `json:"listing_ctime"`
 	ListingMtime    int64                      `json:"listing_mtime"`
 	ListingLikes    uint32                     `json:"listing_likes"`
@@ -294,6 +310,7 @@ type GetUserListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -312,6 +329,7 @@ type GetUserListingsLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -329,7 +347,6 @@ type GetLatestListingsRequest struct {
 	ItemStatus   *uint32 `json:"item_status"`
 	Limit        *uint32 `json:"limit"`
 }
-
 type GetLatestListingsResponse struct {
 	LItemID         uint32 `json:"item_id"`
 	ItemName        string `json:"item_name"`
@@ -342,6 +359,7 @@ type GetLatestListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -371,6 +389,7 @@ type GetLatestListingsLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -438,6 +457,7 @@ type GetListingsUsingFiltersResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -455,6 +475,7 @@ type GetListingsUsingFiltersLoggedInResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -539,6 +560,7 @@ type GetUserLikedListingsResponse struct {
 	ItemCategory    uint32 `json:"item_category"`
 	LSellerID       uint32 `json:"seller_id"`
 	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
 	ListingCtime    int64  `json:"listing_ctime"`
 	ListingMtime    int64  `json:"listing_mtime"`
 	ListingLikes    uint32 `json:"listing_likes"`
@@ -611,4 +633,91 @@ type ListingTransaction struct {
 	TransactionCtime    *int64  `json:"transaction_ctime"`
 	TransactionQuantity *uint32 `json:"transaction_quantity"`
 	TransactionAmount   *uint32 `json:"transaction_amount"`
+}
+
+type GetRecommendedListingsByItemIdRequest struct {
+	ItemID *uint32 `json:"item_id" binding:"required"`
+	UserID *int32  `json:"user_id" binding:"required"`
+}
+
+func (r *GetRecommendedListingsByItemIdRequest) GetItemID() uint32 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}
+
+func (r *GetRecommendedListingsByItemIdRequest) GetUserID() int32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+type GetRecommendedListingsByItemIdResponse struct {
+	LItemID         uint32 `json:"item_id"`
+	ItemName        string `json:"item_name"`
+	ItemPrice       uint32 `json:"item_price"`
+	ItemQuantity    uint32 `json:"item_quantity"`
+	ItemStock       uint32 `json:"item_stock"`
+	ItemDescription string `json:"item_description"`
+	ItemLocation    uint32 `json:"item_location"`
+	ItemStatus      uint32 `json:"item_status"`
+	ItemCategory    uint32 `json:"item_category"`
+	LSellerID       uint32 `json:"seller_id"`
+	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
+	ListingCtime    int64  `json:"listing_ctime"`
+	ListingMtime    int64  `json:"listing_mtime"`
+	ListingLikes    uint32 `json:"listing_likes"`
+	IsLiked         bool   `json:"is_liked"`
+}
+
+type GetLatestListingsv2Request struct {
+	UserID     *int32  `json:"user_id" binding:"required"`
+	Pagination *uint32 `json:"pagination" binding:"required"`
+}
+
+type GetLatestListingsv2Response struct {
+	LItemID         uint32 `json:"item_id"`
+	ItemName        string `json:"item_name"`
+	ItemPrice       uint32 `json:"item_price"`
+	ItemQuantity    uint32 `json:"item_quantity"`
+	ItemStock       uint32 `json:"item_stock"`
+	ItemDescription string `json:"item_description"`
+	ItemLocation    uint32 `json:"item_location"`
+	ItemStatus      uint32 `json:"item_status"`
+	ItemCategory    uint32 `json:"item_category"`
+	LSellerID       uint32 `json:"seller_id"`
+	SellerName      string `json:"seller_name"`
+	SellerType      uint32 `json:"seller_type"`
+	ListingCtime    int64  `json:"listing_ctime"`
+	ListingMtime    int64  `json:"listing_mtime"`
+	ListingLikes    uint32 `json:"listing_likes"`
+	IsLiked         bool   `json:"is_liked"`
+}
+
+type GetLatestListingsv2WithPaginationResponse struct {
+	Listings    []GetLatestListingsv2Response `json:"Listings"`
+	Paginations Pagination                    `json:"Paginations"`
+}
+
+func (r *GetLatestListingsv2Request) GetUserID() int32 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *GetLatestListingsv2Request) GetPagination() uint32 {
+	if r != nil && r.Pagination != nil {
+		return *r.Pagination
+	}
+	return 0
+}
+
+type Pagination struct {
+	CurrentPage uint32 `json:"current_page"`
+	NextPage    uint32 `json:"next_page"`
+	TotalPage   uint32 `json:"total_page"`
 }
