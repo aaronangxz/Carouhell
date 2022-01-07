@@ -73,11 +73,7 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New(errormsg)
 	}
 	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
-<<<<<<< HEAD
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username can only contain alphanumeric characters.")})
-=======
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username can only contains alphanumeric characters")})
->>>>>>> origin/test
 		errormsg := fmt.Sprintf("user_name can only contains alphanumeric characters. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
@@ -91,11 +87,7 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New(errormsg)
 	}
 	if !utils.IsContainsAtSign(input.GetUserEmail()) {
-<<<<<<< HEAD
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email format is invalid.")})
-=======
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email format is invalid")})
->>>>>>> origin/test
 		errormsg := fmt.Sprintf("user_email format is invalid. input :%v", input.GetUserEmail())
 		return errors.New(errormsg)
 	}
@@ -167,11 +159,7 @@ func CreateAccount(c *gin.Context) {
 			return
 		} else {
 			if spResp.GetStatus() == -1 {
-<<<<<<< HEAD
 				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists.")})
-=======
-				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("User already exists.")})
->>>>>>> origin/test
 				log.Printf("user already exists: %v / %v\n", input.GetUserName(), input.GetUserEmail())
 				return
 			}
@@ -199,11 +187,7 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	if result.RowsAffected > 0 {
-<<<<<<< HEAD
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists. Please log in instead.")})
-=======
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists. Log in instead.")})
->>>>>>> origin/test
 		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
 		return
 	}
