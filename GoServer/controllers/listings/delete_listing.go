@@ -36,6 +36,12 @@ func DeleteListing(c *gin.Context) {
 		return
 	}
 
+	//invalidate cache of seller profile
+	//must be done first, otherwise itemid cannot be found after deletion
+	if err := utils.InvalidateSellerCacheUsingItemID(utils.GetUserDetailsCacheKey, input.GetItemID()); err != nil {
+		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
+	}
+
 	if err := models.DB.Exec("DELETE FROM listing_tab WHERE l_item_id = ?", input.ItemID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
@@ -44,11 +50,6 @@ func DeleteListing(c *gin.Context) {
 	//invalidate redis
 	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
-	}
-
-	//invalidate cache of seller profile
-	if err := utils.InvalidateSellerCacheUsingItemID(utils.GetUserDetailsCacheKey, input.GetItemID()); err != nil {
-		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully delete listing.")})
