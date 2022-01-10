@@ -42,7 +42,7 @@ func DeleteListing(c *gin.Context) {
 	}
 
 	//archive listing
-	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeDeleted).Error; err != nil {
+	if err := models.DB.Table("listing_archive_tab").Create(listingToBeDeleted).Error; err != nil {
 		log.Printf("Error during listing archive DB query: %v", err.Error())
 	}
 
