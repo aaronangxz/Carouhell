@@ -11,10 +11,9 @@ import (
 )
 
 func DeleteListing(c *gin.Context) {
-	// Get model if exist
 	var (
-		deleteListing models.Listing
-		input         models.DeleteSingleListingRequest
+		listingToBeDeleted models.Listing
+		input              models.DeleteSingleListingRequest
 	)
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -31,7 +30,7 @@ func DeleteListing(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE l_item_id = ?", input.ItemID).Scan(&deleteListing).Error; err != nil {
+	if err := models.DB.Raw("SELECT * FROM listing_tab WHERE l_item_id = ?", input.ItemID).Scan(&listingToBeDeleted).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewNotFoundResponse()})
 		return
 	}
@@ -42,6 +41,12 @@ func DeleteListing(c *gin.Context) {
 		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
 	}
 
+	//archive listing
+	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeDeleted).Error; err != nil {
+		log.Printf("Error during listing archive DB query: %v", err.Error())
+	}
+
+	//delete
 	if err := models.DB.Exec("DELETE FROM listing_tab WHERE l_item_id = ?", input.ItemID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
