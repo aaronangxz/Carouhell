@@ -56,21 +56,27 @@ func DeleteListing(c *gin.Context) {
 		ListingMtime:    listingToBeDeleted.ListingMtime,
 	}
 
+	log.Printf("listingToBeArchived: %v", listingToBeArchived)
+
 	//archive listing
 	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeArchived).Error; err != nil {
-		log.Printf("Error during listing archive DB query: %v", err.Error())
+		log.Printf("Error during listing archive DB query: %v: %v", listingToBeArchived.GetLItemID(), err.Error())
 	}
+	log.Printf("Successfully archived listing: %v", listingToBeArchived.GetLItemID())
 
 	//delete
 	if err := models.DB.Exec("DELETE FROM listing_tab WHERE l_item_id = ?", input.ItemID).Error; err != nil {
+		log.Printf("Error during listing delete DB query: %v: %v", input.GetItemID(), err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
 	}
+	log.Printf("Successfully deleted listing: %v", input.GetItemID())
 
 	//invalidate redis
 	if err := utils.InvalidateCache(utils.GetSingleListingByUserIDCacheKey, input.GetItemID()); err != nil {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
 	}
 
+	log.Printf("Success: DeleteListing: %v", input.GetItemID())
 	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successfully delete listing.")})
 }
