@@ -41,8 +41,23 @@ func DeleteListing(c *gin.Context) {
 		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
 	}
 
+	listingToBeArchived := models.Listing{
+		LItemID:         listingToBeDeleted.LItemID,
+		ItemName:        listingToBeDeleted.ItemName,
+		ItemPrice:       listingToBeDeleted.ItemPrice,
+		ItemQuantity:    listingToBeDeleted.ItemQuantity,
+		ItemStock:       listingToBeDeleted.ItemQuantity,
+		ItemDescription: listingToBeDeleted.ItemDescription,
+		ItemLocation:    listingToBeDeleted.ItemLocation,
+		ItemStatus:      listingToBeDeleted.ItemStatus,
+		ItemCategory:    listingToBeDeleted.ItemCategory,
+		LSellerID:       listingToBeDeleted.LSellerID,
+		ListingCtime:    listingToBeDeleted.ListingCtime,
+		ListingMtime:    listingToBeDeleted.ListingMtime,
+	}
+
 	//archive listing
-	if err := models.DB.Table("listing_archive_tab").Create(listingToBeDeleted).Error; err != nil {
+	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeArchived).Error; err != nil {
 		log.Printf("Error during listing archive DB query: %v", err.Error())
 	}
 
