@@ -41,28 +41,11 @@ func DeleteListing(c *gin.Context) {
 		log.Printf("Error during DeleteListing InvalidateSellerCacheUsingItemID: %v", err.Error())
 	}
 
-	listingToBeArchived := models.Listing{
-		LItemID:         listingToBeDeleted.LItemID,
-		ItemName:        listingToBeDeleted.ItemName,
-		ItemPrice:       listingToBeDeleted.ItemPrice,
-		ItemQuantity:    listingToBeDeleted.ItemQuantity,
-		ItemStock:       listingToBeDeleted.ItemQuantity,
-		ItemDescription: listingToBeDeleted.ItemDescription,
-		ItemLocation:    listingToBeDeleted.ItemLocation,
-		ItemStatus:      listingToBeDeleted.ItemStatus,
-		ItemCategory:    listingToBeDeleted.ItemCategory,
-		LSellerID:       listingToBeDeleted.LSellerID,
-		ListingCtime:    listingToBeDeleted.ListingCtime,
-		ListingMtime:    listingToBeDeleted.ListingMtime,
-	}
-
-	log.Printf("listingToBeArchived: %v", listingToBeArchived)
-
 	//archive listing
-	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeArchived).Error; err != nil {
-		log.Printf("Error during listing archive DB query: %v: %v", listingToBeArchived.GetLItemID(), err.Error())
+	if err := models.DB.Table("listing_archive_tab").Create(&listingToBeDeleted).Error; err != nil {
+		log.Printf("Error during listing archive DB query: %v: %v", listingToBeDeleted.GetLItemID(), err.Error())
 	}
-	log.Printf("Successfully archived listing: %v", listingToBeArchived.GetLItemID())
+	log.Printf("Successfully archived listing: %v", listingToBeDeleted.GetLItemID())
 
 	//delete
 	if err := models.DB.Exec("DELETE FROM listing_tab WHERE l_item_id = ?", input.ItemID).Error; err != nil {
