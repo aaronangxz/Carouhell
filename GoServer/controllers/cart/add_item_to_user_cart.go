@@ -67,6 +67,24 @@ func isItemExistsInCart(c *gin.Context, userid int64, itemid int64) (bool, error
 	return count > 0, err
 }
 
+func isItemHasEnoughStock(c *gin.Context, itemid int64, quantity uint32) (bool, error) {
+	var (
+		stockCount uint32
+	)
+	checkStockQuery := fmt.Sprintf("SELECT item_quantity FROM listing_tab WHERE l_item_id = %v", itemid)
+	log.Println(checkStockQuery)
+	result := models.DB.Raw(checkStockQuery).Scan(&stockCount)
+
+	err := result.Error
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
+		log.Printf("Error during AddItemToUserCart - isItemHasEnoughStock DB query: %v\n", err.Error())
+		return false, err
+	}
+	return quantity <= stockCount, err
+}
+
 func AddItemToUserCart(c *gin.Context) {
 	var (
 		input models.AddItemToUserCartRequest
@@ -77,9 +95,27 @@ func AddItemToUserCart(c *gin.Context) {
 		return
 	}
 
+	if input.GetUserID() < 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Please log in to add items to cart.")})
+		log.Printf("Anonymous user cannot add to cart: %v", input.GetUserID())
+		return
+	}
+
 	//check if exists
 	isExists, err := isItemExistsInCart(c, input.GetUserID(), input.GetItemID())
 	if err != nil {
+		return
+	}
+
+	//check if item has enough stock
+	isHasStock, err := isItemHasEnoughStock(c, input.GetItemID(), input.GetItemQuantity())
+	if err != nil {
+		return
+	}
+
+	if !isHasStock {
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("There is not enough stock to add to cart.")})
+		log.Printf("item: %v stock < quantity to add to cart. quantity to add: %v", input.GetItemID(), input.GetItemQuantity())
 		return
 	}
 
