@@ -30,6 +30,10 @@ func ValidateUint(a *uint32) bool {
 	return *a >= uint32(0)
 }
 
+func ValidateInt64(a *int64) bool {
+	return fmt.Sprint(reflect.TypeOf(a)) == "*int64"
+}
+
 func ValidateString(a *string) bool {
 	return fmt.Sprint(reflect.TypeOf(a)) == "*string"
 }
