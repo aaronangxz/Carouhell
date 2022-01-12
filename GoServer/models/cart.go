@@ -62,3 +62,9 @@ func (r *AddItemToUserCartRequest) GetItemQuantity() uint32 {
 	}
 	return 0
 }
+
+type UpdateUserCartSingleItemRequest struct {
+	UserID       *int64  `json:"user_id" binding:"required"`
+	ItemID       *int64  `json:"item_id" binding:"required"`
+	ItemQuantity *uint32 `json:"item_quantity" binding:"required"`
+}
