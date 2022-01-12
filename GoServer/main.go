@@ -96,6 +96,7 @@ func main() {
 
 	//***************** Cart Page *****************
 	r.POST("/v2/add_item_to_user_cart", cart.AddItemToUserCart)
+	r.POST("/v2/get_user_cart", cart.GetUserCart)
 
 	r.Run()
 }

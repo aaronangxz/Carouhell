@@ -62,3 +62,26 @@ func (r *AddItemToUserCartRequest) GetItemQuantity() uint32 {
 	}
 	return 0
 }
+
+type GetUserCartRequest struct {
+	UserID *int64 `json:"user_id" binding:"required"`
+}
+
+func (r *GetUserCartRequest) GetUserID() int64 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+type UserCartForFrontEnd struct {
+	UserID       *int64  `json:"user_id"`
+	ItemID       *int64  `json:"item_id"`
+	ItemQuantity *uint32 `json:"item_quantity"`
+	Ctime        *int64  `json:"ctime"`
+}
+
+type GetUserCartResponse struct {
+	ValidItems   []Listing
+	InvalidItems []Listing
+}
