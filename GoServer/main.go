@@ -23,7 +23,7 @@ func main() {
 	//"test" = test env
 	//"local" = local test env
 	//SET BEFORE MERGING INTO TEST OR MASTER
-	models.SetEnv("")
+	models.SetEnv("local")
 	models.NewMySQL()
 	models.NewAWSInstance()
 	models.NewRedis()
