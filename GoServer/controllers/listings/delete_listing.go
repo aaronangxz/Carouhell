@@ -47,8 +47,8 @@ func DeleteListing(c *gin.Context) {
 	}
 	log.Printf("Successfully archived listing: %v", listingToBeDeleted.GetLItemID())
 
-	//delete
-	if err := models.DB.Exec("DELETE FROM listing_tab WHERE l_item_id = ?", input.ItemID).Error; err != nil {
+	//soft delete
+	if err := models.DB.Exec("UPDATE listing_tab SET item_status = 3 WHERE l_item_id = ?", input.ItemID).Error; err != nil {
 		log.Printf("Error during listing delete DB query: %v: %v", input.GetItemID(), err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return

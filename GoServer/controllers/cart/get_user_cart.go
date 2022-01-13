@@ -35,9 +35,9 @@ func ValidateGetUserCartInput(c *gin.Context, input *models.GetUserCartRequest) 
 
 func GetUserCart(c *gin.Context) {
 	var (
-		input          models.GetUserCartRequest
-		currentCart    []models.UserCart
-		itemInfo       models.UserCartItem
+		input       models.GetUserCartRequest
+		currentCart []models.UserCart
+
 		itemInfoSorted []models.UserCartItem
 		validItems     []models.UserCartItem
 		invalidItems   []models.UserCartItem
@@ -52,7 +52,7 @@ func GetUserCart(c *gin.Context) {
 	//get cart items
 	currentCartQuery := fmt.Sprintf("SELECT * FROM user_cart_tab WHERE user_id = %v ORDER BY ctime DESC", input.GetUserID())
 	log.Println(currentCartQuery)
-	currentCartResult := models.DB.Raw(currentCartQuery).Scan(currentCart)
+	currentCartResult := models.DB.Raw(currentCartQuery).Scan(&currentCart)
 
 	if err := currentCartResult.Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -66,27 +66,34 @@ func GetUserCart(c *gin.Context) {
 	}
 
 	//get item info for each item in cart
-	for i, cartItemsId := range currentCart {
+	for _, cartItemsId := range currentCart {
+		var itemInfo models.UserCartItem
+
+		//fill in cart ctime into object
+		itemInfo.CartCtime = cartItemsId.GetCtime()
+
 		//get item info
-		getItemInfoQuery := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v", cartItemsId)
+		getItemInfoQuery := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v", cartItemsId.GetItemID())
 		log.Println(getItemInfoQuery)
-		getItemInfoResult := models.DB.Raw(getItemInfoQuery).Scan(itemInfo)
+		getItemInfoResult := models.DB.Raw(getItemInfoQuery).Scan(&itemInfo)
 		if err := getItemInfoResult.Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				log.Printf("Item is deleted. item_id: %v", cartItemsId.GetItemID())
+				continue
+			}
 			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
-			log.Printf("Error during GetUserCart - GetCurrentCart DB query: %v", err.Error())
+			log.Printf("Error during GetUserCart - GetCurrentCartItemInfo DB query: %v", err.Error())
 			return
 		}
-		//fill in cart ctime into object
-		itemInfo.CartCtime = currentCart[i].GetCtime()
 		itemInfoSorted = append(itemInfoSorted, itemInfo)
 	}
 
 	//check each items
 	for i, items := range itemInfoSorted {
 
-		//status != deleted, soldout
+		//status != soldout
 		if items.ItemStatus == constant.ITEM_STATUS_DELETED {
-			items.ItemInfo.InvalidMessage = "Item is deleted."
+			items.ItemInfo.InvalidMessage = "Item is no longer available."
 			items.ItemInfo.InvalidErrorCode = uint32(constant.INVALID_CART_ITEM_DELETED)
 			invalidItems = append(invalidItems, items)
 			continue
@@ -123,4 +130,6 @@ func GetUserCart(c *gin.Context) {
 	resp.ValidItems = validItems
 	resp.InvalidItems = invalidItems
 
+	c.JSON(http.StatusOK, gin.H{"Respmeta": models.NewSuccessMessageResponse("Successful: GetUserCart."), "Data": resp})
+	log.Printf("Successful: GetUserCart. user_id: %v", input.GetUserID())
 }
