@@ -74,14 +74,25 @@ func (r *GetUserCartRequest) GetUserID() int64 {
 	return 0
 }
 
-type UserCartForFrontEnd struct {
-	UserID       *int64  `json:"user_id"`
-	ItemID       *int64  `json:"item_id"`
-	ItemQuantity *uint32 `json:"item_quantity"`
-	Ctime        *int64  `json:"ctime"`
+type UserCartItemInfo struct {
+	InvalidMessage   string `json:"invalid_message"`
+	InvalidErrorCode uint32 `json:"invalid_error_code"`
+}
+type UserCartItem struct {
+	LItemID      uint32           `json:"item_id"`
+	ItemName     string           `json:"item_name"`
+	ItemPrice    uint32           `json:"item_price"`
+	ItemQuantity uint32           `json:"item_quantity"`
+	ItemStatus   uint32           `json:"item_status"`
+	LSellerID    uint32           `json:"seller_id"`
+	SellerName   string           `json:"seller_name"`
+	CartCtime    int64            `json:"cart_ctime"`
+	ItemInfo     UserCartItemInfo `json:"item_info"`
 }
 
 type GetUserCartResponse struct {
-	ValidItems   []Listing
-	InvalidItems []Listing
+	ValidCount   int            `json:"valid_count"`
+	ValidItems   []UserCartItem `json:"valid_items"`
+	InvalidCount int            `json:"invalid_count"`
+	InvalidItems []UserCartItem `json:"invalid_items"`
 }
