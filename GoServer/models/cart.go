@@ -96,3 +96,22 @@ type GetUserCartResponse struct {
 	InvalidCount int            `json:"invalid_count"`
 	InvalidItems []UserCartItem `json:"invalid_items"`
 }
+
+type DeleteItemFromItemCartRequest struct {
+	UserID *int64 `json:"user_id" binding:"required"`
+	ItemID *int64 `json:"item_id" binding:"required"`
+}
+
+func (r *DeleteItemFromItemCartRequest) GetUserID() int64 {
+	if r != nil && r.UserID != nil {
+		return *r.UserID
+	}
+	return 0
+}
+
+func (r *DeleteItemFromItemCartRequest) GetItemID() int64 {
+	if r != nil && r.ItemID != nil {
+		return *r.ItemID
+	}
+	return 0
+}

@@ -120,11 +120,11 @@ func GetUserCart(c *gin.Context) {
 	resp.InvalidCount = len(invalidItems)
 
 	sort.Slice(validItems, func(i, j int) bool {
-		return validItems[i].CartCtime < validItems[j].CartCtime
+		return validItems[i].CartCtime > validItems[j].CartCtime
 	})
 
 	sort.Slice(invalidItems, func(i, j int) bool {
-		return invalidItems[i].CartCtime < invalidItems[j].CartCtime
+		return invalidItems[i].CartCtime > invalidItems[j].CartCtime
 	})
 
 	resp.ValidItems = validItems
