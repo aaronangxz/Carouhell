@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 
@@ -48,7 +49,7 @@ func DeleteListing(c *gin.Context) {
 	log.Printf("Successfully archived listing: %v", listingToBeDeleted.GetLItemID())
 
 	//soft delete
-	if err := models.DB.Exec("UPDATE listing_tab SET item_status = 3 WHERE l_item_id = ?", input.ItemID).Error; err != nil {
+	if err := models.DB.Exec("UPDATE listing_tab SET item_status = ? WHERE l_item_id = ?", constant.ITEM_STATUS_DELETED, input.ItemID).Error; err != nil {
 		log.Printf("Error during listing delete DB query: %v: %v", input.GetItemID(), err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewDBErrorResponse(err)})
 		return
