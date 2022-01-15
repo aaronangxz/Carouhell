@@ -89,7 +89,6 @@ type UserCartItem struct {
 	CartCtime    int64            `json:"cart_ctime"`
 	ItemInfo     UserCartItemInfo `json:"item_info"`
 }
-
 type GetUserCartResponse struct {
 	ValidCount   int            `json:"valid_count"`
 	ValidItems   []UserCartItem `json:"valid_items"`

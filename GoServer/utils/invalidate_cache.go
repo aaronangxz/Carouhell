@@ -13,6 +13,7 @@ var (
 	GetUserWalletDetailsCacheKey     = "get_user_wallet_details:"
 	GetUserLikedListingsCacheKey     = "get_user_liked_listings:"
 	GetUserDetailsCacheKey           = "get_user_details:"
+	CartItemInfoCacheKey             = "cart_item:"
 )
 
 func InvalidateCache(service string, ID uint32) error {
