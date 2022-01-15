@@ -222,6 +222,9 @@ func PurchaseSingleItem(c *gin.Context) {
 	if err := utils.InvalidateCache(utils.GetUserWalletDetailsCacheKey, input.GetUserID()); err != nil {
 		log.Printf("Error during InvalidateCache: %v", err.Error())
 	}
+	if err := utils.InvalidateCache(utils.CartItemInfoCacheKey, input.GetItemID()); err != nil {
+		log.Printf("Error during InvalidateCache: %v", err.Error())
+	}
 
 	//if became out of stock, need to invalidate
 	if listingHold.GetItemQuantity()-input.GetPurchaseQuantity() == 0 {

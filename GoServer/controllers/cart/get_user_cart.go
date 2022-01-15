@@ -1,16 +1,19 @@
 package cart
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"sort"
+	"time"
 
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/models"
 	"github.com/aaronangxz/TIC2601/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/jinzhu/gorm"
 )
 
@@ -71,7 +74,28 @@ func GetUserCart(c *gin.Context) {
 		//fill in cart ctime into object
 		itemInfo.CartCtime = cartItemsId.GetCtime()
 
-		//get item info
+		//check cache
+		key := fmt.Sprintf("%v%v", utils.CartItemInfoCacheKey, cartItemsId.GetItemID())
+		val, err := models.RedisClient.Get(models.Ctx, key).Result()
+		if err != nil {
+			if err == redis.Nil {
+				log.Printf("No result of %v in Redis, reading from DB", key)
+			} else {
+				log.Printf("Error while reading from redis: %v", err.Error())
+			}
+		} else {
+			redisResp := models.UserCartItem{}
+			err := json.Unmarshal([]byte(val), &redisResp)
+			if err != nil {
+				log.Printf("Fail to unmarshal Redis value of key %v : %v, reading from DB", key, err)
+			} else {
+				log.Printf("found %v , reading from cache", key)
+				itemInfoSorted = append(itemInfoSorted, redisResp)
+				continue
+			}
+		}
+
+		//get item info from DB if cache miss
 		getItemInfoQuery := fmt.Sprintf("SELECT l.*, a.user_name AS seller_name FROM listing_tab l, acc_tab a WHERE l.l_item_id = %v", cartItemsId.GetItemID())
 		log.Println(getItemInfoQuery)
 		getItemInfoResult := models.DB.Raw(getItemInfoQuery).Scan(&itemInfo)
@@ -84,7 +108,21 @@ func GetUserCart(c *gin.Context) {
 			log.Printf("Error during GetUserCart - GetCurrentCartItemInfo DB query: %v", err.Error())
 			return
 		}
+
 		itemInfoSorted = append(itemInfoSorted, itemInfo)
+
+		//Retrieved new data, set to Redis
+		expiry := 60 * time.Minute
+		data, err := json.Marshal(itemInfo)
+		if err != nil {
+			log.Printf("Failed to marshal JSON results: %v\n", err.Error())
+		}
+		if err := models.RedisClient.Set(models.Ctx, key, data, expiry).Err(); err != nil {
+			log.Printf("Error while writing to redis: %v", err.Error())
+		} else {
+			log.Printf("Written %v to redis", key)
+		}
+
 	}
 
 	//check each items
