@@ -73,7 +73,7 @@ func GetUserCart(c *gin.Context) {
 		itemInfo.CartCtime = cartItemsId.GetCtime()
 
 		//get item info
-		getItemInfoQuery := fmt.Sprintf("SELECT * FROM listing_tab WHERE l_item_id = %v", cartItemsId.GetItemID())
+		getItemInfoQuery := fmt.Sprintf("SELECT l.*, a.user_name AS seller_name FROM listing_tab l, acc_tab a WHERE l.l_item_id = %v", cartItemsId.GetItemID())
 		log.Println(getItemInfoQuery)
 		getItemInfoResult := models.DB.Raw(getItemInfoQuery).Scan(&itemInfo)
 		if err := getItemInfoResult.Error; err != nil {
