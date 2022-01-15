@@ -35,9 +35,8 @@ func ValidateGetUserCartInput(c *gin.Context, input *models.GetUserCartRequest) 
 
 func GetUserCart(c *gin.Context) {
 	var (
-		input       models.GetUserCartRequest
-		currentCart []models.UserCart
-
+		input          models.GetUserCartRequest
+		currentCart    []models.UserCart
 		itemInfoSorted []models.UserCartItem
 		validItems     []models.UserCartItem
 		invalidItems   []models.UserCartItem
