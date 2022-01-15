@@ -6,6 +6,7 @@ import (
 
 	"github.com/aaronangxz/TIC2601/constant"
 	"github.com/aaronangxz/TIC2601/controllers/account"
+	"github.com/aaronangxz/TIC2601/controllers/cart"
 	"github.com/aaronangxz/TIC2601/controllers/listings"
 	"github.com/aaronangxz/TIC2601/controllers/notification"
 	"github.com/aaronangxz/TIC2601/controllers/wallet"
@@ -92,6 +93,11 @@ func main() {
 
 	//***************** Notifications Page *****************
 	r.POST("/get_user_notifications", notification.GetUserNotifications)
+
+	//***************** Cart Page *****************
+	r.POST("/v2/add_item_to_user_cart", cart.AddItemToUserCart)
+	r.POST("/v2/get_user_cart", cart.GetUserCart)
+	r.POST("/v2/delete_item_from_user_cart", cart.DeleteItemFromUserCart)
 
 	r.Run()
 }

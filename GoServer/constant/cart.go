@@ -1,0 +1,7 @@
+package constant
+
+const (
+	INVALID_CART_ITEM_SOLDOUT          = 1
+	INVALID_CART_ITEM_DELETED          = 2
+	INVALID_CART_ITEM_NOT_ENOUGH_STOCK = 3
+)

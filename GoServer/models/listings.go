@@ -84,6 +84,17 @@ func (r *Listing) GetItemPrice() uint32 {
 	return 0
 }
 
+type ListingQuantity struct {
+	ItemQuantity *uint32 `json:"item_quantity"`
+}
+
+func (r *ListingQuantity) GetItemQuantity() uint32 {
+	if r != nil && r.ItemQuantity != nil {
+		return *r.ItemQuantity
+	}
+	return 0
+}
+
 type GetAllListingsResponse struct {
 	LItemID         uint32 `json:"item_id"`
 	ItemName        string `json:"item_name"`
