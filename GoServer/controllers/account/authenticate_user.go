@@ -26,17 +26,17 @@ func CheckPasswordHash(password, hash string) (bool, error) {
 func ValidateAuthenticateUser(c *gin.Context, input *models.AuthenticateUser) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserName == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot be empty.")})
 			errormsg := "user_name cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateString(input.UserName) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name must be string type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username must be string type.")})
 			errormsg := fmt.Sprintf("user_name must be string type. input: %v\n", input.GetUserName())
 			return errors.New(errormsg)
 		}
 		if input.UserPassword == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be empty.")})
 			errormsg := "user_password cannot be empty"
 			return errors.New(errormsg)
 		}
@@ -49,25 +49,25 @@ func ValidateAuthenticateUser(c *gin.Context, input *models.AuthenticateUser) er
 
 func ValidateAuthenticateUserInput(c *gin.Context, input *models.AuthenticateUser) error {
 	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name format is invalid.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot contain space or special characters.")})
 		errormsg := fmt.Sprintf("user_name format is invalid. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
 	if input.GetUserName() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot be empty.")})
 		return errors.New("user_name cannot be empty")
 	}
 	if !utils.ValidateMaxStringLength(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("user_name length cannot exceed %v. input :%v\n", models.MaxStringLength, len(input.GetUserName()))
 		return errors.New(errormsg)
 	}
 	if input.GetUserPassword() == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be empty.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be empty.")})
 		return errors.New("user_password cannot be empty")
 	}
 	if len(input.GetUserPassword()) < 6 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_password cannot be shorter than 6 chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Password cannot be shorter than 6 chars.")})
 		return errors.New("user_password cannot be shorter than 6 chars")
 	}
 	return nil
@@ -100,7 +100,7 @@ func AuthenticateUser(c *gin.Context) {
 			log.Printf("Error during AuthenticateUser - check_user_exists DB query: %v\n", result.Error.Error())
 			return
 		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_name does not exist.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username does not exist.")})
 			log.Printf("user_name does not exist: %v\n", input.GetUserName())
 			return
 		}
@@ -115,7 +115,7 @@ func AuthenticateUser(c *gin.Context) {
 			log.Printf("Error during AuthenticateUser - retrieve_credentials DB query: %v\n", resultCredentials.Error.Error())
 			return
 		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id does not exist.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("UserID does not exist.")})
 			log.Printf("user_id does not exist: %v\n", hold.GetUserID())
 			return
 		}
@@ -142,14 +142,14 @@ func AuthenticateUser(c *gin.Context) {
 
 	token, err := auth.CreateToken(hold.GetUserID())
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Fail to generate token.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Failed to generate token.")})
 		log.Printf("Fail to generate token: %v\n", err)
 		return
 	}
 
 	saveErr := auth.CreateAuth(hold.GetUserID(), token)
 	if saveErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Fail to generate auth.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewUnknownErrorMessageResponse("Failed to generate auth.")})
 		log.Printf("Fail to generate auth: %v\n", err)
 	}
 

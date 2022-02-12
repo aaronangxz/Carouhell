@@ -31,7 +31,7 @@ func GetUserDetails(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.UserID == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("UserID cannot be empty.")})
 			log.Println("user_id cannot be empty.")
 			return
 		}

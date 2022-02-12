@@ -73,7 +73,7 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New(errormsg)
 	}
 	if utils.IsContainsSpecialChar(input.GetUserName()) || utils.IsContainsSpace(input.GetUserName()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username can only contains alphanumeric characters")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username can only contain alphanumeric characters.")})
 		errormsg := fmt.Sprintf("user_name can only contains alphanumeric characters. input :%v", input.GetUserName())
 		return errors.New(errormsg)
 	}
@@ -87,7 +87,7 @@ func ValidateCreateAccountInput(c *gin.Context, input *models.CreateAccountReque
 		return errors.New(errormsg)
 	}
 	if !utils.IsContainsAtSign(input.GetUserEmail()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email format is invalid")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Email format is invalid.")})
 		errormsg := fmt.Sprintf("user_email format is invalid. input :%v", input.GetUserEmail())
 		return errors.New(errormsg)
 	}
@@ -159,7 +159,7 @@ func CreateAccount(c *gin.Context) {
 			return
 		} else {
 			if spResp.GetStatus() == -1 {
-				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("User already exists.")})
+				c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists.")})
 				log.Printf("user already exists: %v / %v\n", input.GetUserName(), input.GetUserEmail())
 				return
 			}
@@ -187,7 +187,7 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	if result.RowsAffected > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists. Log in instead.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Username or email already exists. Please log in instead.")})
 		log.Printf("user already exists: %v / %v", input.GetUserEmail(), input.GetUserName())
 		return
 	}

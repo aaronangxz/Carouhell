@@ -56,37 +56,37 @@ func isExist(c *gin.Context, input models.AddUserReviewRequest) bool {
 func ValidateAddUserReviewRequest(c *gin.Context, input *models.AddUserReviewRequest) error {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if input.RVUserID == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("UserID cannot be empty.")})
 			errormsg := "user_id cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.RVUserID) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("user_id must be uint type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("UserID must be uint type.")})
 			errormsg := fmt.Sprintf("user_id must be uint type. input: %v", input.GetUserID())
 			return errors.New(errormsg)
 		}
 		if input.RVSellerID == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("SellerID cannot be empty.")})
 			errormsg := "seller_id cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.RVSellerID) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("seller_id must be uint type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("SellerID must be uint type.")})
 			errormsg := fmt.Sprintf("seller_id must be uint type. input: %v", input.GetUserID())
 			return errors.New(errormsg)
 		}
 		if input.Ratings == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("ratings cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Ratings cannot be empty.")})
 			errormsg := "ratings cannot be empty"
 			return errors.New(errormsg)
 		}
 		if !utils.ValidateUint(input.Ratings) {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("ratings must be uint type.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Ratings must be uint type.")})
 			errormsg := fmt.Sprintf("ratings must be uint type. input: %v", input.GetUserID())
 			return errors.New(errormsg)
 		}
 		if input.ReviewText == nil {
-			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("review_text cannot be empty.")})
+			c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Review Text cannot be empty.")})
 			errormsg := "review_text cannot be empty"
 			return errors.New(errormsg)
 		}
@@ -99,13 +99,13 @@ func ValidateAddUserReviewRequest(c *gin.Context, input *models.AddUserReviewReq
 
 func ValidateAddUserReviewInput(c *gin.Context, input *models.AddUserReviewRequest) error {
 	if !utils.ValidateMaxStringLength(input.GetReviewText()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("review_text cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Review Text cannot exceed " + fmt.Sprint(models.MaxStringLength) + " chars.")})
 		errormsg := fmt.Sprintf("review_text length cannot exceed %v. input :%v", models.MaxStringLength, len(input.GetReviewText()))
 		return errors.New(errormsg)
 	}
 	//check if exists
 	if input.Ratings != nil && !constant.CheckAccConstant(constant.USER_REVIEW_STARS, input.GetRatings()) {
-		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("unknown rating.")})
+		c.JSON(http.StatusBadRequest, gin.H{"Respmeta": models.NewParamErrorsResponse("Unknown rating.")})
 		errormsg := fmt.Sprintf("unknown rating. input: %v", input.GetRatings())
 		return errors.New(errormsg)
 	}
